@@ -1,0 +1,1971 @@
+#+TITLE: Impactos econômicos da COVID-19
+#+DATE: Janeiro de 2021
+#+LATEX_CLASS: SelfArx
+#+SETUPFILE: ../manuscript.setup
+#+INCLUDE: Infos.org
+#+EXCLUDE_TAGS: Notes
+#+PROPERTY: header-args python :results output drawer replace :exports results :eval never-export
+
+* Initial setup :noexport:ignore:
+#+LATEX:\flushbottom % Makes all text pages the same height
+#+LATEX:\maketitle % Print the title and abstract box
+#+LATEX:\thispagestyle{empty} % Removes page numbering from the first page
+
+#+BEGIN_SRC python :tangle ./codes/setup.py
+import pandas as pd
+import numpy as np
+from datetime import datetime as dt
+from datetime import timedelta
+
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+from matplotlib.ticker import FuncFormatter
+
+import seaborn as sns
+import pandas_datareader.data as web
+import requests
+import json
+
+import country_converter as coco
+cc = coco.CountryConverter()
+
+import matplotlib.image as image
+
+logo = "./figs/Cecon_Logo.png"
+logo = image.imread(logo)
+corona_sp = '2020-03-24'
+corona_sp_txt = "Início isolamento social em SP"
+
+corona_60 = '2020-03-18'
+corona_60_txt = "Mais de 60 casos de COVID-19"
+
+base = "2014-12-01"
+
+
+def interpolator(df):
+    for col in df:
+        df[col] = pd.to_numeric(df[col], errors='coerce')
+        df = df.resample('D').interpolate(method='time')
+
+    return df
+
+def line_format(label):
+    """
+    Convert time label to the format of pandas line plot
+    """
+    month = label.month_name()[:3]
+    if month == 'Jan':
+        month += f'\n{label.year}'
+    return month
+
+def rebase(df, base=base):
+    for col in df:
+        df[col] = df[col].apply(lambda x: (100*x)/df[col][base])
+    return df
+
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+* Código :ignore:noexport:
+** Atividade
+  
+*** Crédito
+
+#+BEGIN_SRC python  :tangle ./codes/Credito.py
+
+import sys
+
+sys.path.insert(1, './codes/')
+
+from setup import *
+
+start_year = "2019-01-01"
+
+file_path = './raw/LCA/'
+image_path = './figs/Credito/'
+file_name = 'Indicadores_de_Credito_Bacen'
+def line_format(label):
+    """
+    Convert time label to the format of pandas line plot
+    """
+    month = label.month_name()[:3]
+    if month == 'Jan':
+        month += f'\n{label.year}'
+    return month
+#ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+*** Saldo
+
+**** Pessoa jurídica
+     
+#+BEGIN_SRC python  :tangle ./codes/Credito.py
+sheet = "SaldoPJ"
+titulo = "Saldo Pessoa jurídica"
+porcentagem=False
+unidade="Milhões"
+df = pd.read_excel(
+    file_path + file_name + '.xlsx', 
+    sheet_name=sheet, 
+    parse_dates=True, # Check data-parser -> %m/%Y not %m/%d
+    index_col=[0], 
+    skiprows=10,
+    usecols="A,Z,AM", 
+)[0:]
+df.index = pd.date_range( # Check for NaN
+    start = '2007-03-31',
+    periods=df.shape[0],
+    #end='2020-05-31',
+    freq='M', 
+    #periods=(1241-12)
+    )
+df = df[start_year:]
+df.index.name = ''
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df[start_year:].plot(
+    title = titulo,
+    ax = ax,
+    lw=2, 
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento\nsocial em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+if porcentagem == False:
+    ax.set_yticklabels(['{:,.0f}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'R$ {unidade}')
+else: 
+    ax.set_yticklabels(['{:,.2%}'.format(x/100) for x in ax.get_yticks()])
+    ax.set_ylabel(f'em % {unidade}')
+ax2 = plt.axes([.9,0.6,0.2,0.2])
+
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + sheet.replace(' ', '') + unidade +   '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+
+#+BEGIN_SRC python  :tangle ./codes/Credito.py
+sheet = "SaldoPJ"
+titulo = "Saldo Pessoa jurídica"
+porcentagem=False
+unidade="Milhões"
+df = pd.read_excel(
+    file_path + file_name + '.xlsx', 
+    sheet_name=sheet, 
+    parse_dates=True, # Check data-parser -> %m/%Y not %m/%d
+    index_col=[0], 
+    skiprows=10,
+    usecols="A,Z,AM", 
+)[0:]
+df.index = pd.date_range( # Check for NaN
+    start = '2007-03-31',
+    periods=df.shape[0],
+    #end='2020-05-31',
+    freq='M', 
+    #periods=(1241-12)
+    )
+df.index.name = ''
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.pct_change(12)[start_year:].plot(
+    title = titulo,
+    ax = ax,
+    lw=2, 
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento\nsocial em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([.9,0.6,0.2,0.2])
+
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + sheet.replace(' ', '') + unidade +   '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+**** Pessoa física
+
+#+BEGIN_SRC python  :tangle ./codes/Credito.py
+sheet = "SaldoPF"
+titulo = "Saldo Pessoa física"
+porcentagem=False
+unidade="Milhões"
+df = pd.read_excel(
+    file_path + file_name + '.xlsx', 
+    sheet_name=sheet, 
+    parse_dates=True, # Check data-parser -> %m/%Y not %m/%d
+    index_col=[0], 
+    skiprows=10,
+    usecols="A,W,AJ", 
+)[0:]
+df.index = pd.date_range( # Check for NaN
+    start = '2007-03-31',
+    periods=df.shape[0],
+    #end='2020-05-31',
+    freq='M', 
+    #periods=(1241-12)
+    )
+df = df[start_year:]
+df.index.name = ''
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df[start_year:].plot(
+    title = titulo,
+    ax = ax,
+    lw=2, 
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento\nsocial em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+if porcentagem == False:
+    ax.set_yticklabels(['{:,.0f}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'R$ {unidade}')
+else: 
+    ax.set_yticklabels(['{:,.2%}'.format(x/100) for x in ax.get_yticks()])
+    ax.set_ylabel(f'em % {unidade}')
+ax2 = plt.axes([.9,0.6,0.2,0.2])
+
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + sheet.replace(' ', '') + unidade +   '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+#+BEGIN_SRC python  :tangle ./codes/Credito.py
+sheet = "SaldoPF_%PIB"
+titulo = "Saldo Pessoa física\nem % PIB"
+porcentagem=True
+unidade="PIB"
+df = pd.read_excel(
+    file_path + file_name + '.xlsx', 
+    sheet_name=sheet, 
+    parse_dates=True, # Check data-parser -> %m/%Y not %m/%d
+    index_col=[0], 
+    skiprows=10,
+    usecols="A,W,AJ", 
+)[0:]
+df.index = pd.date_range( # Check for NaN
+    start = '2007-03-31',
+    periods=df.shape[0],
+    #end='2020-05-31',
+    freq='M', 
+    #periods=(1241-12)
+    )
+df = df[start_year:]
+df.index.name = ''
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df[start_year:].plot(
+    title = titulo,
+    ax = ax,
+    lw=2, 
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento\nsocial em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+if porcentagem == False:
+    ax.set_yticklabels(['{:,.0f}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'R$ {unidade}')
+else: 
+    ax.set_yticklabels(['{:,.2%}'.format(x/100) for x in ax.get_yticks()])
+    ax.set_ylabel(f'em % {unidade}')
+ax2 = plt.axes([.9,0.6,0.2,0.2])
+
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + sheet.replace(' ', '') + unidade +   '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+**** Crédito ampliado
+
+#+BEGIN_SRC python  :tangle ./codes/Credito.py
+sheet = "SaldoCréditoAmpliado"
+titulo = "Saldo Crédito Ampliado"
+porcentagem=True
+unidade="do Total"
+df = pd.read_excel(
+    file_path + file_name + '.xlsx', 
+    sheet_name=sheet, 
+    parse_dates=True, # Check data-parser -> %m/%Y not %m/%d
+    index_col=[0], 
+    skiprows=10,
+    usecols="A,N,V,AJ", 
+)[0:]
+df.columns = [
+    "Setor não financeiro",
+    "Governo Geral",
+    "Empresas e Famílias"
+]
+df.index = pd.date_range( # Check for NaN
+    start = '2013-01-31',
+    periods=df.shape[0],
+    #end='2020-05-31',
+    freq='M', 
+    #periods=(1241-12)
+    )
+df = df[start_year:]
+df["Total"] = df.sum(axis=1)
+df = df.apply(lambda x: x/df["Total"]).drop(["Total"], axis='columns')
+
+df.index.name = ''
+
+
+fig, ax = plt.subplots(figsize=(8,5))
+df[start_year:].plot(
+    title = titulo,
+    ax = ax,
+    kind='bar', stacked=True, edgecolor='black',
+    lw=2, 
+)
+ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
+#ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento\nsocial em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+if porcentagem == False:
+    ax.set_yticklabels(['{:,.0f}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'R$ {unidade}')
+else: 
+    ax.set_yticklabels(['{:,.0%}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'em % {unidade}')
+ax2 = plt.axes([.9,0.6,0.2,0.2])
+
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + sheet.replace(' ', '') + unidade +  '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+#+BEGIN_SRC python  :tangle ./codes/Credito.py
+sheet = "SaldoCréditoAmpliado"
+titulo = "Saldo Crédito Ampliado"
+porcentagem=False
+unidade="Milhões"
+df = pd.read_excel(
+    file_path + file_name + '.xlsx', 
+    sheet_name=sheet, 
+    parse_dates=True, # Check data-parser -> %m/%Y not %m/%d
+    index_col=[0], 
+    skiprows=10,
+    usecols="A,N,V,AJ", 
+)[0:]
+df.columns = [
+    "Setor não financeiro",
+    "Governo Geral",
+    "Empresas e Famílias"
+]
+df.index = pd.date_range( # Check for NaN
+    start = '2013-01-31',
+    periods=df.shape[0],
+    #end='2020-05-31',
+    freq='M', 
+    #periods=(1241-12)
+    )
+df = df[start_year:]
+#df["Total"] = df.sum(axis=1)
+#df = df.apply(lambda x: x/df["Total"]).drop(["Total"], axis='columns')
+
+df.index.name = ''
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df[start_year:].plot(
+    title = titulo,
+    ax = ax,
+    #kind='bar', stacked=True, edgecolor='black',
+    lw=2, 
+)
+ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento\nsocial em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+if porcentagem == False:
+    ax.set_yticklabels(['{:,.0f}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'R$ {unidade}')
+else: 
+    ax.set_yticklabels(['{:,.0%}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'em % {unidade}')
+ax2 = plt.axes([.9,0.6,0.2,0.2])
+
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + sheet.replace(' ', '') + unidade +   '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+
+#+BEGIN_SRC python  :tangle ./codes/Credito.py
+sheet = "SaldoCréditoAmpliado_%PIB"
+titulo = "Saldo Crédito Ampliado"
+porcentagem=True
+unidade="PIB"
+df = pd.read_excel(
+    file_path + file_name + '.xlsx', 
+    sheet_name=sheet, 
+    parse_dates=True, # Check data-parser -> %m/%Y not %m/%d
+    index_col=[0], 
+    skiprows=10,
+    usecols="A,N,V,AJ", 
+)[0:]
+df.columns = [
+    "Setor não financeiro",
+    "Governo Geral",
+    "Empresas e Famílias"
+]
+df.index = pd.date_range( # Check for NaN
+    start = '2013-01-31',
+    periods=df.shape[0],
+    #end='2020-05-31',
+    freq='M', 
+    #periods=(1241-12)
+    )
+df = df[start_year:]
+#df["Total"] = df.sum(axis=1)
+#df = df.apply(lambda x: x/df["Total"]).drop(["Total"], axis='columns')
+
+df.index.name = ''
+
+fig, ax = plt.subplots(figsize=(8,5))
+df[start_year:].plot(
+    title = titulo,
+    ax = ax,
+    #kind='bar', stacked=True, edgecolor='black',
+    lw=2, 
+)
+ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
+#ax.axvline(x = corona, color='black', ls='--', lw=1, label='Mais de 60 casos de COVID19')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+if porcentagem == False:
+    ax.set_yticklabels(['{:,.0f}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'R$ {unidade}')
+else: 
+    ax.set_yticklabels(['{:,.0%}'.format(x/100) for x in ax.get_yticks()])
+    ax.set_ylabel(f'em % {unidade}')
+ax2 = plt.axes([.9,0.6,0.2,0.2])
+
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + sheet.replace(' ', '') + unidade +   '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+**** Crédito direcionado
+
+
+#+BEGIN_SRC python  :tangle ./codes/Credito.py
+sheet = "SaldoDirecionado"
+titulo = "Saldo Crédito Direcionado"
+porcentagem=False
+unidade="Milhões"
+df = pd.read_excel(
+    file_path + file_name + '.xlsx', 
+    sheet_name=sheet, 
+    parse_dates=True, # Check data-parser -> %m/%Y not %m/%d
+    index_col=[0], 
+    skiprows=10,
+    usecols="A,D,G,,K,L", 
+)[0:]
+df.columns = [
+    "Rural",
+    "Financiamento Imobiliário",
+    "BNDES",
+    "Outros"
+]
+df.index = pd.date_range( # Check for NaN
+    start = '2007-03-31',
+    periods=df.shape[0],
+    #end='2020-05-31',
+    freq='M', 
+    #periods=(1241-12)
+    )
+df = df[start_year:]
+
+df.index.name = ''
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df[start_year:].plot(
+    title = titulo,
+    ax = ax,
+    #kind='bar', stacked=True, edgecolor='black',
+    lw=2, 
+)
+#ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento\nsocial em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+if porcentagem == False:
+    ax.set_yticklabels(['{:,.2f}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'R$ {unidade}')
+else: 
+    ax.set_yticklabels(['{:,.0%}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'em % {unidade}')
+ax2 = plt.axes([.9,0.6,0.2,0.2])
+
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + sheet.replace(' ', '') + unidade +  '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+#+BEGIN_SRC python  :tangle ./codes/Credito.py
+sheet = "SaldoDirecionado"
+titulo = "Saldo Crédito Direcionado"
+porcentagem=True
+unidade="do Total"
+df = pd.read_excel(
+    file_path + file_name + '.xlsx', 
+    sheet_name=sheet, 
+    parse_dates=True, # Check data-parser -> %m/%Y not %m/%d
+    index_col=[0], 
+    skiprows=10,
+    usecols="A,D,G,,K,L", 
+)[0:]
+df.columns = [
+    "Rural",
+    "Financiamento Imobiliário",
+    "BNDES",
+    "Outros"
+]
+df.index = pd.date_range( # Check for NaN
+    start = '2007-03-31',
+    periods=df.shape[0],
+    #end='2020-05-31',
+    freq='M', 
+    #periods=(1241-12)
+    )
+df = df[start_year:]
+df["Total"] = df.sum(axis=1)
+df = df.apply(lambda x: x/df["Total"]).drop(["Total"], axis='columns')
+
+
+df.index.name = ''
+
+fig, ax = plt.subplots(figsize=(8,5))
+df[start_year:].plot(
+    title = titulo,
+    ax = ax,
+    kind='bar', stacked=True, edgecolor='black',
+    lw=2, 
+)
+ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
+#ax.axvline(x = corona, color='black', ls='--', lw=1, label='Mais de 60 casos de COVID19')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+if porcentagem == False:
+    ax.set_yticklabels(['{:,.2f}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'R$ {unidade}')
+else: 
+    ax.set_yticklabels(['{:,.0%}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'em % {unidade}')
+ax2 = plt.axes([.9,0.6,0.2,0.2])
+
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + sheet.replace(' ', '') + unidade +  '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+#+BEGIN_SRC python  :tangle ./codes/Credito.py
+sheet = "SaldoDirecionado_%PIB"
+titulo = "Saldo Crédito Direcionado"
+porcentagem=True
+unidade="PIB"
+df = pd.read_excel(
+    file_path + file_name + '.xlsx', 
+    sheet_name=sheet, 
+    parse_dates=True, # Check data-parser -> %m/%Y not %m/%d
+    index_col=[0], 
+    skiprows=10,
+    usecols="A,D,G,,K,L", 
+)[0:]
+df.columns = [
+    "Rural",
+    "Financiamento Imobiliário",
+    "BNDES",
+    "Outros"
+]
+df.index = pd.date_range( # Check for NaN
+    start = '2007-03-31',
+    periods=df.shape[0],
+    #end='2020-05-31',
+    freq='M', 
+    #periods=(1241-12)
+    )
+df = df[start_year:]
+# df["Total"] = df.sum(axis=1)
+# df = df.apply(lambda x: x/df["Total"]).drop(["Total"], axis='columns')
+
+
+df.index.name = ''
+
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df[start_year:].plot(
+    title = titulo,
+    ax = ax,
+    #kind='bar', stacked=True, edgecolor='black',
+    lw=2, 
+)
+ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento\nsocial em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+if porcentagem == False:
+    ax.set_yticklabels(['{:,.2f}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'R$ {unidade}')
+else: 
+    ax.set_yticklabels(['{:,.0%}'.format(x/100) for x in ax.get_yticks()])
+    ax.set_ylabel(f'em % {unidade}')
+ax2 = plt.axes([.9,0.6,0.2,0.2])
+
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + sheet.replace(' ', '') + unidade +  '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+
+
+*** IBCBr
+
+#+BEGIN_SRC python   :tangle ./codes/ibcbr.py
+
+import sys
+
+sys.path.insert(1, './codes/')
+
+from setup import *
+
+start_year = "2019-01-01"
+
+file_path = './raw/LCA/IBCBr.xlsx'
+image_path = './figs/Antecedente/'
+
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+
+#+BEGIN_SRC python   :tangle ./codes/ibcbr.py
+df = pd.read_excel(
+    file_path,
+    sheet_name = "IBC-Br Dessaz",
+    skiprows = 11,
+#    usecols = "A:B",
+    parse_date = True,
+    index_col = [0]
+)
+df.index.name = ''
+
+df = rebase(df)
+df = df[start_year:]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = f"Índice de Atividade Econômica do Banco Central\nDessazonalizado\n{base} = 100",
+    ax = ax,
+    lw = 2.5
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label=corona_sp_txt)
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135,0.135,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + file_path.strip("/")[-1] + "IBCBr" + "_" + '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+*** PIB (Contas Nacionais)
+
+#+BEGIN_SRC python  :tangle ./codes/PIB.py
+
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
+import matplotlib.dates as mdates
+import seaborn as sns
+import datetime
+
+plt.style.use('seaborn-dark-palette')
+
+import matplotlib.image as image
+
+logo = "./figs/Cecon_Logo.png"
+logo = image.imread(logo)
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+#+BEGIN_SRC sh :dir ./raw/ContasNacionais/
+wget -N --backups=1 ftp://ftp.ibge.gov.br/Contas_Nacionais/Contas_Nacionais_Trimestrais/Tabelas_Completas/Tab_Compl_CNT.zip
+unzip -o Tab_Compl_CNT.zip
+mv *.xls Tab_Compl_CNT.xlsx
+#+END_SRC
+
+#+RESULTS:
+:results:
+--2020-12-14 18:17:03--  ftp://ftp.ibge.gov.br/Contas_Nacionais/Contas_Nacionais_Trimestrais/Tabelas_Completas/Tab_Compl_CNT.zip
+“.listing”
+Resolvendo ftp.ibge.gov.br (ftp.ibge.gov.br)... 170.84.40.44
+Conectando-se a ftp.ibge.gov.br (ftp.ibge.gov.br)|170.84.40.44|:21... conectado.
+Acessando como anonymous ... Acesso autorizado!
+SYST ... feito.    ==> PWD ... feito.
+TYPE I ... feito.  ==> CWD (1) /Contas_Nacionais/Contas_Nacionais_Trimestrais/Tabelas_Completas ... feito.
+PASV ... feito.    ==> LIST ... feito.
+Failed to rename .listing to .listing.1: (2) Arquivo ou diretório não encontrado
+]       0  --.-KB/s               .listing                [ <=>                ]     194  --.-KB/s    em 0,001s
+
+2020-12-14 18:17:04 (129 KB/s) - “.listing” salvo [194]
+
+Removeu “.listing”.
+O arquivo remoto não é mais novo que o local “Tab_Compl_CNT.zip” -- ignorando.
+Archive:  Tab_Compl_CNT.zip
+  inflating: Tab_Compl_CNT.xls
+:end:
+
+#+BEGIN_SRC python  :tangle ./codes/PIB.py
+Colunas = [
+    "Agropecuaria",
+    "Industria Extrativa",
+    "Industria de Transformacao",
+    "Eletricidade e agua",
+    "Construcao",
+    "Total Industria",
+    "Comercio",
+    "Transporte, armazenagem e correio",
+    "Informacao e comunicacao",
+    "Atividades Financeiras",
+    "Atividades Imobiliarias",
+    "Outras atividades",
+    "ADM, defesa, etc",
+    "Total Servicos",
+    "VA",
+    "PIB",
+    "Consumo das Familias",
+    "Consumo do Governo",
+    "FBCF",
+    "Exportacao",
+    "Importacao"
+]
+
+Agropecuaria = ['Agropecuaria']
+
+Industria = [
+    "Industria Extrativa",
+    "Industria de Transformacao",
+    "Eletricidade e agua",
+    "Construcao",
+    "Total Industria"
+]
+
+Servicos = [
+    "Comercio",
+    "Transporte, armazenagem e correio",
+    "Informacao e comunicacao",
+    "Atividades Financeiras",
+    "Atividades Imobiliarias",
+    "Outras atividades",
+    "ADM, defesa, etc",
+    "Total Servicos",
+]
+
+Demanda = [
+    "Consumo das Familias",
+    "Consumo do Governo",
+    "FBCF",
+    "Exportacao",
+    "Importacao"
+]
+
+Oferta = [
+    'Agropecuaria',
+    "Total Industria",
+    "Total Servicos",
+]
+
+df = pd.read_excel('./raw/ContasNacionais/Tab_Compl_CNT.xlsx', header=3, sheet_name='Val encad preços 95 com ajuste', index_col=0)
+df.index = df.index.str.replace('.', 'Q').str.replace('IV', '4').str.replace('III', '3').str.replace('II', '2').str.replace('I', '1')
+df.index = pd.PeriodIndex(df.index, freq='Q')
+df.columns = Colunas
+df["Importacao"] = -df["Importacao"]
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+*** Trimestre Contra trimestre imediatamente anterior
+
+#+BEGIN_SRC python  :tangle ./codes/PIB.py
+fig = plt.figure(figsize=(9,4))
+ax = plt.axes()
+ax2 = plt.axes([0.15,0.6,0.2,0.2])
+
+suptitle = 'Taxa de crescimento'
+title = 'Trimestre contra trimestre anterior'
+
+
+df['PIB'].pct_change().tail(4).plot(kind='bar', ax=ax, color='darkblue')
+ax.axhline(y=0, ls='--', color='black')
+
+plt.suptitle(suptitle, color='black', weight = 'bold')
+ax.set_title(title, color='black')
+
+ax.text(0.95, -0.2, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+sns.set_style('white')
+fig.savefig('./figs/PIB/PIB.png')
+plt.show()
+
+print(df['PIB'].pct_change().tail(4))
+#+END_SRC
+
+#+RESULTS:
+:results:
+2019Q4    0.002203
+2020Q1   -0.015459
+2020Q2   -0.095998
+2020Q3    0.077078
+Freq: Q-DEC, Name: PIB, dtype: float64
+:end:
+
+**** Agropecuária
+
+#+BEGIN_SRC python  :tangle ./codes/PIB.py
+fig, ax = plt.subplots(figsize=(9,4))
+ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+
+
+df[Agropecuaria].pct_change().tail(4).plot(kind='bar', ax=ax, color='darkblue')
+
+plt.suptitle('Agricultura', color='black', weight = 'bold')
+ax.axhline(y=0, color='gray', linestyle='--', lw=2)
+
+ax.set_title('Trimestre contra trimestre anterior', color='black')
+
+ax.text(0.95, -0.2, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+fig.savefig('./figs/PIB/Agropecuaria.png')
+plt.show()
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+**** Indústria
+
+#+BEGIN_SRC python  :tangle ./codes/PIB.py
+fig, ax = plt.subplots(figsize=(9,4))
+ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+
+
+df[Industria].pct_change().tail(4).plot(kind='bar', ax=ax)
+
+plt.suptitle('Indústria', color='black', weight = 'bold')
+ax.axhline(y=0, color='gray', linestyle='--', lw=2)
+
+ax.set_title('Trimestre contra trimestre anterior', color='black')
+
+ax.text(0.95, -0.2, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+plt.show()
+fig.savefig('./figs/PIB/Industria.png')
+
+print(df[Industria].pct_change().tail(4))
+#+END_SRC
+
+#+RESULTS:
+:results:
+        Industria Extrativa  Industria de Transformacao  Eletricidade e agua  Construcao  Total Industria
+2019Q4             0.011824                    0.009037             0.004970   -0.037648         0.000580
+2020Q1            -0.024993                   -0.010860             0.002693   -0.017272        -0.008609
+2020Q2            -0.003373                   -0.191145            -0.050552   -0.080516        -0.130434
+2020Q3             0.025302                    0.236742             0.084899    0.056440         0.147658
+:end:
+
+
+**** Serviços
+
+#+BEGIN_SRC python  :tangle ./codes/PIB.py
+fig, ax = plt.subplots(figsize=(9,4))
+ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+
+
+df[Servicos].pct_change().tail(4).plot(kind='bar', ax=ax)
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+plt.suptitle('Serviços', color='black', weight = 'bold')
+
+ax.axhline(y=0, color='gray', linestyle='--', lw=2)
+
+ax.set_title('Trimestre contra trimestre anterior', color='black')
+
+ax.text(0.95, -0.2, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+plt.show()
+fig.savefig('./figs/PIB/Servicos.png')
+
+print(df[Servicos].pct_change())
+#+END_SRC
+
+#+RESULTS:
+:results:
+        Comercio  Transporte, armazenagem e correio  Informacao e comunicacao  ...  Outras atividades  ADM, defesa, etc  Total Servicos
+1996Q1       NaN                                NaN                       NaN  ...                NaN               NaN             NaN
+1996Q2  0.013911                          -0.022240                  0.015129  ...           0.003483          0.019968        0.006652
+1996Q3  0.027924                           0.032960                  0.022244  ...           0.003210          0.005066        0.013433
+1996Q4  0.013407                          -0.039419                 -0.001653  ...          -0.005327         -0.005696       -0.020232
+1997Q1  0.000391                           0.047790                  0.010417  ...           0.019057         -0.000411        0.019513
+...          ...                                ...                       ...  ...                ...               ...             ...
+2019Q3  0.005113                           0.004301                  0.009530  ...          -0.003471         -0.006701        0.002394
+2019Q4 -0.002298                           0.000091                  0.010576  ...           0.007904          0.007719        0.004045
+2020Q1 -0.010817                          -0.019667                 -0.021880  ...          -0.051438         -0.015975       -0.014847
+2020Q2 -0.137145                          -0.190152                 -0.031795  ...          -0.168683         -0.069736       -0.094417
+2020Q3  0.158514                           0.124804                  0.031199  ...           0.077815          0.025357        0.063183
+
+[99 rows x 8 columns]
+:end:
+
+**** Demanda
+
+#+BEGIN_SRC python  :tangle ./codes/PIB.py
+fig, ax = plt.subplots(figsize=(9,4))
+ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+
+
+df[Demanda + ['PIB']].pct_change().tail(4).plot(kind='bar', ax=ax)
+
+plt.suptitle('Demanda', color='black', weight = 'bold')
+ax.axhline(y=0, color='gray', linestyle='--', lw=2)
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+ax.set_title('Trimestre contra trimestre anterior', color='black')
+
+ax.text(0.95, -0.2, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+plt.show()
+fig.savefig('./figs/PIB/Demanda.png')
+
+print(df[Demanda + ['PIB']].pct_change().tail(4))
+#+END_SRC
+
+#+RESULTS:
+:results:
+        Consumo das Familias  Consumo do Governo      FBCF  Exportacao  Importacao       PIB
+2019Q4              0.004383           -0.002582 -0.026712    0.016505   -0.047445  0.002203
+2020Q1             -0.019767           -0.004895  0.024205   -0.018541   -0.005370 -0.015459
+2020Q2             -0.112740           -0.077315 -0.164762    0.015526   -0.124499 -0.095998
+2020Q3              0.076406            0.034854  0.110196   -0.021298   -0.095888  0.077078
+:end:
+
+**** Oferta
+
+
+#+BEGIN_SRC python  :tangle ./codes/PIB.py
+fig, ax = plt.subplots(figsize=(9,4))
+ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+
+
+df[Oferta + ['PIB']].pct_change().tail(4).plot(kind='bar', ax=ax)
+
+plt.suptitle('Oferta', color='black', weight = 'bold')
+ax.axhline(y=0, color='gray', linestyle='--', lw=2)
+#ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+ax.set_title('Trimestre contra trimestre anterior', color='black')
+
+ax.text(0.95, -0.2, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+plt.show()
+fig.savefig('./figs/PIB/Oferta.png')
+
+print(df[Oferta + ['PIB']].pct_change().tail(4))
+#+END_SRC
+
+#+RESULTS:
+:results:
+        Agropecuaria  Total Industria  Total Servicos       PIB
+2019Q4     -0.017312         0.000580        0.004045  0.002203
+2020Q1      0.028747        -0.008609       -0.014847 -0.015459
+2020Q2     -0.001706        -0.130434       -0.094417 -0.095998
+2020Q3     -0.004647         0.147658        0.063183  0.077078
+:end:
+
+
+*** Contribuição para variação
+
+**** Demanda
+     
+#+BEGIN_SRC python  :tangle ./codes/PIB.py
+fig = plt.Figure()
+ax = plt.gca()
+ax2 = fig.add_axes([0.15,0.7,0.2,0.2])
+
+df[Demanda].diff().apply(lambda x: x/(df["PIB"].shift())).tail(8).plot(
+    kind = 'bar', 
+    stacked = True, 
+    ax = ax,
+    color = (
+        "tomato",
+        "darkred",
+        "darkslateblue",
+        "tan",
+        "khaki"
+    ),
+    width = 0.75,
+    edgecolor='black'
+)
+plt.suptitle('Demanda', color='black', weight = 'bold')
+ax.axhline(y=0, color='black', linestyle='-', lw=2)
+#ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+ax.set_title('Contribuição para variação do PIB', color='black')
+
+ax.text(0.95, -0.3, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.3, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
+#ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+plt.show()
+fig.savefig('./figs/PIB/Contrib_Demanda.png')
+
+print(df[Demanda].diff().apply(lambda x: x/(df["PIB"].shift())).tail(8))
+#+END_SRC
+
+#+RESULTS:
+:results:
+        Consumo das Familias  Consumo do Governo      FBCF  Exportacao  Importacao
+2018Q4              0.001759           -0.002239 -0.000150    0.002336    0.008746
+2019Q1              0.007013            0.000322 -0.003797   -0.005622    0.003713
+2019Q2              0.002069            0.000217  0.005257   -0.003836   -0.007107
+2019Q3              0.003405           -0.000267  0.005346   -0.000924   -0.004419
+2019Q4              0.003002           -0.000469 -0.004901    0.002209    0.006893
+2020Q1             -0.013568           -0.000884  0.004313   -0.002516    0.000742
+2020Q2             -0.077046           -0.014113 -0.030542    0.002101    0.017368
+2020Q3              0.051249            0.006494  0.018873   -0.003237    0.012955
+:end:
+
+**** Oferta
+
+#+BEGIN_SRC python  :tangle ./codes/PIB.py
+fig, ax = plt.subplots(1,1,figsize=(9,4))
+ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+
+
+#df["PIB"].pct_change().tail(12).plot(ax = ax, kind = 'line', legend = True, color = 'black')
+df[Oferta].diff().apply(lambda x: x/(df["VA"].shift())).tail(8).plot(
+    kind = 'bar', 
+    stacked = True, 
+    ax = ax,
+    color = (
+        "green",
+    #    "darkred",
+        "darkslateblue",
+        "tan",
+    #    "khaki"
+    ),
+    cmap="Set1",
+    width = 0.75,
+    edgecolor='black'
+)
+
+plt.suptitle('Oferta', color='black', weight = 'bold')
+ax.axhline(y=0, color='black', linestyle='-', lw=2)
+#ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+ax.set_title('Contribuição para variação do valor adicionado', color='black')
+
+ax.text(0.95, -0.3, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.3, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
+#ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+plt.show()
+fig.savefig('./figs/PIB/Contrib_Oferta.png')
+
+print(df[Oferta].diff().apply(lambda x: x/(df["VA"].shift())).tail(8))
+#+END_SRC
+
+#+RESULTS:
+:results:
+/home/gpetrini/.local/lib/python3.8/site-packages/pandas/plotting/_matplotlib/core.py:226: UserWarning: 'color' and 'colormap' cannot be used simultaneously. Using 'color'
+  warnings.warn(
+/home/gpetrini/.local/lib/python3.8/site-packages/pandas/plotting/_matplotlib/style.py:27: UserWarning: 'color' and 'colormap' cannot be used simultaneously. Using 'color'
+  warnings.warn(
+        Agropecuaria  Total Industria  Total Servicos
+2018Q4      0.000385        -0.002477        0.000941
+2019Q1     -0.001660         0.000468        0.005336
+2019Q2      0.000856         0.001882        0.001711
+2019Q3      0.001242        -0.000396        0.001705
+2019Q4     -0.001377         0.000124        0.002887
+2020Q1      0.002233        -0.001832       -0.010575
+2020Q2     -0.000139        -0.028106       -0.067661
+2020Q3     -0.000416         0.030392        0.045041
+:end:
+
+*** Carregamento estatístico
+
+
+
+** Índices de atividade setoriais
+
+#+BEGIN_SRC python  :tangle ./codes/setoriais.py
+
+import sys
+
+sys.path.insert(1, './codes/')
+
+from setup import *
+
+
+file_path = './raw/LCA/'
+image_path = './figs/Setoriais/'
+start_year = "2019-01-01"
+base = "2014-12-01"
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+
+** Pesquisa Industrial Mensal (PIM)
+
+#+BEGIN_SRC python  :tangle ./codes/setoriais.py
+file_name = "PIM_IBGE"
+df = pd.read_excel(
+    file_path + file_name + ".xlsx",
+    sheet_name = "Seções Ativi Dessaz",
+    skiprows = 11,
+    usecols = "A:D",
+    parse_date = True,
+    index_col = [0]
+)
+df.index.name = ''
+for col in df:
+    df[col] = df[col].apply(lambda x: (100*x)/df[col][base])
+
+df = df[start_year:]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = f"Pesquisa Industrial Mensal (PIM)\nSeções de atividades desazonalizadas\n{base} = 100",
+    ax = ax,
+    lw = 2.5
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento social em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135,0.135,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + file_name + "_" + '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+
+** Pesquisa Mensal do Comércio (PMC)
+   
+#+BEGIN_SRC python  :tangle ./codes/setoriais.py
+file_name = "PMC_IBGE"
+df = pd.read_excel(
+    file_path + file_name + ".xlsx",
+    sheet_name = "Volume Vendas Dessaz",
+    skiprows = 11,
+    usecols = "A:D,F,G,J:P",
+    parse_date = True,
+    index_col = [0]
+)
+df.index.name = ''
+for col in df:
+    df[col] = df[col].apply(lambda x: (100*x)/df[col][base])
+
+df = df[start_year:]
+df = interpolator(df)
+
+df.columns = [
+    "Comércio Varejista Restrito",
+    "Combustíveis e Lubiricantes",
+    "Hipermercados, Supermercados, Prod. Alimentícios, Bebidas e Fumo",
+    "Tecidos, Vestuário e Calçados",
+    "Móveis e Eletrodomésticos",
+    "Artigos Farmacêuticos, Médicos, Ortopédicos, de Perfumaria e Cosméticos",
+    "Livros, Jornais, Revistas e Papelaria",
+    "Equipamentos e Materiais para Escritório, Informática e Comunicação",
+    "Outros Artigos de Uso Pessoal e Doméstico",
+    "Veículos, Motos, Partes e Peças",
+    "Material de Construção",
+    "Comércio Varejista Ampliado",
+]
+
+UsoPessoalDomestico = [
+    "Artigos Farmacêuticos, Médicos, Ortopédicos, de Perfumaria e Cosméticos",
+    "Livros, Jornais, Revistas e Papelaria",
+    "Equipamentos e Materiais para Escritório, Informática e Comunicação",
+    "Outros Artigos de Uso Pessoal e Doméstico",
+]
+
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = f"Pesquisa Mensal do Comércio (PMC)\nVolume de Vendas Dessazonalizado\n{base} = 100",
+    ax = ax,
+    lw = 2.5
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135,0.135,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + file_name + "_" + '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+
+** Pesquisa Mensal de Serviços (PMS)
+
+#+BEGIN_SRC python  :tangle ./codes/setoriais.py
+file_name = "PMS_IBGE"
+df = pd.read_excel(
+    file_path + file_name + ".xlsx",
+    sheet_name = "Volume dessaz",
+    skiprows = 11,
+    usecols = "A:C,F,K,N,S",
+    parse_date = True,
+    index_col = [0]
+)
+df.index.name = ''
+
+for col in df:
+    df[col] = df[col].apply(lambda x: (100*x)/df[col][base])
+
+df = df[start_year:]
+df = interpolator(df)
+df.columns = [
+    "Total Geral",
+    "Serviços prestados às Famílias",
+    "Serviços de informação e comunicação",
+    "Serviços Profissionais, Administrativos e Complementares",
+    "Transportes, Serviços auxiliares aos transportes e Correio",
+    "Outros serviços"
+]
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = f"Pesquisa Mensal de Serviços (PMS)\nÍndice de Volume de serviços dessazonalizado\n{base} = 100",
+    ax = ax,
+    lw = 2.5
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135,0.135,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + file_name + "_" + '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+** Emprego
+
+#+BEGIN_SRC python   :tangle ./codes/pnad.py
+
+import sys
+
+sys.path.insert(1, './codes/')
+
+from setup import *
+
+
+file_path = './raw/LCA/PNAD_Continua.xlsx'
+image_path = './figs/Emprego/'
+start_year = "2019-01-01"
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+
+** Taxa de desocupação
+
+#+BEGIN_SRC python   :tangle ./codes/pnad.py
+var = "Taxa de desocupação"
+df = pd.read_excel(
+    file_path,
+    sheet_name = "Brasil Dessaz",
+    skiprows = 11,
+    usecols = "A,F",
+    parse_date = True,
+    index_col = [0]
+)
+df.index.name = ''
+
+
+df = df[start_year:]
+df.columns = [
+    var
+]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = "Taxa de Desocupação\n(% da Força de Trabalho)",
+    ax = ax,
+    lw = 2.5
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135,0.135,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+
+** Massa de renda
+
+#+BEGIN_SRC python   :tangle ./codes/pnad.py
+var = "Massa de renda real efetiva"
+df = pd.read_excel(
+    file_path,
+    sheet_name = "Brasil Dessaz",
+    skiprows = 11,
+    usecols = "A,R",
+    parse_date = True,
+    index_col = [0]
+)
+df.index.name = ''
+
+
+df = df[start_year:]
+df.columns = [
+    var
+]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = "Massa de renda real efetiva",
+    ax = ax,
+    lw = 2.5
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento social em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135,0.135,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+
+** Desalentados e subocupados
+
+#+BEGIN_SRC python   :tangle ./codes/pnad.py
+var = "Desalentados_Subocupados"
+df = pd.read_excel(
+    file_path,
+    sheet_name = "Brasil Dessaz",
+    skiprows = 11,
+    usecols = "A,D,S,T",
+    parse_date = True,
+    index_col = [0]
+)
+df.index.name = ''
+df.columns = [
+    "Força de trabalho",
+    "Subocupados",
+    "Desalentados"
+]
+df = df.apply(pd.to_numeric, errors='coerce')
+df["Taxa de desalentados"] = df["Desalentados"]/df["Força de trabalho"]
+df["Taxa de Subocupados por \ninsuficiência de horas trabalhadas"] = df["Subocupados"]/df["Força de trabalho"]
+df = df[start_year:]
+df = df[["Taxa de desalentados", "Taxa de Subocupados por \ninsuficiência de horas trabalhadas"]]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = "Taxa de desalentados e subocupatos\n(em % da força de trabalho)",
+    ax = ax,
+    lw = 2.5
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento social em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135,0.135,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+** Rendimento habitual médio por atividade
+
+
+#+BEGIN_SRC python   :tangle ./codes/pnad.py
+df = pd.read_excel(
+    file_path,
+    sheet_name = "Brasil Mensal RHM Setor Real",
+    skiprows = 11,
+    usecols = "A:K",
+    parse_date = True,
+    index_col = [0]
+)
+df.index.name = ''
+df = df[start_year:]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = "Rendimento habitual médio por atividade",
+    ax = ax,
+    lw = 2.5
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento social em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135,0.135,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + file_path.strip("/")[-1] + "RHM_Setor" + "_" + '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+** População ocupada por atividade
+
+#+BEGIN_SRC python   :tangle ./codes/pnad.py
+df = pd.read_excel(
+    file_path,
+    sheet_name = "Brasil Mensal PO Setor",
+    skiprows = 11,
+    usecols = "A:K",
+    parse_date = True,
+    index_col = [0]
+)
+df.index.name = ''
+df = df[start_year:]
+
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = "População ocupada por atividade",
+    ax = ax,
+    lw = 1.5,
+    edgecolor = 'black',
+    kind = 'bar', stacked = True
+)
+
+
+
+ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
+
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135,0.135,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + file_path.strip("/")[-1] + "PO_Atividade" + "_" + '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+
+
+** Taxa de ocupação
+
+#+BEGIN_SRC python   :tangle ./codes/pnad.py
+var = "Taxa de ocupação"
+df = pd.read_excel(
+    file_path,
+    sheet_name = "Brasil Dessaz",
+    skiprows = 11,
+    usecols = "A,D,E",
+    parse_date = True,
+    index_col = [0]
+)
+
+df.index.name = ''
+df = df[start_year:]
+df.columns = ["Força de trabalho", "População ocupada"]
+
+df[var] = df["População ocupada"]/df["Força de trabalho"]
+df = df[[var]]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = "Taxa de Ocupação\n(% da Força de Trabalho)",
+    ax = ax,
+    lw = 2.5
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label=corona_sp_txt)
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135,0.135,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + "linha" +  '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+
+#+BEGIN_SRC python   :tangle ./codes/pnad.py
+df = pd.read_excel(
+    file_path,
+    sheet_name = "Brasil Mensal PO Setor",
+    skiprows = 11,
+    usecols = "A:L",
+    parse_date = True,
+    index_col = [0]
+)
+df.index.name = ''
+df = df[start_year:]
+for col in df:
+    df[col] = df[col].apply(lambda x: (100*x)/df["Total"])
+
+df.drop(["Total"], axis='columns', inplace=True)
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = "População ocupada por atividade\n(% Força de trabalho)",
+    ax = ax,
+    lw = 1.5,
+)
+
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label=corona_sp_txt)
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135,0.135,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.show()
+
+fig.savefig(
+    image_path + file_path.strip("/")[-1] + "PO_Atividade" + "_" + "linha" + '.svg',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+* Texto :ignore:
