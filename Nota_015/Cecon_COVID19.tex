@@ -1,4 +1,4 @@
-% Created 2021-01-06 qua 16:31
+% Created 2021-01-06 qua 18:55
 % Intended LaTeX compiler: pdflatex
 \documentclass{SelfArx}
   \usepackage[T1]{fontenc}
@@ -9,14 +9,11 @@
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{csquotes}
-\setlength{\columnsep}{0.55cm} % Distance between the two columns of text
 \setlength{\fboxrule}{0.75pt} % Width of the border around the abstract
 \definecolor{color1}{RGB}{0,0,90} % Color of the article title and sections
 \definecolor{color2}{RGB}{0,20,20} % Color of the boxes behind the abstract and headings
 \usepackage[brazilian, english]{babel} % Specify a different language here - english by default
 \usepackage{lipsum} % Required to insert dummy text. To be removed otherwise
-\setlength{\columnsep}{0.55cm} % Distance between the two columns of text
-\setlength{\fboxrule}{0.75pt} % Width of the border around the abstract
 \usepackage[backend=biber,%
 style = abnt,%
 noslsn, %
@@ -44,7 +41,7 @@ maxcitenames=3]{biblatex}
 }
 }
 \date{}
-\title{Impactos econômicos da COVID-19}
+\title{Dados: O PIB da pandemia e cenários para 2021}
 \begin{document}
 
 \JournalInfo{Nota de Conjuntura No 15} % Journal information
@@ -52,203 +49,197 @@ maxcitenames=3]{biblatex}
 
 \Authors{Pedro Paulo Zahluth Bastos\textsuperscript{1}*, Lorena Dourado\textsuperscript{2}, Gabriel Petrini\textsuperscript{3}, Antônio Ibarra\textsuperscript{3}}} % Authors
 \affiliation{\textsuperscript{1}\textit{Professor do Instituto de Economia Unicamp}} % Author affiliation
-\affiliation{\textsuperscript{3}\textit{Doutorando do Instituto de Economia  Unicamp}} % Author affiliation
 \affiliation{\textsuperscript{2}\textit{Graduanda do Instituto de Economia Unicamp}} % Author affiliation
+\affiliation{\textsuperscript{3}\textit{Doutorando do Instituto de Economia  Unicamp}} % Author affiliation
 \affiliation{*\textbf{E-mail}: ppzbastos@gmail.com} % Corresponding author
 
 \Keywords{Keyword1 --- Keyword2 --- Keyword3} % Keywords - if you don't want any simply remove all the text between the curly brackets
 \newcommand{\keywordname}{Palavras-chave} % Defines the keywords heading name
 
-\Abstract{This is an example of an Abstract}
+\Abstract{
+\begin{itemize}
+
+\item Em março, havia risco de sucessão longa de quedas trimestrais do PIB, com círculo vicioso de contração de demanda, contração do crédito, falências de empresas e ampliação do desemprego e da pobreza.
+\item O risco foi contornado com política anticíclica para sustentar renda, vínculos empregatícios e, tardiamente, ampliação do crédito (apesar do repasse da depreciação cambial).
+\item A continuidade da pandemia limitou a retomada da demanda e do emprego em serviços em razão do risco de contágio, reafirmando a centralidade do controle da pandemia para a recuperação da economia (não há trade-off duradouro).
+\item A magnitude da política anticíclica gera um risco enorme de um segundo mergulho em razão da retomada da lei do teto do gasto e da retirada brusca dos programas emergenciais.
+\item Sem política anticíclica, aumento do desemprego e da pobreza serão dramáticos ainda que as exportações se recuperem em 2021.
+\end{itemize}
+}
 \renewcommand{\abstractname}{Sumário Executivo} % Defines the keywords heading name
 
 \flushbottom % Makes all text pages the same height
 \maketitle % Print the title and abstract box
 \thispagestyle{empty} % Removes page numbering from the first page
+\onecolumn
 
 \section*{Atividade}
-\label{sec:org3c89c58}
-
-\subsection*{Crédito}
-\label{sec:orga72a919}
-
-\subsection*{Saldo}
-\label{sec:orgb55d45b}
-
-\subsubsection*{Pessoa jurídica}
-\label{sec:org68a2a62}
-
-\subsubsection*{Pessoa física}
-\label{sec:orgbc68a5c}
-
-\subsubsection*{Crédito ampliado}
-\label{sec:org7301afb}
-
-\subsubsection*{Crédito direcionado}
-\label{sec:org1d0742d}
-
-
+\label{sec:org04af17d}
 
 \subsection*{IBCBr}
-\label{sec:org0a61ef9}
+\label{sec:orgdabb189}
 
-\subsection*{PIB (Contas Nacionais)}
-\label{sec:org8740475}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/Antecedente/IBCBr.png}
+\end{center}
 
---2020-12-14 18:17:03--  \url{ftp://ftp.ibge.gov.br/Contas\_Nacionais/Contas\_Nacionais\_Trimestrais/Tabelas\_Completas/Tab\_Compl\_CNT.zip}
-“.listing”
-Resolvendo ftp.ibge.gov.br (ftp.ibge.gov.br)\ldots{} 170.84.40.44
-Conectando-se a ftp.ibge.gov.br (ftp.ibge.gov.br)|170.84.40.44|:21\ldots{} conectado.
-Acessando como anonymous \ldots{} Acesso autorizado!
-SYST \ldots{} feito.    ==> PWD \ldots{} feito.
-TYPE I \ldots{} feito.  ==> CWD (1) /Contas\_Nacionais/Contas\_Nacionais\_Trimestrais/Tabelas\_Completas \ldots{} feito.
-PASV \ldots{} feito.    ==> LIST \ldots{} feito.
-Failed to rename .listing to .listing.1: (2) Arquivo ou diretório não encontrado
-]       0  --.-KB/s               .listing                [ <=>                ]     194  --.-KB/s    em 0,001s
-
-2020-12-14 18:17:04 (129 KB/s) - “.listing” salvo [194]
-
-Removeu “.listing”.
-O arquivo remoto não é mais novo que o local “Tab\_Compl\_CNT.zip” -- ignorando.
-Archive:  Tab\_Compl\_CNT.zip
-  inflating: Tab\_Compl\_CNT.xls
 
 \subsection*{Trimestre Contra trimestre imediatamente anterior}
-\label{sec:orgf49a8b3}
+\label{sec:orge551fa3}
 
-2019Q4    0.002203
-2020Q1   -0.015459
-2020Q2   -0.095998
-2020Q3    0.077078
-Freq: Q-DEC, Name: PIB, dtype: float64
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/PIB/PIB.png}
+\end{center}
 
-\subsubsection*{Agropecuária}
-\label{sec:org0b6e053}
+\subsection*{Trimestre Contra mesmo trimestre do ano anterior}
+\label{sec:orgf9fc87a}
 
-\subsubsection*{Indústria}
-\label{sec:orgad35e72}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/PIB/PIB_YoY.png}
+\end{center}
 
-        Industria Extrativa  Industria de Transformacao  Eletricidade e agua  Construcao  Total Industria
-2019Q4             0.011824                    0.009037             0.004970   -0.037648         0.000580
-2020Q1            -0.024993                   -0.010860             0.002693   -0.017272        -0.008609
-2020Q2            -0.003373                   -0.191145            -0.050552   -0.080516        -0.130434
-2020Q3             0.025302                    0.236742             0.084899    0.056440         0.147658
+\subsection*{Agropecuária}
+\label{sec:orgbaeaf7f}
 
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/PIB/Agropecuaria.png}
+\end{center}
 
-\subsubsection*{Serviços}
-\label{sec:orga5b65af}
+\subsection*{Indústria}
+\label{sec:orgde0eb77}
 
-        Comercio  Transporte, armazenagem e correio  Informacao e comunicacao  \ldots{}  Outras atividades  ADM, defesa, etc  Total Servicos
-1996Q1       NaN                                NaN                       NaN  \ldots{}                NaN               NaN             NaN
-1996Q2  0.013911                          -0.022240                  0.015129  \ldots{}           0.003483          0.019968        0.006652
-1996Q3  0.027924                           0.032960                  0.022244  \ldots{}           0.003210          0.005066        0.013433
-1996Q4  0.013407                          -0.039419                 -0.001653  \ldots{}          -0.005327         -0.005696       -0.020232
-1997Q1  0.000391                           0.047790                  0.010417  \ldots{}           0.019057         -0.000411        0.019513
-\ldots{}          \ldots{}                                \ldots{}                       \ldots{}  \ldots{}                \ldots{}               \ldots{}             \ldots{}
-2019Q3  0.005113                           0.004301                  0.009530  \ldots{}          -0.003471         -0.006701        0.002394
-2019Q4 -0.002298                           0.000091                  0.010576  \ldots{}           0.007904          0.007719        0.004045
-2020Q1 -0.010817                          -0.019667                 -0.021880  \ldots{}          -0.051438         -0.015975       -0.014847
-2020Q2 -0.137145                          -0.190152                 -0.031795  \ldots{}          -0.168683         -0.069736       -0.094417
-2020Q3  0.158514                           0.124804                  0.031199  \ldots{}           0.077815          0.025357        0.063183
-
-[99 rows x 8 columns]
-
-\subsubsection*{Demanda}
-\label{sec:org02c779a}
-
-        Consumo das Familias  Consumo do Governo      FBCF  Exportacao  Importacao       PIB
-2019Q4              0.004383           -0.002582 -0.026712    0.016505   -0.047445  0.002203
-2020Q1             -0.019767           -0.004895  0.024205   -0.018541   -0.005370 -0.015459
-2020Q2             -0.112740           -0.077315 -0.164762    0.015526   -0.124499 -0.095998
-2020Q3              0.076406            0.034854  0.110196   -0.021298   -0.095888  0.077078
-
-\subsubsection*{Oferta}
-\label{sec:org643b55b}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/PIB/Industria.png}
+\end{center}
 
 
-        Agropecuaria  Total Industria  Total Servicos       PIB
-2019Q4     -0.017312         0.000580        0.004045  0.002203
-2020Q1      0.028747        -0.008609       -0.014847 -0.015459
-2020Q2     -0.001706        -0.130434       -0.094417 -0.095998
-2020Q3     -0.004647         0.147658        0.063183  0.077078
+\subsection*{Serviços}
+\label{sec:orgf5b6b8e}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/PIB/Servicos.png}
+\end{center}
+
+\subsection*{Demanda}
+\label{sec:org02aed2c}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/PIB/Demanda.png}
+\end{center}
+
+\subsection*{Oferta}
+\label{sec:orgef22996}
 
 
-\subsection*{Contribuição para variação}
-\label{sec:org89312ec}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/PIB/Oferta.png}
+\end{center}
 
-\subsubsection*{Demanda}
-\label{sec:org60d4ebd}
 
-        Consumo das Familias  Consumo do Governo      FBCF  Exportacao  Importacao
-2018Q4              0.001759           -0.002239 -0.000150    0.002336    0.008746
-2019Q1              0.007013            0.000322 -0.003797   -0.005622    0.003713
-2019Q2              0.002069            0.000217  0.005257   -0.003836   -0.007107
-2019Q3              0.003405           -0.000267  0.005346   -0.000924   -0.004419
-2019Q4              0.003002           -0.000469 -0.004901    0.002209    0.006893
-2020Q1             -0.013568           -0.000884  0.004313   -0.002516    0.000742
-2020Q2             -0.077046           -0.014113 -0.030542    0.002101    0.017368
-2020Q3              0.051249            0.006494  0.018873   -0.003237    0.012955
+\subsection*{Contribuição para variação: Demanda}
+\label{sec:orga21aade}
 
-\subsubsection*{Oferta}
-\label{sec:org71972ee}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/PIB/Contrib_Demanda.png}
+\end{center}
 
-\emph{home/gpetrini}.local/lib/python3.8/site-packages/pandas/plotting/\_matplotlib/core.py:226: UserWarning: 'color' and 'colormap' cannot be used simultaneously. Using 'color'
-  warnings.warn(
-\emph{home/gpetrini}.local/lib/python3.8/site-packages/pandas/plotting/\_matplotlib/style.py:27: UserWarning: 'color' and 'colormap' cannot be used simultaneously. Using 'color'
-  warnings.warn(
-        Agropecuaria  Total Industria  Total Servicos
-2018Q4      0.000385        -0.002477        0.000941
-2019Q1     -0.001660         0.000468        0.005336
-2019Q2      0.000856         0.001882        0.001711
-2019Q3      0.001242        -0.000396        0.001705
-2019Q4     -0.001377         0.000124        0.002887
-2020Q1      0.002233        -0.001832       -0.010575
-2020Q2     -0.000139        -0.028106       -0.067661
-2020Q3     -0.000416         0.030392        0.045041
+\subsection*{Contribuição para variação: Oferta}
+\label{sec:orgf8e0f20}
 
-\subsection*{Carregamento estatístico}
-\label{sec:orge023eb8}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/PIB/Contrib_Oferta.png}
+\end{center}
+
+
+\subsection*{Contribuição para variação: Serviços}
+\label{sec:org273dc4b}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/PIB/Contrib_Servicos.png}
+\end{center}
+
+\section*{Crédito (saldo)}
+\label{sec:org996d64e}
+
+
+
+\subsubsection*{Pessoa jurídica}
+\label{sec:orgecf8e5f}
+
+\subsubsection*{Pessoa física}
+\label{sec:org2531c28}
+
+\subsubsection*{Crédito ampliado}
+\label{sec:orgf5af870}
+
+\subsubsection*{Crédito direcionado}
+\label{sec:orge02b7d1}
 
 
 
 \section*{Índices de atividade setoriais}
-\label{sec:org3a476e0}
+\label{sec:org87b8224}
 
 
-\section*{Pesquisa Industrial Mensal (PIM)}
-\label{sec:org7465edf}
+
+\subsection*{Pesquisa Industrial Mensal (PIM)}
+\label{sec:orgb376805}
 
 
-\section*{Pesquisa Mensal do Comércio (PMC)}
-\label{sec:org768df66}
+\subsection*{Pesquisa Mensal do Comércio (PMC)}
+\label{sec:org6e3a66b}
 
 
-\section*{Pesquisa Mensal de Serviços (PMS)}
-\label{sec:org7663b39}
+\subsection*{Pesquisa Mensal de Serviços (PMS)}
+\label{sec:orgec5421b}
 
 \section*{Emprego}
-\label{sec:orgac24bb1}
-
-
-\section*{Taxa de desocupação}
-\label{sec:org961f8d9}
-
-
-\section*{Massa de renda}
-\label{sec:org3941885}
-
-
-\section*{Desalentados e subocupados}
-\label{sec:org054ff75}
-
-\section*{Rendimento habitual médio por atividade}
-\label{sec:org67d3229}
-
-\section*{População ocupada por atividade}
-\label{sec:orgb092cac}
+\label{sec:org001331c}
 
 
 
-\section*{Taxa de ocupação}
-\label{sec:orgd29a7da}
+\subsection*{Taxa de desocupação}
+\label{sec:orgc1a3f5b}
+
+
+\subsection*{Massa de renda}
+\label{sec:orgd9c071f}
+
+
+\subsection*{Desalentados e subocupados}
+\label{sec:org1ab6c79}
+
+\subsection*{Rendimento habitual médio por atividade}
+\label{sec:org2c3b2ab}
+
+\subsection*{População ocupada por atividade}
+\label{sec:org9468294}
+
+
+
+\subsection*{Taxa de ocupação}
+\label{sec:org3f9f675}
+
+
+\section*{Dado de alta frequência Bloomberg adaptado ao COVID-19 (\href{https://www.bloomberg.com/news/articles/2020-11-13/alternative-data-show-activity-crashes-as-virus-resurges-chart}{Link})}
+\label{sec:orgc078ce8}
+
+\begin{itemize}
+\item Não é público
+\item Substituiria CLIs
+\end{itemize}
+
+\section*{PNAD-COVID e PNAD}
+\label{sec:org6ed3a14}
+
+
+
+\section*{Relatório do Tesouro}
+\label{sec:orgb2d7d12}
+
+\section*{IPEA e importância do Auxílio Emergencial}
+\label{sec:orgfc5e240}
+
+\section*{Base de dados FMI (Fiscal Monitor e WEO)}
+\label{sec:org5378a15}
 \end{document}

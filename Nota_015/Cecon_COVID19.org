@@ -1,17 +1,18 @@
-#+TITLE: Impactos econômicos da COVID-19
+#+TITLE: Dados: O PIB da pandemia e cenários para 2021
 #+DATE: Janeiro de 2021
 #+LATEX_CLASS: SelfArx
 #+SETUPFILE: ../manuscript.setup
 #+INCLUDE: Infos.org
 #+EXCLUDE_TAGS: Notes
-#+PROPERTY: header-args python :results output drawer replace :exports results :eval never-export
+#+PROPERTY: header-args python :results output drawer replace :exports results :eval never-export :session "Cecon"
 
 * Initial setup :noexport:ignore:
 #+LATEX:\flushbottom % Makes all text pages the same height
 #+LATEX:\maketitle % Print the title and abstract box
 #+LATEX:\thispagestyle{empty} % Removes page numbering from the first page
+#+LATEX: \onecolumn
 
-#+BEGIN_SRC python :tangle ./codes/setup.py
+#+BEGIN_SRC python
 import pandas as pd
 import numpy as np
 from datetime import datetime as dt
@@ -41,6 +42,15 @@ corona_60_txt = "Mais de 60 casos de COVID-19"
 
 base = "2014-12-01"
 
+def line_format(label):
+    """
+    Convert time label to the format of pandas line plot
+    """
+    month = label.month_name()[:3]
+    if month == 'Jan':
+        month += f'\n{label.year}'
+    return month
+#ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
 
 def interpolator(df):
     for col in df:
@@ -63,16 +73,702 @@ def rebase(df, base=base):
         df[col] = df[col].apply(lambda x: (100*x)/df[col][base])
     return df
 
+
+def consulta_bc(codigo_bcb, nome = ["Nome da série"]):
+  url = 'http://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados?formato=json'.format(codigo_bcb)
+  df = pd.read_json(url)
+  df['data'] = pd.to_datetime(df['data'], dayfirst=True)
+  df.set_index('data', inplace=True)
+  df.index.name = ''
+  df.columns = nome
+  return df
+
 #+END_SRC
 
 #+RESULTS:
 :results:
 :end:
 
-* Código :ignore:noexport:
-** Atividade
-  
-*** Crédito
+* Atividade
+
+** IBCBr
+
+#+BEGIN_SRC python :results graphics file :file ./figs/Antecedente/IBCBr.png
+start_year = "2018-01-01"
+
+
+df = consulta_bc(24364, ["IBCBr (%YoY)"])
+df.index.name = ""
+# df = rebase(df)
+df = df.pct_change(12)
+df = (1+ df/100).rolling(window=12).agg(lambda x : x.prod()) -1
+df = df[start_year:]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+df.plot(
+    title=f"IBCBr Dessazonalizado",
+    ax=ax,
+    lw=2.5,
+    color="black",
+)
+ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label=corona_sp_txt)
+ax.axhline(y=0, color="gray", ls='-')
+ax.set_yticklabels(['{:,.2%}'.format(x) for x in ax.get_yticks()])
+ax.legend()
+# ax.set_ylabel("Taxa de crescimento YoY (%)")
+# ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+sns.despine()
+
+fig.savefig(
+    "./figs/Antecedente/" + "IBCBr" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+plt.close()
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Antecedente/IBCBr.png]]
+
+
+** Baixando dados e criando nomes :ignore:
+#+BEGIN_SRC sh :dir ./raw/ContasNacionais/ :exports none
+wget -N --backups=1 ftp://ftp.ibge.gov.br/Contas_Nacionais/Contas_Nacionais_Trimestrais/Tabelas_Completas/Tab_Compl_CNT.zip
+unzip -o Tab_Compl_CNT.zip
+mv *.xls Tab_Compl_CNT.xlsx
+#+END_SRC
+
+#+RESULTS:
+:results:
+
+--2021-01-06 17:25:59--  ftp://ftp.ibge.gov.br/Contas_Nacionais/Contas_Nacionais_Trimestrais/Tabelas_Completas/Tab_Compl_CNT.zip
+“.listing”
+Resolvendo ftp.ibge.gov.br (ftp.ibge.gov.br)... 170.84.40.44
+Conectando-se a ftp.ibge.gov.br (ftp.ibge.gov.br)|170.84.40.44|:21... conectado.
+Acessando como anonymous ... Acesso autorizado!
+SYST ... feito.    ==> PWD ... feito.
+TYPE I ... feito.  ==> CWD (1) /Contas_Nacionais/Contas_Nacionais_Trimestrais/Tabelas_Completas ... feito.
+PASV ... feito.    ==> LIST ... feito.
+Failed to rename .listing to .listing.1: (2) Arquivo ou diretório não encontrado
+]       0  --.-KB/s               .listing                [ <=>                ]     194  --.-KB/s    em 0s
+
+2021-01-06 17:26:00 (577 KB/s) - “.listing” salvo [194]
+
+Removeu “.listing”.
+O arquivo remoto não é mais novo que o local “Tab_Compl_CNT.zip” -- ignorando.
+Archive:  Tab_Compl_CNT.zip
+  inflating: Tab_Compl_CNT.xls
+:end:
+
+#+BEGIN_SRC python
+Colunas = [
+    "Agropecuaria",
+    "Industria Extrativa",
+    "Industria de Transformacao",
+    "Eletricidade e agua",
+    "Construcao",
+    "Total Industria",
+    "Comercio",
+    "Transporte, armazenagem e correio",
+    "Informacao e comunicacao",
+    "Atividades Financeiras",
+    "Atividades Imobiliarias",
+    "Outras atividades",
+    "ADM, defesa, etc",
+    "Total Servicos",
+    "VA",
+    "PIB",
+    "Consumo das Familias",
+    "Consumo do Governo",
+    "FBCF",
+    "Exportacao",
+    "Importacao"
+]
+
+Agropecuaria = ['Agropecuaria']
+
+Industria = [
+    "Industria Extrativa",
+    "Industria de Transformacao",
+    "Eletricidade e agua",
+    "Construcao",
+    "Total Industria"
+]
+
+Servicos = [
+    "Comercio",
+    "Transporte, armazenagem e correio",
+    "Informacao e comunicacao",
+    "Atividades Financeiras",
+    "Atividades Imobiliarias",
+    "Outras atividades",
+    "ADM, defesa, etc",
+    "Total Servicos",
+]
+
+Demanda = [
+    "Consumo das Familias",
+    "Consumo do Governo",
+    "FBCF",
+    "Exportacao",
+    "Importacao"
+]
+
+Oferta = [
+    'Agropecuaria',
+    "Total Industria",
+    "Total Servicos",
+]
+
+df = pd.read_excel('./raw/ContasNacionais/Tab_Compl_CNT.xlsx', header=3, sheet_name='Val encad preços 95 com ajuste', index_col=0)
+df.index = df.index.str.replace('.', 'Q').str.replace('IV', '4').str.replace('III', '3').str.replace('II', '2').str.replace('I', '1')
+df.index = pd.PeriodIndex(df.index, freq='Q')
+df.columns = Colunas
+df["Importacao"] = -df["Importacao"]
+#+END_SRC
+
+** Trimestre Contra trimestre imediatamente anterior
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/PIB.png
+fig = plt.figure(figsize=(9,4))
+ax = plt.axes()
+ax2 = plt.axes([0.15,0.6,0.2,0.2])
+
+suptitle = 'Taxa de crescimento'
+title = 'Trimestre contra trimestre anterior'
+
+
+df['PIB'].pct_change()["2019":].plot(ax=ax, color='darkblue', kind='line')
+ax.axhline(y=0, ls='--', color='black')
+
+plt.suptitle(suptitle, color='black', weight = 'bold')
+ax.set_title(title, color='black')
+
+ax.text(0.95, -0.2, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(dt.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+# ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+fig.savefig('./figs/PIB/PIB.png', dpi = 300,)
+plt.close()
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/PIB/PIB.png]]
+
+** Trimestre Contra mesmo trimestre do ano anterior
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/PIB_YoY.png
+fig = plt.figure(figsize=(9,4))
+ax = plt.axes()
+ax2 = plt.axes([0.15,0.6,0.2,0.2])
+
+suptitle = 'Taxa de crescimento'
+title = 'Trimestre contra mesmo trimestre do ano anterior'
+
+
+df['PIB'].pct_change(4)["2019":].plot(ax=ax, color='darkblue', kind='line')
+ax.axhline(y=0, ls='--', color='black')
+
+plt.suptitle(suptitle, color='black', weight = 'bold')
+ax.set_title(title, color='black')
+
+ax.text(0.95, -0.2, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(dt.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+# ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+fig.savefig('./figs/PIB/PIB_YoY.png', dpi=300)
+plt.close()
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/PIB/PIB_YoY.png]]
+
+** Agropecuária
+
+#+BEGIN_SRC python :results graphics file :file ./figs/PIB/Agropecuaria.png
+fig, ax = plt.subplots(figsize=(9,4))
+ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+
+
+df[Agropecuaria].pct_change().tail(4).plot(kind='bar', ax=ax, color='darkblue')
+
+plt.suptitle('Agricultura', color='black', weight = 'bold')
+ax.axhline(y=0, color='gray', linestyle='--', lw=2)
+
+ax.set_title('Trimestre contra trimestre anterior', color='black')
+
+ax.text(0.95, -0.2, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(dt.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+fig.savefig(
+    './figs/PIB/Agropecuaria.png',
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+    )
+plt.close()
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/PIB/Agropecuaria.png]]
+
+** Indústria
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Industria.png
+fig, ax = plt.subplots(figsize=(9,4))
+ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+
+
+df[Industria].pct_change().tail(4).plot(kind='bar', ax=ax)
+
+plt.suptitle('Indústria', color='black', weight = 'bold')
+ax.axhline(y=0, color='gray', linestyle='--', lw=2)
+
+ax.set_title('Trimestre contra trimestre anterior', color='black')
+
+ax.text(0.95, -0.2, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(dt.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+fig.savefig(
+    './figs/PIB/Industria.png',
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+    )
+plt.close()
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/PIB/Industria.png]]
+
+
+** Serviços
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Servicos.png
+fig, ax = plt.subplots(figsize=(8,5))
+ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+
+
+df[Servicos].pct_change().tail(4).plot(kind='bar', ax=ax)
+lgd = ax.legend(
+    loc='center left',
+    bbox_to_anchor=(1, 0.5)
+)
+
+
+plt.suptitle('Serviços', color='black', weight = 'bold')
+
+ax.axhline(y=0, color='gray', linestyle='--', lw=2)
+
+ax.set_title('Trimestre contra trimestre anterior', color='black')
+
+ax.text(0.95, -0.2, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(dt.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+fig.savefig(
+    './figs/PIB/Servicos.png',
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+    )
+plt.close()
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/PIB/Servicos.png]]
+
+** Demanda
+
+#+BEGIN_SRC python   :results graphics file :file ./figs/PIB/Demanda.png
+fig, ax = plt.subplots(figsize=(9,4))
+ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+
+
+df[Demanda + ['PIB']].pct_change().tail(4).plot(kind='bar', ax=ax)
+
+plt.suptitle('Demanda', color='black', weight = 'bold')
+ax.axhline(y=0, color='gray', linestyle='--', lw=2)
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+ax.set_title('Trimestre contra trimestre anterior', color='black')
+
+ax.text(0.95, -0.2, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(dt.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+fig.savefig(
+    './figs/PIB/Demanda.png',
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+    )
+plt.close()
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/PIB/Demanda.png]]
+
+** Oferta
+
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Oferta.png
+fig, ax = plt.subplots(figsize=(9,4))
+ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+
+
+df[Oferta + ['PIB']].pct_change().tail(4).plot(kind='bar', ax=ax)
+
+plt.suptitle('Oferta', color='black', weight = 'bold')
+ax.axhline(y=0, color='gray', linestyle='--', lw=2)
+#ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+ax.set_title('Trimestre contra trimestre anterior', color='black')
+
+ax.text(0.95, -0.2, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(dt.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+#sns.set_style("white")
+sns.set_context('paper', font_scale=1.2)
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+plt.close()
+fig.savefig(
+    './figs/PIB/Oferta.png',
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+    )
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/PIB/Oferta.png]]
+
+
+** Contribuição para variação: Demanda
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Contrib_Demanda.png
+fig, ax = plt.subplots(figsize=(8,5))
+ax2 = fig.add_axes([0.15,0.7,0.2,0.2])
+
+df[Demanda].diff().apply(lambda x: x/(df["PIB"].shift())).tail(4).plot(
+    kind = 'bar',
+    stacked = True,
+    ax = ax,
+    color = (
+        "tomato",
+        "darkred",
+        "darkslateblue",
+        "tan",
+        "khaki"
+    ),
+    width = 0.75,
+    edgecolor='black'
+)
+plt.suptitle('Demanda', color='black', weight = 'bold')
+ax.axhline(y=0, color='black', linestyle='-', lw=2)
+#ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+ax.set_title('Contribuição para variação do PIB', color='black')
+
+ax.text(0.95, -0.125, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.125, 'Atualizado em {}. Último dado disponível: {}'.format(dt.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+fig.savefig(
+    './figs/PIB/Contrib_Demanda.png',
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+    )
+plt.close()
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/PIB/Contrib_Demanda.png]]
+
+** Contribuição para variação: Oferta
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Contrib_Oferta.png
+fig, ax = plt.subplots(1,1,figsize=(9,4))
+ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+
+
+#df["PIB"].pct_change().tail(12).plot(ax = ax, kind = 'line', legend = True, color = 'black')
+df[Oferta].diff().apply(lambda x: x/(df["VA"].shift())).tail(4).plot(
+    kind = 'bar',
+    stacked = True,
+    ax = ax,
+    color = (
+        "green",
+    #    "darkred",
+        "darkslateblue",
+        "tan",
+    #    "khaki"
+    ),
+    cmap="Set1",
+    width = 0.75,
+    edgecolor='black'
+)
+
+plt.suptitle('Oferta', color='black', weight = 'bold')
+ax.axhline(y=0, color='black', linestyle='-', lw=2)
+#ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+ax.set_title('Contribuição para variação do valor adicionado', color='black')
+
+ax.text(0.95, -0.125, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.125, 'Atualizado em {}. Último dado disponível: {}'.format(dt.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+fig.savefig(
+    './figs/PIB/Contrib_Oferta.png',
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+    )
+plt.close()
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/PIB/Contrib_Oferta.png]]
+
+
+** Contribuição para variação: Serviços
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Contrib_Servicos.png
+fig, ax = plt.subplots(1,1,figsize=(9,4))
+ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+
+
+#df["PIB"].pct_change().tail(12).plot(ax = ax, kind = 'line', legend = True, color = 'black')
+df[Servicos].drop(["Total Servicos"]).diff().apply(lambda x: x/(df["Total Servicos"].shift())).tail(4).plot(
+    kind = 'bar',
+    stacked = True,
+    ax = ax,
+    color = (
+        "green",
+       "darkred",
+        "darkslateblue",
+        "tan",
+       "khaki",
+        "gray",
+        "orange",
+    ),
+    cmap="Set1",
+    width = 0.75,
+    edgecolor='black'
+)
+
+plt.suptitle('Oferta', color='black', weight = 'bold')
+ax.axhline(y=0, color='black', linestyle='-', lw=2)
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+ax.set_title('Contribuição para variação do valor adicionado', color='black')
+
+ax.text(0.95, -0.125, 'Fonte: IBGE',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+ax.text(0.6, -0.125, 'Atualizado em {}. Último dado disponível: {}'.format(dt.now().strftime("%d/%m/%Y"), df.index[-1]),
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax.transAxes,
+        color='black', fontsize=10)
+
+sns.despine()
+ax.tick_params(axis='x', colors='black')
+ax.tick_params(axis='y', colors='black')
+ax.yaxis.label.set_color('black')
+ax.xaxis.label.set_color('black')
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+fig.savefig(
+    './figs/PIB/Contrib_Servicos.png',
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+    )
+plt.close()
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/PIB/Contrib_Servicos.png]]
+
+* Crédito (saldo)
 
 #+BEGIN_SRC python  :tangle ./codes/Credito.py
 
@@ -87,24 +783,14 @@ start_year = "2019-01-01"
 file_path = './raw/LCA/'
 image_path = './figs/Credito/'
 file_name = 'Indicadores_de_Credito_Bacen'
-def line_format(label):
-    """
-    Convert time label to the format of pandas line plot
-    """
-    month = label.month_name()[:3]
-    if month == 'Jan':
-        month += f'\n{label.year}'
-    return month
-#ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
 #+END_SRC
 
 #+RESULTS:
 :results:
 :end:
 
-*** Saldo
 
-**** Pessoa jurídica
+*** Pessoa jurídica
      
 #+BEGIN_SRC python  :tangle ./codes/Credito.py
 sheet = "SaldoPJ"
@@ -152,7 +838,7 @@ ax2.axis('off')
 
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + sheet.replace(' ', '') + unidade +   '.svg',
@@ -205,7 +891,7 @@ ax2.axis('off')
 
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + sheet.replace(' ', '') + unidade +   '.svg',
@@ -218,7 +904,7 @@ fig.savefig(
 :results:
 :end:
 
-**** Pessoa física
+*** Pessoa física
 
 #+BEGIN_SRC python  :tangle ./codes/Credito.py
 sheet = "SaldoPF"
@@ -266,7 +952,7 @@ ax2.axis('off')
 
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + sheet.replace(' ', '') + unidade +   '.svg',
@@ -325,7 +1011,7 @@ ax2.axis('off')
 
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + sheet.replace(' ', '') + unidade +   '.svg',
@@ -338,7 +1024,7 @@ fig.savefig(
 :results:
 :end:
 
-**** Crédito ampliado
+*** Crédito ampliado
 
 #+BEGIN_SRC python  :tangle ./codes/Credito.py
 sheet = "SaldoCréditoAmpliado"
@@ -396,7 +1082,7 @@ ax2.axis('off')
 
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + sheet.replace(' ', '') + unidade +  '.svg',
@@ -465,7 +1151,7 @@ ax2.axis('off')
 
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + sheet.replace(' ', '') + unidade +   '.svg',
@@ -534,7 +1220,7 @@ ax2.axis('off')
 
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + sheet.replace(' ', '') + unidade +   '.svg',
@@ -547,7 +1233,7 @@ fig.savefig(
 :results:
 :end:
 
-**** Crédito direcionado
+*** Crédito direcionado
 
 
 #+BEGIN_SRC python  :tangle ./codes/Credito.py
@@ -605,7 +1291,7 @@ ax2.axis('off')
 
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + sheet.replace(' ', '') + unidade +  '.svg',
@@ -675,7 +1361,7 @@ ax2.axis('off')
 
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + sheet.replace(' ', '') + unidade +  '.svg',
@@ -747,7 +1433,7 @@ ax2.axis('off')
 
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + sheet.replace(' ', '') + unidade +  '.svg',
@@ -762,671 +1448,7 @@ fig.savefig(
 
 
 
-*** IBCBr
-
-#+BEGIN_SRC python   :tangle ./codes/ibcbr.py
-
-import sys
-
-sys.path.insert(1, './codes/')
-
-from setup import *
-
-start_year = "2019-01-01"
-
-file_path = './raw/LCA/IBCBr.xlsx'
-image_path = './figs/Antecedente/'
-
-#+END_SRC
-
-#+RESULTS:
-:results:
-:end:
-
-
-#+BEGIN_SRC python   :tangle ./codes/ibcbr.py
-df = pd.read_excel(
-    file_path,
-    sheet_name = "IBC-Br Dessaz",
-    skiprows = 11,
-#    usecols = "A:B",
-    parse_date = True,
-    index_col = [0]
-)
-df.index.name = ''
-
-df = rebase(df)
-df = df[start_year:]
-df = interpolator(df)
-
-fig, ax = plt.subplots(figsize=(8,5))
-df.plot(
-    title = f"Índice de Atividade Econômica do Banco Central\nDessazonalizado\n{base} = 100",
-    ax = ax,
-    lw = 2.5
-)
-ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label=corona_sp_txt)
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-ax2 = plt.axes([0.135,0.135,0.2,0.2])
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-
-sns.despine()
-plt.show()
-
-fig.savefig(
-    image_path + file_path.strip("/")[-1] + "IBCBr" + "_" + '.svg',
-    dpi = 300, 
-    bbox_inches='tight',pad_inches=0
-    )
-#+END_SRC
-
-#+RESULTS:
-:results:
-:end:
-
-*** PIB (Contas Nacionais)
-
-#+BEGIN_SRC python  :tangle ./codes/PIB.py
-
-
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.ticker import FuncFormatter
-import matplotlib.dates as mdates
-import seaborn as sns
-import datetime
-
-plt.style.use('seaborn-dark-palette')
-
-import matplotlib.image as image
-
-logo = "./figs/Cecon_Logo.png"
-logo = image.imread(logo)
-#+END_SRC
-
-#+RESULTS:
-:results:
-:end:
-
-#+BEGIN_SRC sh :dir ./raw/ContasNacionais/
-wget -N --backups=1 ftp://ftp.ibge.gov.br/Contas_Nacionais/Contas_Nacionais_Trimestrais/Tabelas_Completas/Tab_Compl_CNT.zip
-unzip -o Tab_Compl_CNT.zip
-mv *.xls Tab_Compl_CNT.xlsx
-#+END_SRC
-
-#+RESULTS:
-:results:
---2020-12-14 18:17:03--  ftp://ftp.ibge.gov.br/Contas_Nacionais/Contas_Nacionais_Trimestrais/Tabelas_Completas/Tab_Compl_CNT.zip
-“.listing”
-Resolvendo ftp.ibge.gov.br (ftp.ibge.gov.br)... 170.84.40.44
-Conectando-se a ftp.ibge.gov.br (ftp.ibge.gov.br)|170.84.40.44|:21... conectado.
-Acessando como anonymous ... Acesso autorizado!
-SYST ... feito.    ==> PWD ... feito.
-TYPE I ... feito.  ==> CWD (1) /Contas_Nacionais/Contas_Nacionais_Trimestrais/Tabelas_Completas ... feito.
-PASV ... feito.    ==> LIST ... feito.
-Failed to rename .listing to .listing.1: (2) Arquivo ou diretório não encontrado
-]       0  --.-KB/s               .listing                [ <=>                ]     194  --.-KB/s    em 0,001s
-
-2020-12-14 18:17:04 (129 KB/s) - “.listing” salvo [194]
-
-Removeu “.listing”.
-O arquivo remoto não é mais novo que o local “Tab_Compl_CNT.zip” -- ignorando.
-Archive:  Tab_Compl_CNT.zip
-  inflating: Tab_Compl_CNT.xls
-:end:
-
-#+BEGIN_SRC python  :tangle ./codes/PIB.py
-Colunas = [
-    "Agropecuaria",
-    "Industria Extrativa",
-    "Industria de Transformacao",
-    "Eletricidade e agua",
-    "Construcao",
-    "Total Industria",
-    "Comercio",
-    "Transporte, armazenagem e correio",
-    "Informacao e comunicacao",
-    "Atividades Financeiras",
-    "Atividades Imobiliarias",
-    "Outras atividades",
-    "ADM, defesa, etc",
-    "Total Servicos",
-    "VA",
-    "PIB",
-    "Consumo das Familias",
-    "Consumo do Governo",
-    "FBCF",
-    "Exportacao",
-    "Importacao"
-]
-
-Agropecuaria = ['Agropecuaria']
-
-Industria = [
-    "Industria Extrativa",
-    "Industria de Transformacao",
-    "Eletricidade e agua",
-    "Construcao",
-    "Total Industria"
-]
-
-Servicos = [
-    "Comercio",
-    "Transporte, armazenagem e correio",
-    "Informacao e comunicacao",
-    "Atividades Financeiras",
-    "Atividades Imobiliarias",
-    "Outras atividades",
-    "ADM, defesa, etc",
-    "Total Servicos",
-]
-
-Demanda = [
-    "Consumo das Familias",
-    "Consumo do Governo",
-    "FBCF",
-    "Exportacao",
-    "Importacao"
-]
-
-Oferta = [
-    'Agropecuaria',
-    "Total Industria",
-    "Total Servicos",
-]
-
-df = pd.read_excel('./raw/ContasNacionais/Tab_Compl_CNT.xlsx', header=3, sheet_name='Val encad preços 95 com ajuste', index_col=0)
-df.index = df.index.str.replace('.', 'Q').str.replace('IV', '4').str.replace('III', '3').str.replace('II', '2').str.replace('I', '1')
-df.index = pd.PeriodIndex(df.index, freq='Q')
-df.columns = Colunas
-df["Importacao"] = -df["Importacao"]
-#+END_SRC
-
-#+RESULTS:
-:results:
-:end:
-
-*** Trimestre Contra trimestre imediatamente anterior
-
-#+BEGIN_SRC python  :tangle ./codes/PIB.py
-fig = plt.figure(figsize=(9,4))
-ax = plt.axes()
-ax2 = plt.axes([0.15,0.6,0.2,0.2])
-
-suptitle = 'Taxa de crescimento'
-title = 'Trimestre contra trimestre anterior'
-
-
-df['PIB'].pct_change().tail(4).plot(kind='bar', ax=ax, color='darkblue')
-ax.axhline(y=0, ls='--', color='black')
-
-plt.suptitle(suptitle, color='black', weight = 'bold')
-ax.set_title(title, color='black')
-
-ax.text(0.95, -0.2, 'Fonte: IBGE',
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-#sns.set_style("white")
-sns.set_context('paper', font_scale=1.2)
-sns.despine()
-ax.tick_params(axis='x', colors='black')
-ax.tick_params(axis='y', colors='black')
-ax.yaxis.label.set_color('black')
-ax.xaxis.label.set_color('black')
-ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
-ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
-
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-
-sns.despine()
-sns.set_style('white')
-fig.savefig('./figs/PIB/PIB.png')
-plt.show()
-
-print(df['PIB'].pct_change().tail(4))
-#+END_SRC
-
-#+RESULTS:
-:results:
-2019Q4    0.002203
-2020Q1   -0.015459
-2020Q2   -0.095998
-2020Q3    0.077078
-Freq: Q-DEC, Name: PIB, dtype: float64
-:end:
-
-**** Agropecuária
-
-#+BEGIN_SRC python  :tangle ./codes/PIB.py
-fig, ax = plt.subplots(figsize=(9,4))
-ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
-
-
-df[Agropecuaria].pct_change().tail(4).plot(kind='bar', ax=ax, color='darkblue')
-
-plt.suptitle('Agricultura', color='black', weight = 'bold')
-ax.axhline(y=0, color='gray', linestyle='--', lw=2)
-
-ax.set_title('Trimestre contra trimestre anterior', color='black')
-
-ax.text(0.95, -0.2, 'Fonte: IBGE',
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-#sns.set_style("white")
-sns.set_context('paper', font_scale=1.2)
-sns.despine()
-ax.tick_params(axis='x', colors='black')
-ax.tick_params(axis='y', colors='black')
-ax.yaxis.label.set_color('black')
-ax.xaxis.label.set_color('black')
-ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
-ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
-
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-
-fig.savefig('./figs/PIB/Agropecuaria.png')
-plt.show()
-#+END_SRC
-
-#+RESULTS:
-:results:
-:end:
-
-**** Indústria
-
-#+BEGIN_SRC python  :tangle ./codes/PIB.py
-fig, ax = plt.subplots(figsize=(9,4))
-ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
-
-
-df[Industria].pct_change().tail(4).plot(kind='bar', ax=ax)
-
-plt.suptitle('Indústria', color='black', weight = 'bold')
-ax.axhline(y=0, color='gray', linestyle='--', lw=2)
-
-ax.set_title('Trimestre contra trimestre anterior', color='black')
-
-ax.text(0.95, -0.2, 'Fonte: IBGE',
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-#sns.set_style("white")
-sns.set_context('paper', font_scale=1.2)
-sns.despine()
-ax.tick_params(axis='x', colors='black')
-ax.tick_params(axis='y', colors='black')
-ax.yaxis.label.set_color('black')
-ax.xaxis.label.set_color('black')
-ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
-ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
-
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-plt.show()
-fig.savefig('./figs/PIB/Industria.png')
-
-print(df[Industria].pct_change().tail(4))
-#+END_SRC
-
-#+RESULTS:
-:results:
-        Industria Extrativa  Industria de Transformacao  Eletricidade e agua  Construcao  Total Industria
-2019Q4             0.011824                    0.009037             0.004970   -0.037648         0.000580
-2020Q1            -0.024993                   -0.010860             0.002693   -0.017272        -0.008609
-2020Q2            -0.003373                   -0.191145            -0.050552   -0.080516        -0.130434
-2020Q3             0.025302                    0.236742             0.084899    0.056440         0.147658
-:end:
-
-
-**** Serviços
-
-#+BEGIN_SRC python  :tangle ./codes/PIB.py
-fig, ax = plt.subplots(figsize=(9,4))
-ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
-
-
-df[Servicos].pct_change().tail(4).plot(kind='bar', ax=ax)
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-
-
-plt.suptitle('Serviços', color='black', weight = 'bold')
-
-ax.axhline(y=0, color='gray', linestyle='--', lw=2)
-
-ax.set_title('Trimestre contra trimestre anterior', color='black')
-
-ax.text(0.95, -0.2, 'Fonte: IBGE',
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-#sns.set_style("white")
-sns.set_context('paper', font_scale=1.2)
-sns.despine()
-ax.tick_params(axis='x', colors='black')
-ax.tick_params(axis='y', colors='black')
-ax.yaxis.label.set_color('black')
-ax.xaxis.label.set_color('black')
-ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
-ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
-
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-plt.show()
-fig.savefig('./figs/PIB/Servicos.png')
-
-print(df[Servicos].pct_change())
-#+END_SRC
-
-#+RESULTS:
-:results:
-        Comercio  Transporte, armazenagem e correio  Informacao e comunicacao  ...  Outras atividades  ADM, defesa, etc  Total Servicos
-1996Q1       NaN                                NaN                       NaN  ...                NaN               NaN             NaN
-1996Q2  0.013911                          -0.022240                  0.015129  ...           0.003483          0.019968        0.006652
-1996Q3  0.027924                           0.032960                  0.022244  ...           0.003210          0.005066        0.013433
-1996Q4  0.013407                          -0.039419                 -0.001653  ...          -0.005327         -0.005696       -0.020232
-1997Q1  0.000391                           0.047790                  0.010417  ...           0.019057         -0.000411        0.019513
-...          ...                                ...                       ...  ...                ...               ...             ...
-2019Q3  0.005113                           0.004301                  0.009530  ...          -0.003471         -0.006701        0.002394
-2019Q4 -0.002298                           0.000091                  0.010576  ...           0.007904          0.007719        0.004045
-2020Q1 -0.010817                          -0.019667                 -0.021880  ...          -0.051438         -0.015975       -0.014847
-2020Q2 -0.137145                          -0.190152                 -0.031795  ...          -0.168683         -0.069736       -0.094417
-2020Q3  0.158514                           0.124804                  0.031199  ...           0.077815          0.025357        0.063183
-
-[99 rows x 8 columns]
-:end:
-
-**** Demanda
-
-#+BEGIN_SRC python  :tangle ./codes/PIB.py
-fig, ax = plt.subplots(figsize=(9,4))
-ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
-
-
-df[Demanda + ['PIB']].pct_change().tail(4).plot(kind='bar', ax=ax)
-
-plt.suptitle('Demanda', color='black', weight = 'bold')
-ax.axhline(y=0, color='gray', linestyle='--', lw=2)
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-
-
-ax.set_title('Trimestre contra trimestre anterior', color='black')
-
-ax.text(0.95, -0.2, 'Fonte: IBGE',
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-#sns.set_style("white")
-sns.set_context('paper', font_scale=1.2)
-sns.despine()
-ax.tick_params(axis='x', colors='black')
-ax.tick_params(axis='y', colors='black')
-ax.yaxis.label.set_color('black')
-ax.xaxis.label.set_color('black')
-ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
-ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
-
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-plt.show()
-fig.savefig('./figs/PIB/Demanda.png')
-
-print(df[Demanda + ['PIB']].pct_change().tail(4))
-#+END_SRC
-
-#+RESULTS:
-:results:
-        Consumo das Familias  Consumo do Governo      FBCF  Exportacao  Importacao       PIB
-2019Q4              0.004383           -0.002582 -0.026712    0.016505   -0.047445  0.002203
-2020Q1             -0.019767           -0.004895  0.024205   -0.018541   -0.005370 -0.015459
-2020Q2             -0.112740           -0.077315 -0.164762    0.015526   -0.124499 -0.095998
-2020Q3              0.076406            0.034854  0.110196   -0.021298   -0.095888  0.077078
-:end:
-
-**** Oferta
-
-
-#+BEGIN_SRC python  :tangle ./codes/PIB.py
-fig, ax = plt.subplots(figsize=(9,4))
-ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
-
-
-df[Oferta + ['PIB']].pct_change().tail(4).plot(kind='bar', ax=ax)
-
-plt.suptitle('Oferta', color='black', weight = 'bold')
-ax.axhline(y=0, color='gray', linestyle='--', lw=2)
-#ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-
-
-ax.set_title('Trimestre contra trimestre anterior', color='black')
-
-ax.text(0.95, -0.2, 'Fonte: IBGE',
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-ax.text(0.6, -0.2, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-#sns.set_style("white")
-sns.set_context('paper', font_scale=1.2)
-sns.despine()
-ax.tick_params(axis='x', colors='black')
-ax.tick_params(axis='y', colors='black')
-ax.yaxis.label.set_color('black')
-ax.xaxis.label.set_color('black')
-ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
-ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
-
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-plt.show()
-fig.savefig('./figs/PIB/Oferta.png')
-
-print(df[Oferta + ['PIB']].pct_change().tail(4))
-#+END_SRC
-
-#+RESULTS:
-:results:
-        Agropecuaria  Total Industria  Total Servicos       PIB
-2019Q4     -0.017312         0.000580        0.004045  0.002203
-2020Q1      0.028747        -0.008609       -0.014847 -0.015459
-2020Q2     -0.001706        -0.130434       -0.094417 -0.095998
-2020Q3     -0.004647         0.147658        0.063183  0.077078
-:end:
-
-
-*** Contribuição para variação
-
-**** Demanda
-     
-#+BEGIN_SRC python  :tangle ./codes/PIB.py
-fig = plt.Figure()
-ax = plt.gca()
-ax2 = fig.add_axes([0.15,0.7,0.2,0.2])
-
-df[Demanda].diff().apply(lambda x: x/(df["PIB"].shift())).tail(8).plot(
-    kind = 'bar', 
-    stacked = True, 
-    ax = ax,
-    color = (
-        "tomato",
-        "darkred",
-        "darkslateblue",
-        "tan",
-        "khaki"
-    ),
-    width = 0.75,
-    edgecolor='black'
-)
-plt.suptitle('Demanda', color='black', weight = 'bold')
-ax.axhline(y=0, color='black', linestyle='-', lw=2)
-#ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-
-
-ax.set_title('Contribuição para variação do PIB', color='black')
-
-ax.text(0.95, -0.3, 'Fonte: IBGE',
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-ax.text(0.6, -0.3, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-#sns.set_style("white")
-sns.set_context('paper', font_scale=1.2)
-sns.despine()
-ax.tick_params(axis='x', colors='black')
-ax.tick_params(axis='y', colors='black')
-ax.yaxis.label.set_color('black')
-ax.xaxis.label.set_color('black')
-ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
-#ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
-
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-plt.show()
-fig.savefig('./figs/PIB/Contrib_Demanda.png')
-
-print(df[Demanda].diff().apply(lambda x: x/(df["PIB"].shift())).tail(8))
-#+END_SRC
-
-#+RESULTS:
-:results:
-        Consumo das Familias  Consumo do Governo      FBCF  Exportacao  Importacao
-2018Q4              0.001759           -0.002239 -0.000150    0.002336    0.008746
-2019Q1              0.007013            0.000322 -0.003797   -0.005622    0.003713
-2019Q2              0.002069            0.000217  0.005257   -0.003836   -0.007107
-2019Q3              0.003405           -0.000267  0.005346   -0.000924   -0.004419
-2019Q4              0.003002           -0.000469 -0.004901    0.002209    0.006893
-2020Q1             -0.013568           -0.000884  0.004313   -0.002516    0.000742
-2020Q2             -0.077046           -0.014113 -0.030542    0.002101    0.017368
-2020Q3              0.051249            0.006494  0.018873   -0.003237    0.012955
-:end:
-
-**** Oferta
-
-#+BEGIN_SRC python  :tangle ./codes/PIB.py
-fig, ax = plt.subplots(1,1,figsize=(9,4))
-ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
-
-
-#df["PIB"].pct_change().tail(12).plot(ax = ax, kind = 'line', legend = True, color = 'black')
-df[Oferta].diff().apply(lambda x: x/(df["VA"].shift())).tail(8).plot(
-    kind = 'bar', 
-    stacked = True, 
-    ax = ax,
-    color = (
-        "green",
-    #    "darkred",
-        "darkslateblue",
-        "tan",
-    #    "khaki"
-    ),
-    cmap="Set1",
-    width = 0.75,
-    edgecolor='black'
-)
-
-plt.suptitle('Oferta', color='black', weight = 'bold')
-ax.axhline(y=0, color='black', linestyle='-', lw=2)
-#ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-
-
-ax.set_title('Contribuição para variação do valor adicionado', color='black')
-
-ax.text(0.95, -0.3, 'Fonte: IBGE',
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-ax.text(0.6, -0.3, 'Atualizado em {}. Último dado disponível: {}'.format(datetime.datetime.now().strftime("%d/%m/%Y"), df.index[-1]),
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
-
-#sns.set_style("white")
-sns.set_context('paper', font_scale=1.2)
-sns.despine()
-ax.tick_params(axis='x', colors='black')
-ax.tick_params(axis='y', colors='black')
-ax.yaxis.label.set_color('black')
-ax.xaxis.label.set_color('black')
-ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y))) 
-#ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
-
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-plt.show()
-fig.savefig('./figs/PIB/Contrib_Oferta.png')
-
-print(df[Oferta].diff().apply(lambda x: x/(df["VA"].shift())).tail(8))
-#+END_SRC
-
-#+RESULTS:
-:results:
-/home/gpetrini/.local/lib/python3.8/site-packages/pandas/plotting/_matplotlib/core.py:226: UserWarning: 'color' and 'colormap' cannot be used simultaneously. Using 'color'
-  warnings.warn(
-/home/gpetrini/.local/lib/python3.8/site-packages/pandas/plotting/_matplotlib/style.py:27: UserWarning: 'color' and 'colormap' cannot be used simultaneously. Using 'color'
-  warnings.warn(
-        Agropecuaria  Total Industria  Total Servicos
-2018Q4      0.000385        -0.002477        0.000941
-2019Q1     -0.001660         0.000468        0.005336
-2019Q2      0.000856         0.001882        0.001711
-2019Q3      0.001242        -0.000396        0.001705
-2019Q4     -0.001377         0.000124        0.002887
-2020Q1      0.002233        -0.001832       -0.010575
-2020Q2     -0.000139        -0.028106       -0.067661
-2020Q3     -0.000416         0.030392        0.045041
-:end:
-
-*** Carregamento estatístico
-
-
-
-** Índices de atividade setoriais
+* Índices de atividade setoriais
 
 #+BEGIN_SRC python  :tangle ./codes/setoriais.py
 
@@ -1480,7 +1502,7 @@ ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + file_name + "_" + '.svg',
@@ -1549,7 +1571,7 @@ ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + file_name + "_" + '.svg',
@@ -1604,7 +1626,7 @@ ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + file_name + "_" + '.svg',
@@ -1617,7 +1639,7 @@ fig.savefig(
 :results:
 :end:
 
-** Emprego
+* Emprego
 
 #+BEGIN_SRC python   :tangle ./codes/pnad.py
 
@@ -1672,7 +1694,7 @@ ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + '.svg',
@@ -1720,7 +1742,7 @@ ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + '.svg',
@@ -1772,7 +1794,7 @@ ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + '.svg',
@@ -1814,7 +1836,7 @@ ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + file_path.strip("/")[-1] + "RHM_Setor" + "_" + '.svg',
@@ -1861,7 +1883,7 @@ ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + file_path.strip("/")[-1] + "PO_Atividade" + "_" + '.svg',
@@ -1910,7 +1932,7 @@ ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + "linha" +  '.svg',
@@ -1955,7 +1977,7 @@ ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 
 sns.despine()
-plt.show()
+plt.close()
 
 fig.savefig(
     image_path + file_path.strip("/")[-1] + "PO_Atividade" + "_" + "linha" + '.svg',
@@ -1968,4 +1990,18 @@ fig.savefig(
 :results:
 :end:
 
-* Texto :ignore:
+
+* Dado de alta frequência Bloomberg adaptado ao COVID-19 ([[https://www.bloomberg.com/news/articles/2020-11-13/alternative-data-show-activity-crashes-as-virus-resurges-chart][Link]])
+
+- Não é público
+- Substituiria CLIs
+
+* PNAD-COVID e PNAD
+
+
+
+* Relatório do Tesouro
+
+* IPEA e importância do Auxílio Emergencial
+
+* Base de dados FMI (Fiscal Monitor e WEO)
