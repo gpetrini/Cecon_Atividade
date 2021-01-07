@@ -3,8 +3,7 @@
 #+LATEX_CLASS: SelfArx
 #+SETUPFILE: ../manuscript.setup
 #+INCLUDE: Infos.org
-#+EXCLUDE_TAGS: Notes
-#+PROPERTY: header-args python :results output drawer replace :exports results :eval never-export :session "Cecon"
+#+PROPERTY: header-args python :results output drawer :eval never-export :session Cecon
 
 * Initial setup :noexport:ignore:
 #+LATEX:\flushbottom % Makes all text pages the same height
@@ -96,12 +95,11 @@ def consulta_bc(codigo_bcb, nome = ["Nome da série"]):
 #+BEGIN_SRC python :results graphics file :file ./figs/Antecedente/IBCBr.png
 start_year = "2018-01-01"
 
-
 df = consulta_bc(24364, ["IBCBr (%YoY)"])
 df.index.name = ""
 # df = rebase(df)
 df = df.pct_change(12)
-df = (1+ df/100).rolling(window=12).agg(lambda x : x.prod()) -1
+df = (1 + df / 100).rolling(window=12).agg(lambda x: x.prod()) - 1
 df = df[start_year:]
 df = interpolator(df)
 
@@ -113,8 +111,8 @@ df.plot(
     color="black",
 )
 ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label=corona_sp_txt)
-ax.axhline(y=0, color="gray", ls='-')
-ax.set_yticklabels(['{:,.2%}'.format(x) for x in ax.get_yticks()])
+ax.axhline(y=0, color="gray", ls="-")
+ax.set_yticklabels(["{:,.2%}".format(x) for x in ax.get_yticks()])
 ax.legend()
 # ax.set_ylabel("Taxa de crescimento YoY (%)")
 # ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
@@ -137,7 +135,7 @@ plt.close()
 
 
 ** Baixando dados e criando nomes :ignore:
-#+BEGIN_SRC sh :dir ./raw/ContasNacionais/ :exports none
+#+BEGIN_SRC sh :dir ./raw/ContasNacionais/ :exports none :eval no
 wget -N --backups=1 ftp://ftp.ibge.gov.br/Contas_Nacionais/Contas_Nacionais_Trimestrais/Tabelas_Completas/Tab_Compl_CNT.zip
 unzip -o Tab_Compl_CNT.zip
 mv *.xls Tab_Compl_CNT.xlsx
@@ -231,6 +229,10 @@ df.index = pd.PeriodIndex(df.index, freq='Q')
 df.columns = Colunas
 df["Importacao"] = -df["Importacao"]
 #+END_SRC
+
+#+RESULTS:
+:results:
+:end:
 
 ** Trimestre Contra trimestre imediatamente anterior
 
@@ -706,71 +708,87 @@ plt.close()
 ** Contribuição para variação: Serviços
 
 #+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Contrib_Servicos.png
-fig, ax = plt.subplots(1,1,figsize=(9,4))
-ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
+fig, ax = plt.subplots(1, 1, figsize=(9, 4))
+ax2 = fig.add_axes([0.15, 0.6, 0.2, 0.2])
 
 
-#df["PIB"].pct_change().tail(12).plot(ax = ax, kind = 'line', legend = True, color = 'black')
-df[Servicos].drop(["Total Servicos"]).diff().apply(lambda x: x/(df["Total Servicos"].shift())).tail(4).plot(
-    kind = 'bar',
-    stacked = True,
-    ax = ax,
-    color = (
+# df["PIB"].pct_change().tail(12).plot(ax = ax, kind = 'line', legend = True, color = 'black')
+df[Servicos].drop(["Total Servicos"], axis="columns").diff().apply(
+    lambda x: x / (df["Total Servicos"].shift())
+).tail(4).plot(
+    kind="bar",
+    stacked=True,
+    ax=ax,
+    color=(
         "green",
-       "darkred",
+        "darkred",
         "darkslateblue",
         "tan",
-       "khaki",
+        "khaki",
         "gray",
         "orange",
     ),
     cmap="Set1",
-    width = 0.75,
-    edgecolor='black'
+    width=0.75,
+    edgecolor="black",
 )
 
-plt.suptitle('Oferta', color='black', weight = 'bold')
-ax.axhline(y=0, color='black', linestyle='-', lw=2)
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+plt.suptitle("Oferta", color="black", weight="bold")
+ax.axhline(y=0, color="black", linestyle="-", lw=2)
+ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
 
 
-ax.set_title('Contribuição para variação do valor adicionado', color='black')
+ax.set_title("Contribuição para variação do valor adicionado", color="black")
 
-ax.text(0.95, -0.125, 'Fonte: IBGE',
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
+ax.text(
+    0.95,
+    -0.125,
+    "Fonte: IBGE",
+    verticalalignment="bottom",
+    horizontalalignment="right",
+    transform=ax.transAxes,
+    color="black",
+    fontsize=10,
+)
 
-ax.text(0.6, -0.125, 'Atualizado em {}. Último dado disponível: {}'.format(dt.now().strftime("%d/%m/%Y"), df.index[-1]),
-        verticalalignment='bottom', horizontalalignment='right',
-        transform=ax.transAxes,
-        color='black', fontsize=10)
+ax.text(
+    0.6,
+    -0.125,
+    "Atualizado em {}. Último dado disponível: {}".format(
+        dt.now().strftime("%d/%m/%Y"), df.index[-1]
+    ),
+    verticalalignment="bottom",
+    horizontalalignment="right",
+    transform=ax.transAxes,
+    color="black",
+    fontsize=10,
+)
 
 sns.despine()
-ax.tick_params(axis='x', colors='black')
-ax.tick_params(axis='y', colors='black')
-ax.yaxis.label.set_color('black')
-ax.xaxis.label.set_color('black')
-ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+ax.tick_params(axis="x", colors="black")
+ax.tick_params(axis="y", colors="black")
+ax.yaxis.label.set_color("black")
+ax.xaxis.label.set_color("black")
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: "{:.1%}".format(y)))
 ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
 
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
 fig.savefig(
-    './figs/PIB/Contrib_Servicos.png',
+    "./figs/PIB/Contrib_Servicos.png",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
-    )
+)
 plt.close()
 #+END_SRC
 
 #+RESULTS:
 [[file:./figs/PIB/Contrib_Servicos.png]]
 
-* Crédito (saldo)
+* Crédito (saldo) :noexport:
 
-#+BEGIN_SRC python  :tangle ./codes/Credito.py
+#+BEGIN_SRC python  :tangle ./codes/Credito.py :eval no
 
 import sys
 
@@ -787,12 +805,21 @@ file_name = 'Indicadores_de_Credito_Bacen'
 
 #+RESULTS:
 :results:
+    return super().drop(
+  File "/home/gpetrini/.local/lib/python3.8/site-packages/pandas/core/generic.py", line 3887, in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+  File "/home/gpetrini/.local/lib/python3.8/site-packages/pandas/core/generic.py", line 3921, in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+  File "/home/gpetrini/.local/lib/python3.8/site-packages/pandas/core/indexes/base.py", line 5282, in drop
+    raise KeyError(f"{labels[mask]} not found in axis")
+KeyError: "['Total Servicos'] not found in axis"
+>>>
 :end:
 
 
 *** Pessoa jurídica
      
-#+BEGIN_SRC python  :tangle ./codes/Credito.py
+#+BEGIN_SRC python  :tangle ./codes/Credito.py :eval no
 sheet = "SaldoPJ"
 titulo = "Saldo Pessoa jurídica"
 porcentagem=False
@@ -849,10 +876,13 @@ fig.savefig(
 
 #+RESULTS:
 :results:
+    raise KeyError(f"{labels[mask]} not found in axis")
+KeyError: "['Total Servicos'] not found in axis"
+>>>
 :end:
 
 
-#+BEGIN_SRC python  :tangle ./codes/Credito.py
+#+BEGIN_SRC python  :tangle ./codes/Credito.py :eval no
 sheet = "SaldoPJ"
 titulo = "Saldo Pessoa jurídica"
 porcentagem=False
@@ -906,7 +936,7 @@ fig.savefig(
 
 *** Pessoa física
 
-#+BEGIN_SRC python  :tangle ./codes/Credito.py
+#+BEGIN_SRC python  :tangle ./codes/Credito.py :eval no
 sheet = "SaldoPF"
 titulo = "Saldo Pessoa física"
 porcentagem=False
@@ -965,7 +995,7 @@ fig.savefig(
 :results:
 :end:
 
-#+BEGIN_SRC python  :tangle ./codes/Credito.py
+#+BEGIN_SRC python  :tangle ./codes/Credito.py :eval no
 sheet = "SaldoPF_%PIB"
 titulo = "Saldo Pessoa física\nem % PIB"
 porcentagem=True
@@ -1026,7 +1056,7 @@ fig.savefig(
 
 *** Crédito ampliado
 
-#+BEGIN_SRC python  :tangle ./codes/Credito.py
+#+BEGIN_SRC python  :tangle ./codes/Credito.py :eval no
 sheet = "SaldoCréditoAmpliado"
 titulo = "Saldo Crédito Ampliado"
 porcentagem=True
@@ -1095,7 +1125,7 @@ fig.savefig(
 :results:
 :end:
 
-#+BEGIN_SRC python  :tangle ./codes/Credito.py
+#+BEGIN_SRC python  :tangle ./codes/Credito.py :eval no
 sheet = "SaldoCréditoAmpliado"
 titulo = "Saldo Crédito Ampliado"
 porcentagem=False
@@ -1165,7 +1195,7 @@ fig.savefig(
 :end:
 
 
-#+BEGIN_SRC python  :tangle ./codes/Credito.py
+#+BEGIN_SRC python  :tangle ./codes/Credito.py :eval no
 sheet = "SaldoCréditoAmpliado_%PIB"
 titulo = "Saldo Crédito Ampliado"
 porcentagem=True
@@ -1236,7 +1266,7 @@ fig.savefig(
 *** Crédito direcionado
 
 
-#+BEGIN_SRC python  :tangle ./codes/Credito.py
+#+BEGIN_SRC python  :tangle ./codes/Credito.py :eval no
 sheet = "SaldoDirecionado"
 titulo = "Saldo Crédito Direcionado"
 porcentagem=False
@@ -1304,7 +1334,7 @@ fig.savefig(
 :results:
 :end:
 
-#+BEGIN_SRC python  :tangle ./codes/Credito.py
+#+BEGIN_SRC python  :tangle ./codes/Credito.py :eval no
 sheet = "SaldoDirecionado"
 titulo = "Saldo Crédito Direcionado"
 porcentagem=True
@@ -1374,7 +1404,7 @@ fig.savefig(
 :results:
 :end:
 
-#+BEGIN_SRC python  :tangle ./codes/Credito.py
+#+BEGIN_SRC python  :tangle ./codes/Credito.py :eval no
 sheet = "SaldoDirecionado_%PIB"
 titulo = "Saldo Crédito Direcionado"
 porcentagem=True
@@ -1448,9 +1478,9 @@ fig.savefig(
 
 
 
-* Índices de atividade setoriais
+* Índices de atividade setoriais :noexport:
 
-#+BEGIN_SRC python  :tangle ./codes/setoriais.py
+#+BEGIN_SRC python  :tangle ./codes/setoriais.py :eval no
 
 import sys
 
@@ -1472,7 +1502,7 @@ base = "2014-12-01"
 
 ** Pesquisa Industrial Mensal (PIM)
 
-#+BEGIN_SRC python  :tangle ./codes/setoriais.py
+#+BEGIN_SRC python  :tangle ./codes/setoriais.py :eval no
 file_name = "PIM_IBGE"
 df = pd.read_excel(
     file_path + file_name + ".xlsx",
@@ -1518,7 +1548,7 @@ fig.savefig(
 
 ** Pesquisa Mensal do Comércio (PMC)
    
-#+BEGIN_SRC python  :tangle ./codes/setoriais.py
+#+BEGIN_SRC python  :tangle ./codes/setoriais.py :eval no
 file_name = "PMC_IBGE"
 df = pd.read_excel(
     file_path + file_name + ".xlsx",
@@ -1587,7 +1617,7 @@ fig.savefig(
 
 ** Pesquisa Mensal de Serviços (PMS)
 
-#+BEGIN_SRC python  :tangle ./codes/setoriais.py
+#+BEGIN_SRC python  :tangle ./codes/setoriais.py :eval no
 file_name = "PMS_IBGE"
 df = pd.read_excel(
     file_path + file_name + ".xlsx",
@@ -1639,9 +1669,9 @@ fig.savefig(
 :results:
 :end:
 
-* Emprego
+* Emprego :noexport:
 
-#+BEGIN_SRC python   :tangle ./codes/pnad.py
+#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
 
 import sys
 
@@ -1651,7 +1681,8 @@ from setup import *
 
 
 file_path = './raw/LCA/PNAD_Continua.xlsx'
-image_path = './figs/Emprego/'
+imag#+PROPERTY: header-args R :results output drawer replace :exports results :eval never-export :session Cecon
+e_path = './figs/Emprego/'
 start_year = "2019-01-01"
 #+END_SRC
 
@@ -1662,7 +1693,7 @@ start_year = "2019-01-01"
 
 ** Taxa de desocupação
 
-#+BEGIN_SRC python   :tangle ./codes/pnad.py
+#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
 var = "Taxa de desocupação"
 df = pd.read_excel(
     file_path,
@@ -1710,7 +1741,7 @@ fig.savefig(
 
 ** Massa de renda
 
-#+BEGIN_SRC python   :tangle ./codes/pnad.py
+#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
 var = "Massa de renda real efetiva"
 df = pd.read_excel(
     file_path,
@@ -1758,7 +1789,7 @@ fig.savefig(
 
 ** Desalentados e subocupados
 
-#+BEGIN_SRC python   :tangle ./codes/pnad.py
+#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
 var = "Desalentados_Subocupados"
 df = pd.read_excel(
     file_path,
@@ -1810,7 +1841,7 @@ fig.savefig(
 ** Rendimento habitual médio por atividade
 
 
-#+BEGIN_SRC python   :tangle ./codes/pnad.py
+#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
 df = pd.read_excel(
     file_path,
     sheet_name = "Brasil Mensal RHM Setor Real",
@@ -1851,7 +1882,7 @@ fig.savefig(
 
 ** População ocupada por atividade
 
-#+BEGIN_SRC python   :tangle ./codes/pnad.py
+#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
 df = pd.read_excel(
     file_path,
     sheet_name = "Brasil Mensal PO Setor",
@@ -1900,7 +1931,7 @@ fig.savefig(
 
 ** Taxa de ocupação
 
-#+BEGIN_SRC python   :tangle ./codes/pnad.py
+#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
 var = "Taxa de ocupação"
 df = pd.read_excel(
     file_path,
@@ -1946,7 +1977,7 @@ fig.savefig(
 :end:
 
 
-#+BEGIN_SRC python   :tangle ./codes/pnad.py
+#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
 df = pd.read_excel(
     file_path,
     sheet_name = "Brasil Mensal PO Setor",
@@ -1991,17 +2022,42 @@ fig.savefig(
 :end:
 
 
-* Dado de alta frequência Bloomberg adaptado ao COVID-19 ([[https://www.bloomberg.com/news/articles/2020-11-13/alternative-data-show-activity-crashes-as-virus-resurges-chart][Link]])
+* Dado de alta frequência Bloomberg adaptado ao COVID-19 ([[https://www.bloomberg.com/news/articles/2020-11-13/alternative-data-show-activity-crashes-as-virus-resurges-chart][Link]]) :noexport:
 
 - Não é público
 - Substituiria CLIs
 
-* PNAD-COVID e PNAD
+* PNAD-COVID
+** Pendências :noexport:
+*** TODO Incluir logos
+** Home office - Por sexo e cor
 
 
 
-* Relatório do Tesouro
 
-* IPEA e importância do Auxílio Emergencial
+[[./figs/PNAD_COVID/home_sexo_cor.png]]
 
-* Base de dados FMI (Fiscal Monitor e WEO)
+** Home office - Por Cor e Escolaridade
+[[./figs/PNAD_COVID/home_edu_cor.png]]
+** Home office - Por Cor e Idade
+[[./figs/PNAD_COVID/home_sexo_idade.png]]
+
+** Home office - Por Trabalho
+[[./figs/PNAD_COVID/home_emprego.png]]
+
+** Home office - Por faixa salarial e cor
+[[./figs/PNAD_COVID/home_renda.png]]
+** Auxilio - Faixa Salarial
+[[./figs/PNAD_COVID/auxilio_renda.png]]
+** Auxilio - Por tipo do domicilio
+[[./figs/PNAD_COVID/auxilio_domicilio.png]]
+** Auxilio - Sexo e Cor
+[[./figs/PNAD_COVID/auxilio_cor_sexo.png]]
+
+* PNADc :noexport:
+
+* Relatório do Tesouro :noexport:
+
+* IPEA e importância do Auxílio Emergencial :noexport:
+
+* Base de dados FMI (Fiscal Monitor e WEO) :noexport:
