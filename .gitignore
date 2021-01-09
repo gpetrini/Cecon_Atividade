@@ -128,3 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .Rproj.user
+
+# PNAD covid related
+./Nota_015/raw/PNAD_COVID/*
