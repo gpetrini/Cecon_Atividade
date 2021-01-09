@@ -22,7 +22,7 @@ The options are intended to remove default clutter that Org adds automatically t
 #+latex_header:\definecolor{color2}{RGB}{0,20,20} % Color of the boxes behind the abstract and headings
 
 
-#+latex_header:\usepackage[brazilian]{babel} % Specify a different language here - english by default
+#+latex_header:\usepackage[portuguese]{babel} % Specify a different language here - english by default
 #+latex_header:\usepackage{lipsum} % Required to insert dummy text. To be removed otherwise
 
 

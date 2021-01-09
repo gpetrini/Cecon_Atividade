@@ -1,4 +1,4 @@
-% Created 2021-01-07 qui 12:07
+% Created 2021-01-08 sex 19:09
 % Intended LaTeX compiler: pdflatex
 \documentclass{SelfArx}
   \usepackage[T1]{fontenc}
@@ -12,7 +12,7 @@
 \setlength{\fboxrule}{0.75pt} % Width of the border around the abstract
 \definecolor{color1}{RGB}{0,0,90} % Color of the article title and sections
 \definecolor{color2}{RGB}{0,20,20} % Color of the boxes behind the abstract and headings
-\usepackage[brazilian, english]{babel} % Specify a different language here - english by default
+\usepackage[portuguese, english]{babel} % Specify a different language here - english by default
 \usepackage{lipsum} % Required to insert dummy text. To be removed otherwise
 \usepackage[backend=biber,%
 style = abnt,%
@@ -67,41 +67,46 @@ maxcitenames=3]{biblatex}
 \end{itemize}
 }
 \renewcommand{\abstractname}{Sumário Executivo} % Defines the keywords heading name
-
 \flushbottom % Makes all text pages the same height
 \maketitle % Print the title and abstract box
 \thispagestyle{empty} % Removes page numbering from the first page
 \onecolumn
 
 \section*{Atividade}
-\label{sec:org4f8bc02}
+\label{sec:orgdfb4d84}
 
-\subsection*{IBCBr}
-\label{sec:orgd59f1de}
+\subsection*{IBC-Br (acumulado 12 meses vs 12 meses anteriores)}
+\label{sec:org4f0ae5f}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/Antecedente/IBCBr.png}
+\end{center}
+
+
 
 \subsection*{Trimestre Contra trimestre imediatamente anterior}
-\label{sec:org1701ebf}
+\label{sec:org6c95008}
 
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PIB/PIB.png}
 \end{center}
 
 \subsection*{Trimestre Contra mesmo trimestre do ano anterior}
-\label{sec:org3652e6f}
+\label{sec:org36b31cd}
 
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PIB/PIB_YoY.png}
 \end{center}
 
 \subsection*{Agropecuária}
-\label{sec:org0f359f1}
+\label{sec:orgdc169c4}
 
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PIB/Agropecuaria.png}
 \end{center}
 
 \subsection*{Indústria}
-\label{sec:org569a10b}
+\label{sec:orgda5d91f}
 
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PIB/Industria.png}
@@ -109,21 +114,21 @@ maxcitenames=3]{biblatex}
 
 
 \subsection*{Serviços}
-\label{sec:orga4e3b57}
+\label{sec:org7522573}
 
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PIB/Servicos.png}
 \end{center}
 
 \subsection*{Demanda}
-\label{sec:org77c4ad7}
+\label{sec:orgc70aed5}
 
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PIB/Demanda.png}
 \end{center}
 
 \subsection*{Oferta}
-\label{sec:org07dfd94}
+\label{sec:org059bd9e}
 
 
 \begin{center}
@@ -132,14 +137,14 @@ maxcitenames=3]{biblatex}
 
 
 \subsection*{Contribuição para variação: Demanda}
-\label{sec:orgbdd5490}
+\label{sec:org25ac236}
 
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PIB/Contrib_Demanda.png}
 \end{center}
 
 \subsection*{Contribuição para variação: Oferta}
-\label{sec:org6c547c9}
+\label{sec:org70b6165}
 
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PIB/Contrib_Oferta.png}
@@ -147,142 +152,145 @@ maxcitenames=3]{biblatex}
 
 
 \subsection*{Contribuição para variação: Serviços}
-\label{sec:orgcd02aef}
+\label{sec:org1adbcaf}
 
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PIB/Contrib_Servicos.png}
 \end{center}
 
 \section*{Crédito (saldo)}
-\label{sec:org1416c94}
+\label{sec:org9bbb4f2}
+
+\subsubsection*{Endividamento das famílias}
+\label{sec:orgcd81eab}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/Credito/EndividamentoFamilias.png}
+\end{center}
+
+
+\subsubsection*{Saldo Pessoal Jurídica - Nível}
+\label{sec:org1bbf484}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/Credito/SaldoPJ.png}
+\end{center}
 
 
 
-\subsubsection*{Pessoa jurídica}
-\label{sec:orge2760b7}
+\subsubsection*{Saldo Pessoa Jurídica - em \% do PIB}
+\label{sec:orgb3cc528}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/Credito/SaldoPJ_PIB.png}
+\end{center}
 
-\subsubsection*{Pessoa física}
-\label{sec:org3004b25}
+\subsubsection*{Saldo Pessoa física - Nível}
+\label{sec:org48cdb4a}
 
-\subsubsection*{Crédito ampliado}
-\label{sec:org33c4a4e}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/Credito/SaldoPF.png}
+\end{center}
 
-\subsubsection*{Crédito direcionado}
-\label{sec:org9536363}
+
+\subsubsection*{Saldo Pessoa física - em \% do PIB}
+\label{sec:orgc1cab59}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/Credito/SaldoPF_PIB.png}
+\end{center}
+
+
+\subsubsection*{Crédito ampliado em \% do Total}
+\label{sec:orgc012037}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/Credito/SaldoCreditoAmpliado_Total.png}
+\end{center}
 
 
 
 \section*{Índices de atividade setoriais}
-\label{sec:org9b7f818}
-
-
-
-\subsection*{Pesquisa Industrial Mensal (PIM)}
-\label{sec:org0ce673f}
+\label{sec:orga9a6366}
 
 
 \subsection*{Pesquisa Mensal do Comércio (PMC)}
-\label{sec:orgecd0a6d}
+\label{sec:org90bc738}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/Setoriais/PMC_IBGE.png}
+\end{center}
+
+
+\subsection*{Pesquisa Industrial Mensal (PIM)}
+\label{sec:org85959c4}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/Setoriais/PIM_IBGE.png}
+\end{center}
 
 
 \subsection*{Pesquisa Mensal de Serviços (PMS)}
-\label{sec:orgd1590ac}
+\label{sec:org7ff6570}
 
-\section*{Emprego}
-\label{sec:org2834e5f}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/Setoriais/PMS_IBGE.png}
+\end{center}
 
-
-
-\subsection*{Taxa de desocupação}
-\label{sec:orgda53a7f}
-
-
-\subsection*{Massa de renda}
-\label{sec:orgb690c85}
+\subsection*{Tráfego de veículos pesados nas estradas pedagiadas - ABCR - Dados dessazonalizados}
+\label{sec:org544aefc}
 
 
-\subsection*{Desalentados e subocupados}
-\label{sec:org46cd71b}
-
-\subsection*{Rendimento habitual médio por atividade}
-\label{sec:orga786f15}
-
-\subsection*{População ocupada por atividade}
-\label{sec:org066f913}
-
-
-
-\subsection*{Taxa de ocupação}
-\label{sec:orgf000079}
-
-
-\section*{Dado de alta frequência Bloomberg adaptado ao COVID-19 (\href{https://www.bloomberg.com/news/articles/2020-11-13/alternative-data-show-activity-crashes-as-virus-resurges-chart}{Link})}
-\label{sec:orgcfe4d21}
-
-\begin{itemize}
-\item Não é público
-\item Substituiria CLIs
-\end{itemize}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./figs/Setoriais/TrafegoPedagio.png}
+\end{center}
 
 \section*{PNAD-COVID}
-\label{sec:orgebecf7f}
-\subsection*{Pendências}
-\label{sec:org382a9eb}
-\subsubsection*{{\bfseries\sffamily TODO} Incluir logos}
-\label{sec:org1a47050}
+\label{sec:orgf30fc82}
 \subsection*{Home office - Por sexo e cor}
-\label{sec:org998e8db}
+\label{sec:orgf6f0008}
+
+
+
+
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PNAD_COVID/home_sexo_cor.png}
 \end{center}
 
 \subsection*{Home office - Por Cor e Escolaridade}
-\label{sec:org53f4888}
+\label{sec:org249d18a}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PNAD_COVID/home_edu_cor.png}
 \end{center}
 \subsection*{Home office - Por Cor e Idade}
-\label{sec:org3a05eaa}
+\label{sec:orgb793fbe}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PNAD_COVID/home_sexo_idade.png}
 \end{center}
 
 \subsection*{Home office - Por Trabalho}
-\label{sec:org9420900}
+\label{sec:orgf837123}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PNAD_COVID/home_emprego.png}
 \end{center}
 
 \subsection*{Home office - Por faixa salarial e cor}
-\label{sec:org48e3b37}
+\label{sec:orgd9f4642}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PNAD_COVID/home_renda.png}
 \end{center}
 \subsection*{Auxilio - Faixa Salarial}
-\label{sec:org3c89892}
+\label{sec:org0e01605}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PNAD_COVID/auxilio_renda.png}
 \end{center}
 \subsection*{Auxilio - Por tipo do domicilio}
-\label{sec:orgd54e389}
+\label{sec:org9810788}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PNAD_COVID/auxilio_domicilio.png}
 \end{center}
 \subsection*{Auxilio - Sexo e Cor}
-\label{sec:orge56b5d0}
+\label{sec:orgfe4b248}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./figs/PNAD_COVID/auxilio_cor_sexo.png}
 \end{center}
-
-\section*{PNADc}
-\label{sec:org0d98344}
-
-\section*{Relatório do Tesouro}
-\label{sec:org39a66b5}
-
-\section*{IPEA e importância do Auxílio Emergencial}
-\label{sec:org355bd03}
-
-\section*{Base de dados FMI (Fiscal Monitor e WEO)}
-\label{sec:org09822ce}
 \end{document}
