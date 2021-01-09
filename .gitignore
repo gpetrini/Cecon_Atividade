@@ -130,4 +130,4 @@ dmypy.json
 .Rproj.user
 
 # PNAD covid related
-./Nota_015/raw/PNAD_COVID/*
+./Nota_015/raw/PNAD_COVID/
