@@ -2,17 +2,17 @@
  "Cecon_COVID19"
  (lambda ()
    (TeX-add-to-alist 'LaTeX-provided-package-options
-                     '(("fontenc" "T1") ("inputenc" "utf8") ("babel" "brazilian" "english") ("biblatex" "backend=biber" "style=abnt" "noslsn" "isbn=false" "url=false" "extrayear" "uniquename=init" "giveninits" "justify" "sccite" "scbib" "sorting=nyt" "repeattitles" "maxcitenames=3")))
+                     '(("fontenc" "T1") ("inputenc" "utf8") ("babel" "portuguese" "english") ("biblatex" "backend=biber" "style=abnt" "noslsn" "isbn=false" "url=false" "extrayear" "uniquename=init" "giveninits" "justify" "sccite" "scbib" "sorting=nyt" "repeattitles" "maxcitenames=3")))
    (add-to-list 'LaTeX-verbatim-environments-local "minted")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "href")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
-   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "href")
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
+   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "url")
    (TeX-run-style-hooks
     "latex2e"
     "SelfArx"
@@ -30,49 +30,38 @@
    (TeX-add-symbols
     "keywordname")
    (LaTeX-add-labels
-    "sec:org4f8bc02"
-    "sec:orgd59f1de"
-    "sec:org1701ebf"
-    "sec:org3652e6f"
-    "sec:org0f359f1"
-    "sec:org569a10b"
-    "sec:orga4e3b57"
-    "sec:org77c4ad7"
-    "sec:org07dfd94"
-    "sec:orgbdd5490"
-    "sec:org6c547c9"
-    "sec:orgcd02aef"
-    "sec:org1416c94"
-    "sec:orge2760b7"
-    "sec:org3004b25"
-    "sec:org33c4a4e"
-    "sec:org9536363"
-    "sec:org9b7f818"
-    "sec:org0ce673f"
-    "sec:orgecd0a6d"
-    "sec:orgd1590ac"
-    "sec:org2834e5f"
-    "sec:orgda53a7f"
-    "sec:orgb690c85"
-    "sec:org46cd71b"
-    "sec:orga786f15"
-    "sec:org066f913"
-    "sec:orgf000079"
-    "sec:orgcfe4d21"
-    "sec:orgebecf7f"
-    "sec:org382a9eb"
-    "sec:org1a47050"
-    "sec:org998e8db"
-    "sec:org53f4888"
-    "sec:org3a05eaa"
-    "sec:org9420900"
-    "sec:org48e3b37"
-    "sec:org3c89892"
-    "sec:orgd54e389"
-    "sec:orge56b5d0"
-    "sec:org0d98344"
-    "sec:org39a66b5"
-    "sec:org355bd03"
-    "sec:org09822ce"))
+    "sec:orgdfb4d84"
+    "sec:org4f0ae5f"
+    "sec:org6c95008"
+    "sec:org36b31cd"
+    "sec:orgdc169c4"
+    "sec:orgda5d91f"
+    "sec:org7522573"
+    "sec:orgc70aed5"
+    "sec:org059bd9e"
+    "sec:org25ac236"
+    "sec:org70b6165"
+    "sec:org1adbcaf"
+    "sec:org9bbb4f2"
+    "sec:orgcd81eab"
+    "sec:org1bbf484"
+    "sec:orgb3cc528"
+    "sec:org48cdb4a"
+    "sec:orgc1cab59"
+    "sec:orgc012037"
+    "sec:orga9a6366"
+    "sec:org90bc738"
+    "sec:org85959c4"
+    "sec:org7ff6570"
+    "sec:org544aefc"
+    "sec:orgf30fc82"
+    "sec:orgf6f0008"
+    "sec:org249d18a"
+    "sec:orgb793fbe"
+    "sec:orgf837123"
+    "sec:orgd9f4642"
+    "sec:org0e01605"
+    "sec:org9810788"
+    "sec:orgfe4b248"))
  :latex)
 
