@@ -1829,3 +1829,61 @@ fig.savefig(
 * IPEA e importância do Auxílio Emergencial :noexport:
 
 * Base de dados FMI (Fiscal Monitor e WEO) :noexport:
+
+** Fiscal monitor
+
+#+BEGIN_SRC python
+df = pd.read_excel(
+    './raw/IMF/fiscal-monitor-database-oct-2020-for-webpage.xlsx',
+    sheet_name='Summary.Global',
+    index_col=1,
+    skiprows=[0,1,2,]
+)
+df = df.loc[[
+    # 'G20: Emerging markets',
+    'Argentina',
+    'Brazil',
+    'China',
+    'India',
+    'Indonesia',
+    'Mexico',
+    'Russia',
+    'Saudi Arabia',
+    'South Africa'
+],:].copy()
+df = df[[
+    'Above the line measures',
+    'Unnamed: 3',
+    'Unnamed: 4',
+    'Above the line measures.1',
+    'Unnamed: 15',
+    'Unnamed: 16',
+]]
+
+df.columns = [
+    'Gastos adicionais',
+    'Setor de saúde',
+    'Outros setores',
+    'Gastos adicionais (%PIB)',
+    'Setor de saúde (%PIB)',
+    'Outros setores (%PIB)',
+]
+df.index.name = 'G20 - Países Emergentes'
+print(df)
+df.plot()
+#+END_SRC
+
+#+RESULTS:
+:results:
+                        Gastos adicionais Setor de saúde Outros setores Gastos adicionais (%PIB) Setor de saúde (%PIB) Outros setores (%PIB)
+G20 - Países Emergentes
+Argentina                         15.0086        0.83168        14.1769                  3.92115              0.217285               3.70386
+Brazil                            112.858        12.1967        100.661                  8.27546              0.894338               7.38112
+China                             706.667        21.8327        684.834                  4.64236              0.143427               4.49893
+India                             46.3915        4.89835        41.4931                  1.78939              0.188937               1.60046
+Indonesia                         29.0331        5.19791        23.8352                   2.6666              0.477413               2.18919
+Mexico                             6.7455        1.83177        4.91373                 0.648374              0.176069              0.472305
+Russia                            34.9583        3.24542        31.6988                  2.38773               0.22167               2.16511
+Saudi Arabia                        15.36        12.5333        2.82667                  2.25585               1.84071              0.415139
+South Africa                      14.9708        1.16959        13.8012                  5.29772              0.413885               4.88384
+:end:
