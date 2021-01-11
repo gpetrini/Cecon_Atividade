@@ -168,6 +168,14 @@ fig.savefig(
 #+RESULTS:
 [[file:./figs/Setoriais/TrafegoPedagio.png]]
 
+
+* Dados de alta frequência
+
+** Bloomberg adaptado ao COVID-19 ([[https://www.bloomberg.com/news/articles/2020-11-13/alternative-data-show-activity-crashes-as-virus-resurges-chart][Link]])
+
+- Não é público
+- Substituiria CLIs
+
 * Atividade
 
 
@@ -823,7 +831,7 @@ plt.close()
 #+RESULTS:
 [[file:./figs/PIB/Contrib_Servicos.png]]
 
-* Crédito (saldo)
+* Crédito
 #+begin_src python
 start_year = '2019-01-01'
 #+end_src
@@ -832,7 +840,7 @@ start_year = '2019-01-01'
 :results:
 :end:
 
-*** Endividamento das famílias
+** Endividamento das famílias
 
 #+BEGIN_SRC python :results graphics file :file ./figs/Credito/EndividamentoFamilias.png
 titulo = "Endividamento das famílias\nTotal e Exceto crédito habitacional"
@@ -887,7 +895,7 @@ fig.savefig(
 [[file:./figs/Credito/EndividamentoFamilias.png]]
 
 
-*** Saldo Pessoal Jurídica - Nível
+** Saldo Pessoal Jurídica - Nível
      
 #+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoPJ.png
 titulo = "Saldo Pessoa jurídica"
@@ -940,7 +948,7 @@ fig.savefig(
 
 
 
-*** Saldo Pessoa Jurídica - em % do PIB
+** Saldo Pessoa Jurídica - em % do PIB
 #+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoPJ_PIB.png
 titulo = "Saldo Pessoa jurídica\nem % PIB"
 porcentagem = True
@@ -993,7 +1001,7 @@ fig.savefig(
 #+RESULTS:
 [[file:./figs/Credito/SaldoPJ_PIB.png]]
 
-*** Saldo Pessoa física - Nível
+** Saldo Pessoa física - Nível
 
 #+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoPF.png
 titulo = "Saldo Pessoa física"
@@ -1045,7 +1053,7 @@ fig.savefig(
 [[file:./figs/Credito/SaldoPF.png]]
 
 
-*** Saldo Pessoa física - em % do PIB
+** Saldo Pessoa física - em % do PIB
 
 #+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoPF_PIB.png
 titulo = "Saldo Pessoa física\nem % PIB"
@@ -1100,7 +1108,7 @@ fig.savefig(
 [[file:./figs/Credito/SaldoPF_PIB.png]]
 
 
-*** Crédito ampliado em % do Total
+** Crédito ampliado em % do Total
 
 #+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoCreditoAmpliado_Total.png
 titulo = "Saldo Crédito Ampliado\nem % do Total"
@@ -1158,7 +1166,122 @@ fig.savefig(
 #+RESULTS:
 [[file:./figs/Credito/SaldoCreditoAmpliado_Total.png]]
 
+** Indicadores de aprovação de crédito
 
+#+BEGIN_SRC python :results graphics file :file ./figs/Credito/PTC.png
+titulo = "Indicadores de aprovação de crédito\nAprovações Esperadas - Observadas"
+porcentagem=False
+unidade="Pontos"
+df = pd.concat(
+    [
+        consulta_bc(21396, ["Grandes - Esperadas"]),
+        consulta_bc(21397, ["Grandes - Observadas"]),
+        consulta_bc(21398, ["Micro - Esperadas"]),
+        consulta_bc(21399, ["Micro - Observadas"]),
+        consulta_bc(21400, ["Consumo - Esperadas"]),
+        consulta_bc(21401, ["Consumo - Observadas"]),
+        consulta_bc(21402, ["Habitacional - Esperadas"]),
+        consulta_bc(21403, ["Habitacional - Observadas"]),
+    ],
+    axis=1,
+)
+df["Grandes Empresas"] = df["Grandes - Esperadas"] - df["Grandes - Observadas"]
+df["Micro, Pequenas e Médias Empresas"] = df["Micro - Esperadas"] - df["Micro - Observadas"]
+df["Consumo"] = df["Consumo - Esperadas"] - df["Consumo - Observadas"]
+df["Habitacional"] = df["Habitacional - Esperadas"] - df["Habitacional - Observadas"]
+df = df[["Grandes Empresas", "Micro, Pequenas e Médias Empresas", "Consumo", "Habitacional"]]
+
+df = interpolator(df)
+df = df[start_year:]
+
+df.index.name = ''
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = titulo,
+    ax = ax,
+    # kind='bar', stacked=True, edgecolor='black',
+    lw=2,
+)
+# ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
+ax.set_ylabel('Esperadas - Observadas (Pontos)')
+ax.axhline(y = 0, color='black', ls='-', lw=1,)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento\nsocial em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+# if porcentagem == False:
+#     ax.set_yticklabels(['{:,.0f}'.format(x) for x in ax.get_yticks()])
+#     ax.set_ylabel(f'{unidade}')
+# else:
+#     ax.set_yticklabels(['{:,.0%}'.format(x) for x in ax.get_yticks()])
+#     ax.set_ylabel(f'em % {unidade}')
+ax2 = plt.axes([.9,0.6,0.2,0.2])
+
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    './figs/Credito/PTC' + '.png',
+    dpi = 300,
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Credito/PTC.png]]
+
+** Recolhimentos compulsórios de instituições financeiras
+
+#+BEGIN_SRC python :results graphics file :file ./figs/Credito/Requerimentos_Total.png
+titulo = "Recolhimentos compulsórios de instituições financeira\nSaldo Total"
+porcentagem=False
+unidade="u.m.c (mil)"
+
+df = consulta_bc(17633, ["Saldo Total"])
+
+df = df[start_year:]
+df = df.apply(pd.to_numeric, errors='coerce')
+
+df.index.name = ''
+
+
+fig, ax = plt.subplots(figsize=(8,5))
+df[start_year:].plot(
+    title = titulo,
+    ax = ax,
+    lw=2,
+)
+ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento\nsocial em SP')
+if porcentagem == False:
+    ax.set_yticklabels(['{:,.0f}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'R$ {unidade}')
+else:
+    ax.set_yticklabels(['{:,.0%}'.format(x) for x in ax.get_yticks()])
+    ax.set_ylabel(f'em % {unidade}')
+ax2 = plt.axes([.135,0.135,0.2,0.2])
+
+
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    './figs/Credito/Recolhimentos_Total' + '.png',
+    dpi = 300,
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Credito/Requerimentos_Total.png]]
 
 * Índices de atividade setoriais
 
@@ -1672,11 +1795,6 @@ fig.savefig(
 #+RESULTS:
 :results:
 :end:
-
-* Dado de alta frequência Bloomberg adaptado ao COVID-19 ([[https://www.bloomberg.com/news/articles/2020-11-13/alternative-data-show-activity-crashes-as-virus-resurges-chart][Link]]) :noexport:
-
-- Não é público
-- Substituiria CLIs
 
 * PNAD-COVID
 ** Pendências :noexport:
