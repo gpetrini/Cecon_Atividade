@@ -89,8 +89,7 @@ def consulta_bc(codigo_bcb, nome = ["Nome da série"]):
 :results:
 :end:
 
-* Atividade
-
+* Indicadores de antecedente
 ** IBC-Br (acumulado 12 meses vs 12 meses anteriores)
 
 #+BEGIN_SRC python :results graphics file :file ./figs/Antecedente/IBCBr.png
@@ -132,6 +131,44 @@ plt.close()
 
 #+RESULTS:
 [[file:./figs/Antecedente/IBCBr.png]]
+
+** Tráfego de veículos pesados nas estradas pedagiadas - ABCR - Dados dessazonalizados
+
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/TrafegoPedagio.png
+df = consulta_bc(28553, ["ABCR"])
+
+
+df = df[start_year:]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+df.plot(
+    title=f"Tráfego de veículos pesados nas estradas pedagiadas\nDados dessazonalizados",
+    ax=ax,
+    lw=2.5,
+)
+ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP")
+ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/Setoriais/TrafegoPedagio" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Setoriais/TrafegoPedagio.png]]
+
+* Atividade
 
 
 ** Baixando dados e criando nomes :ignore:
@@ -1284,428 +1321,7 @@ fig.savefig(
 #+RESULTS:
 [[file:./figs/Setoriais/PMS_IBGE.png]]
 
-** Tráfego de veículos pesados nas estradas pedagiadas - ABCR - Dados dessazonalizados
-
-
-#+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/TrafegoPedagio.png
-df = consulta_bc(28553, ["ABCR"])
-
-
-df = df[start_year:]
-df = interpolator(df)
-
-fig, ax = plt.subplots(figsize=(8, 5))
-df.plot(
-    title=f"Tráfego de veículos pesados nas estradas pedagiadas\nDados dessazonalizados",
-    ax=ax,
-    lw=2.5,
-)
-ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP")
-ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
-ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
-ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
-ax2.axis("off")
-
-sns.despine()
-plt.close()
-
-fig.savefig(
-    "./figs/Setoriais/TrafegoPedagio" + ".png",
-    dpi=300,
-    bbox_inches="tight",
-    pad_inches=0,
-)
-#+END_SRC
-
-#+RESULTS:
-[[file:./figs/Setoriais/TrafegoPedagio.png]]
-
-* Emprego :noexport:
-
-#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
-
-import sys
-
-sys.path.insert(1, './codes/')
-
-from setup import *
-
-
-file_path = './raw/LCA/PNAD_Continua.xlsx'
-imag#+PROPERTY: header-args R :results output drawer replace :exports results :eval never-export :session Cecon
-e_path = './figs/Emprego/'
-start_year = "2019-01-01"
-#+END_SRC
-
-#+RESULTS:
-:results:
-:end:
-
-
-** Taxa de desocupação
-
-#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
-var = "Taxa de desocupação"
-df = pd.read_excel(
-    file_path,
-    sheet_name = "Brasil Dessaz",
-    skiprows = 11,
-    usecols = "A,F",
-    parse_date = True,
-    index_col = [0]
-)
-df.index.name = ''
-
-
-df = df[start_year:]
-df.columns = [
-    var
-]
-df = interpolator(df)
-
-fig, ax = plt.subplots(figsize=(8,5))
-df.plot(
-    title = "Taxa de Desocupação\n(% da Força de Trabalho)",
-    ax = ax,
-    lw = 2.5
-)
-ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento em SP')
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-ax2 = plt.axes([0.135,0.135,0.2,0.2])
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-
-sns.despine()
-plt.close()
-
-fig.savefig(
-    image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + '.png',
-    dpi = 300, 
-    bbox_inches='tight',pad_inches=0
-    )
-#+END_SRC
-
-#+RESULTS:
-:results:
-:end:
-
-
-** Massa de renda
-
-#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
-var = "Massa de renda real efetiva"
-df = pd.read_excel(
-    file_path,
-    sheet_name = "Brasil Dessaz",
-    skiprows = 11,
-    usecols = "A,R",
-    parse_date = True,
-    index_col = [0]
-)
-df.index.name = ''
-
-
-df = df[start_year:]
-df.columns = [
-    var
-]
-df = interpolator(df)
-
-fig, ax = plt.subplots(figsize=(8,5))
-df.plot(
-    title = "Massa de renda real efetiva",
-    ax = ax,
-    lw = 2.5
-)
-ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento social em SP')
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-ax2 = plt.axes([0.135,0.135,0.2,0.2])
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-
-sns.despine()
-plt.close()
-
-fig.savefig(
-    image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + '.png',
-    dpi = 300, 
-    bbox_inches='tight',pad_inches=0
-    )
-#+END_SRC
-
-#+RESULTS:
-:results:
-:end:
-
-
-** Desalentados e subocupados
-
-#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
-var = "Desalentados_Subocupados"
-df = pd.read_excel(
-    file_path,
-    sheet_name = "Brasil Dessaz",
-    skiprows = 11,
-    usecols = "A,D,S,T",
-    parse_date = True,
-    index_col = [0]
-)
-df.index.name = ''
-df.columns = [
-    "Força de trabalho",
-    "Subocupados",
-    "Desalentados"
-]
-df = df.apply(pd.to_numeric, errors='coerce')
-df["Taxa de desalentados"] = df["Desalentados"]/df["Força de trabalho"]
-df["Taxa de Subocupados por \ninsuficiência de horas trabalhadas"] = df["Subocupados"]/df["Força de trabalho"]
-df = df[start_year:]
-df = df[["Taxa de desalentados", "Taxa de Subocupados por \ninsuficiência de horas trabalhadas"]]
-df = interpolator(df)
-
-fig, ax = plt.subplots(figsize=(8,5))
-df.plot(
-    title = "Taxa de desalentados e subocupatos\n(em % da força de trabalho)",
-    ax = ax,
-    lw = 2.5
-)
-ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento social em SP')
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-ax2 = plt.axes([0.135,0.135,0.2,0.2])
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-
-sns.despine()
-plt.close()
-
-fig.savefig(
-    image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + '.png',
-    dpi = 300, 
-    bbox_inches='tight',pad_inches=0
-    )
-#+END_SRC
-
-#+RESULTS:
-:results:
-:end:
-
-** Rendimento habitual médio por atividade
-
-
-#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
-df = pd.read_excel(
-    file_path,
-    sheet_name = "Brasil Mensal RHM Setor Real",
-    skiprows = 11,
-    usecols = "A:K",
-    parse_date = True,
-    index_col = [0]
-)
-df.index.name = ''
-df = df[start_year:]
-df = interpolator(df)
-
-fig, ax = plt.subplots(figsize=(8,5))
-df.plot(
-    title = "Rendimento habitual médio por atividade",
-    ax = ax,
-    lw = 2.5
-)
-ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento social em SP')
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-ax2 = plt.axes([0.135,0.135,0.2,0.2])
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-
-sns.despine()
-plt.close()
-
-fig.savefig(
-    image_path + file_path.strip("/")[-1] + "RHM_Setor" + "_" + '.png',
-    dpi = 300, 
-    bbox_inches='tight',pad_inches=0
-    )
-#+END_SRC
-
-#+RESULTS:
-:results:
-:end:
-
-** População ocupada por atividade
-
-#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
-df = pd.read_excel(
-    file_path,
-    sheet_name = "Brasil Mensal PO Setor",
-    skiprows = 11,
-    usecols = "A:K",
-    parse_date = True,
-    index_col = [0]
-)
-df.index.name = ''
-df = df[start_year:]
-
-
-fig, ax = plt.subplots(figsize=(8,5))
-df.plot(
-    title = "População ocupada por atividade",
-    ax = ax,
-    lw = 1.5,
-    edgecolor = 'black',
-    kind = 'bar', stacked = True
-)
-
-
-
-ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
-
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-ax2 = plt.axes([0.135,0.135,0.2,0.2])
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-
-sns.despine()
-plt.close()
-
-fig.savefig(
-    image_path + file_path.strip("/")[-1] + "PO_Atividade" + "_" + '.png',
-    dpi = 300, 
-    bbox_inches='tight',pad_inches=0
-    )
-#+END_SRC
-
-#+RESULTS:
-:results:
-:end:
-
-
-
-** Taxa de ocupação
-
-#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
-var = "Taxa de ocupação"
-df = pd.read_excel(
-    file_path,
-    sheet_name = "Brasil Dessaz",
-    skiprows = 11,
-    usecols = "A,D,E",
-    parse_date = True,
-    index_col = [0]
-)
-
-df.index.name = ''
-df = df[start_year:]
-df.columns = ["Força de trabalho", "População ocupada"]
-
-df[var] = df["População ocupada"]/df["Força de trabalho"]
-df = df[[var]]
-df = interpolator(df)
-
-fig, ax = plt.subplots(figsize=(8,5))
-df.plot(
-    title = "Taxa de Ocupação\n(% da Força de Trabalho)",
-    ax = ax,
-    lw = 2.5
-)
-ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label=corona_sp_txt)
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-ax2 = plt.axes([0.135,0.135,0.2,0.2])
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-
-sns.despine()
-plt.close()
-
-fig.savefig(
-    image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + "linha" +  '.png',
-    dpi = 300, 
-    bbox_inches='tight',pad_inches=0
-    )
-#+END_SRC
-
-#+RESULTS:
-:results:
-:end:
-
-
-#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
-df = pd.read_excel(
-    file_path,
-    sheet_name = "Brasil Mensal PO Setor",
-    skiprows = 11,
-    usecols = "A:L",
-    parse_date = True,
-    index_col = [0]
-)
-df.index.name = ''
-df = df[start_year:]
-for col in df:
-    df[col] = df[col].apply(lambda x: (100*x)/df["Total"])
-
-df.drop(["Total"], axis='columns', inplace=True)
-df = interpolator(df)
-
-fig, ax = plt.subplots(figsize=(8,5))
-df.plot(
-    title = "População ocupada por atividade\n(% Força de trabalho)",
-    ax = ax,
-    lw = 1.5,
-)
-
-ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label=corona_sp_txt)
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-ax2 = plt.axes([0.135,0.135,0.2,0.2])
-ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
-ax2.axis('off')
-
-sns.despine()
-plt.close()
-
-fig.savefig(
-    image_path + file_path.strip("/")[-1] + "PO_Atividade" + "_" + "linha" + '.png',
-    dpi = 300, 
-    bbox_inches='tight',pad_inches=0
-    )
-#+END_SRC
-
-#+RESULTS:
-:results:
-:end:
-
-** Taxa de desocupação
-
-#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/TaxaDesocupacao.png
-df = consulta_bc(24369, ["Taxa de desocupação - PNADC"])
-
-
-df = df[start_year:]
-df = interpolator(df)
-
-fig, ax = plt.subplots(figsize=(8, 5))
-df.plot(
-    title=f"Taxa de desocupação\nPNADC (em %)",
-    ax=ax,
-    lw=2.5,
-)
-ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP")
-ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
-ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
-ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
-ax2.axis("off")
-
-sns.despine()
-plt.close()
-
-fig.savefig(
-    "./figs/Emprego/TaxaDesocupacao" + ".png",
-    dpi=300,
-    bbox_inches="tight",
-    pad_inches=0,
-)
-#+END_SRC
-
-#+RESULTS:
-[[file:./figs/Emprego/TaxaDesocupacao.png]]
+* Emprego
 
 ** Rendimento médio real habitual das pessoas ocupadas
 
@@ -1752,6 +1368,311 @@ fig.savefig(
 #+RESULTS:
 [[file:./figs/Emprego/RMHPO.png]]
 
+** Massa de rendimento real efetiva e habitual de todos os trabalhos
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/MRR_Efetiva_Habitual.png
+df = pd.concat(
+    [
+        consulta_bc(28544, ["Efetiva"]),
+        consulta_bc(28545, ["Habitual"]),
+    ],
+    axis=1,
+)
+
+df = df[start_year:]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+df.plot(
+    title=f"Massa de rendimento real efetiva e\nhabitual de todos os trabalhos",
+    ax=ax,
+    lw=2.5,
+)
+ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP")
+ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/Emprego/MRR_Efetiva_Habitual" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Emprego/MRR_Efetiva_Habitual.png]]
+
+** Massa Salarial Ampliada Disponível - PNADC
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/MSAD.png
+df = consulta_bc(22079, ["MSAD - PNADC"])
+
+df = df[start_year:]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+df.plot(
+    title=f"Massa Salarial Ampliada Disponível PNADC",
+    ax=ax,
+    lw=2.5,
+)
+ax.set_yticklabels(["{:,.2f}".format(x / 1000) for x in ax.get_yticks()])
+ax.set_ylabel('R$ Bilhões')
+ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP")
+ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/Emprego/MSAD" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Emprego/MSAD.png]]
+
+** Rendimento habitual médio por atividade
+
+
+#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
+df = pd.read_excel(
+    file_path,
+    sheet_name = "Brasil Mensal RHM Setor Real",
+    skiprows = 11,
+    usecols = "A:K",
+    parse_date = True,
+    index_col = [0]
+)
+df.index.name = ''
+df = df[start_year:]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = "Rendimento habitual médio por atividade",
+    ax = ax,
+    lw = 2.5
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento social em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135,0.135,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    image_path + file_path.strip("/")[-1] + "RHM_Setor" + "_" + '.png',
+    dpi = 300, 
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+** Número de horas trabalhadas - indústria de transformação
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/Horas_Transformacao.png
+df = consulta_bc(24348, ["Indústria de transformação"])
+
+df = rebase(df, base='2020-01-01')
+df = df['2019-01-01':]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+df.plot(
+    title=f"Número de horas trabalhadas - Dados dessazonalizados\nJan/2020 = 100",
+    ax=ax,
+    lw=2.5,
+)
+ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP")
+ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/Emprego/Horas_Transformacao" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Emprego/Horas_Transformacao.png]]
+
+** Novo CAGED  - Por atividade (dados dessazonalizados)
+
+#+BEGIN_SRC python :results graphics file :file ./figs/Emprego/NovoCaged_Atividade.png
+df = pd.concat(
+    [
+        # consulta_bc(28784, ["Total"]),
+        consulta_bc(28785, ["Agropecuária"]),
+        consulta_bc(28786, ["Indústrias extrativas"]),
+        consulta_bc(28787, ["Indústrias de transformação"]),
+        # consulta_bc(28788, ["SIUP"]),
+        # consulta_bc(28789, ["Eletricidade e gás"]),
+        # consulta_bc(28790, ["Água, esgoto, atividades de\ngestão de resíduos e descontaminação"]),
+        consulta_bc(28791, ["Construção"]),
+        consulta_bc(28792, ["Comércio"]),
+        consulta_bc(28793, ["Serviços"]),
+        # consulta_bc(28794, ["Transporte, armazenamento e correios"]),
+        # consulta_bc(28795, ["Alojamento e alimentação"]),
+        # consulta_bc(28796, ["Informação e comunicação"]),
+        # consulta_bc(28797, ["Atividades financeiras e seguros"]),
+        # consulta_bc(28798, ["Atividades imobiliárias"]),
+        # consulta_bc(28799, ["Atividades profissionais, científicas e técnicas"]),
+        # consulta_bc(28800, ["Atividades administrativas e serviços complementares"]),
+        # consulta_bc(28801, ["Administração pública, defesa e seguridade social"]),
+        consulta_bc(28802, ["Educação"]),
+        consulta_bc(28803, ["Saúde e serviços sociais"]),
+        # consulta_bc(28804, ["Outras atividades de serviços"]),
+    ],
+    axis = 1
+)
+df.index.name = ''
+df = df['2019':]
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = "Novo Caged por atividade - Dados dessazonalizados",
+    ax = ax,
+    lw = 1.5,
+    edgecolor = 'black',
+    kind = 'bar', stacked = True, width=0.9
+)
+
+
+
+ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
+
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([.9,0.7,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    './figs/Emprego/NovoCaged_Atividade.png',
+    dpi = 300,
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Emprego/NovoCaged_Atividade.png]]
+
+
+
+** Taxa de desocupação
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/TaxaDesocupacao.png
+df = consulta_bc(24369, ["Taxa de desocupação - PNADC"])
+
+
+df = df[start_year:]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+df.plot(
+    title=f"Taxa de desocupação\nPNADC (em %)",
+    ax=ax,
+    lw=2.5,
+)
+ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP")
+ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/Emprego/TaxaDesocupacao" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Emprego/TaxaDesocupacao.png]]
+
+
+** Desalentados e subocupados :noexport:
+
+#+BEGIN_SRC python   :tangle ./codes/pnad.py :eval no
+var = "Desalentados_Subocupados"
+df = pd.read_excel(
+    file_path,
+    sheet_name = "Brasil Dessaz",
+    skiprows = 11,
+    usecols = "A,D,S,T",
+    parse_date = True,
+    index_col = [0]
+)
+df.index.name = ''
+df.columns = [
+    "Força de trabalho",
+    "Subocupados",
+    "Desalentados"
+]
+df = df.apply(pd.to_numeric, errors='coerce')
+df["Taxa de desalentados"] = df["Desalentados"]/df["Força de trabalho"]
+df["Taxa de Subocupados por \ninsuficiência de horas trabalhadas"] = df["Subocupados"]/df["Força de trabalho"]
+df = df[start_year:]
+df = df[["Taxa de desalentados", "Taxa de Subocupados por \ninsuficiência de horas trabalhadas"]]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8,5))
+df.plot(
+    title = "Taxa de desalentados e subocupatos\n(em % da força de trabalho)",
+    ax = ax,
+    lw = 2.5
+)
+ax.axvline(x = corona_sp, color='black', ls='--', lw=1, label='Início isolamento social em SP')
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135,0.135,0.2,0.2])
+ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
+ax2.axis('off')
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + '.png',
+    dpi = 300,
+    bbox_inches='tight',pad_inches=0
+    )
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
 * Dado de alta frequência Bloomberg adaptado ao COVID-19 ([[https://www.bloomberg.com/news/articles/2020-11-13/alternative-data-show-activity-crashes-as-virus-resurges-chart][Link]]) :noexport:
 
 - Não é público
@@ -1784,7 +1705,6 @@ fig.savefig(
 ** Auxilio - Sexo e Cor
 [[./figs/PNAD_COVID/auxilio_cor_sexo.png]]
 
-* PNADc :noexport:
 
 * Relatório do Tesouro :noexport:
 
