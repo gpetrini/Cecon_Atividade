@@ -4,6 +4,7 @@ library(readr)
 library(ggplot2)
 library(Cairo)
 library(cowplot)
+library(magick)
 
 logo_file <- './figs/Cecon_Logo.png'
 
@@ -113,6 +114,8 @@ fig <- ggplot(df, aes(fill = Cor, y = trab_home_office, x = Sexo)) +
     scale_fill_manual(values = c("#00b894","#ff7675","#0984e3","#6c5ce7")) +
     scale_y_discrete(limits=factor(0:100), breaks = c(0,10,20,30,40,50,60,70,80,90,100), name = "Percentual (%)")
 
+fig<- ggdraw(fig) + 
+    draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 # Salvando
 ggsave(plot = fig, "./figs/PNAD_COVID/home_sexo_cor.png",
        width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
@@ -146,6 +149,10 @@ fig <- ggplot(df, aes(fill = Escolaridade, y = trab_home_office, x = Cor)) +
          title = "Pessoas em home office, por cor/raça e escolaridade") +
     scale_fill_manual(values = c("#00b894","#ff7675","#0984e3","#6c5ce7","#fdcb6e")) +
     scale_y_discrete(limits=factor(0:100), breaks = c(0,10,20,30,40,50,60,70,80,90,100), name = "Percentual (%)")# Salvando em PNG
+
+fig<- ggdraw(fig) + 
+    draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
+
 ggsave(plot = fig, "./figs/PNAD_COVID/home_edu_cor.png",
        width = 14, height = 7, dpi = 150, units = "in",type = "cairo")
 
@@ -178,6 +185,11 @@ fig <- ggplot(df, aes(fill = Idade, y = trab_home_office, x = Sexo)) +
          title = "Pessoas em home office, por sexo e faixa etária") +
     scale_fill_manual(values = c("#00b894","#ff7675","#0984e3","#6c5ce7","#fdcb6e")) +
     scale_y_discrete(limits=factor(0:100), breaks = c(0,10,20,30,40,50,60,70,80,90,100), name = "Percentual (%)")# Salvando em PNG
+
+fig<- ggdraw(fig) + 
+    draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
+
+
 ggsave(plot = fig, "./figs/PNAD_COVID/home_sexo_idade.png",
        width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
 
@@ -226,6 +238,11 @@ fig <- ggplot(df, aes(fill = Tipo_emprego, y = trab_home_office, x = Tipo_empreg
     scale_y_discrete(limits=factor(0:100), breaks = c(0,10,20,30,40,50,60,70,80,90,100), name = "Percentual (%)")
 
 # Salvando em PNG
+
+fig<- ggdraw(fig) + 
+    draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
+
+
 ggsave(plot = fig, "./figs/PNAD_COVID/home_emprego.png",
        width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
 
@@ -257,6 +274,11 @@ fig <- ggplot(df, aes(fill = Faixa_salario, y = trab_home_office, x = Cor)) +
          title = "Pessoas em home office, por cor/raça e faixa salarial") +
     scale_fill_manual(values = c("#fad390","#e55039","#4a69bd","#60a3bc","#78e08f","#079992")) +
     scale_y_discrete(limits=factor(0:100), breaks = c(0,10,20,30,40,50,60,70,80,90,100), name = "Percentual (%)")# Salvando em PNG
+
+fig<- ggdraw(fig) + 
+    draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
+
+
 ggsave(plot = fig, "./figs/PNAD_COVID/home_renda.png",
        width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
 
@@ -295,6 +317,10 @@ fig <- ggplot(df, aes(fill = Faixa_salario, y = pessoas_auxilio, x = Faixa_salar
     scale_y_discrete(limits=factor(0:100), breaks = c(0,10,20,30,40,50,60,70,80,90,100), name = "Percentual (%)")
 
 # Salvando em PNG
+fig<- ggdraw(fig) + 
+    draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
+
+
 ggsave(plot = fig, "./figs/PNAD_COVID/auxilio_renda.png",
        width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
 
@@ -339,6 +365,10 @@ fig <- ggplot(df, aes(fill = domicilio_situacao, y = pessoas_auxilio, x = domici
     scale_y_discrete(limits=factor(0:100), breaks = c(0,10,20,30,40,50,60,70,80,90,100), name = "Percentual (%)")
 
 # Salvando em PNG
+
+fig<- ggdraw(fig) + 
+    draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
+
 ggsave(plot = fig, "./figs/PNAD_COVID/auxilio_domicilio.png",
        width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
 
@@ -372,6 +402,10 @@ fig <- ggplot(df, aes(fill = Cor, y = pessoas_auxilio, x = Sexo)) +
          title = "Pessoas que receberam auxílio emergencial, por cor/raça e sexo") +
     scale_fill_manual(values = c("#00b894","#ff7675","#0984e3")) +
     scale_y_discrete(limits=factor(0:100), breaks = c(0,10,20,30,40,50,60,70,80,90,100), name = "Percentual (%)")
+
+fig<- ggdraw(fig) + 
+    draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
+
 
 # Salvando em PNG
 ggsave(plot = fig, "./figs/PNAD_COVID/auxilio_cor_sexo.png",
