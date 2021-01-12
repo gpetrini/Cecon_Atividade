@@ -131,3 +131,5 @@ dmypy.json
 
 # PNAD covid related
 ./Nota_015/raw/PNAD_COVID/
+./.git/lfs/objects/1d/ed/1ded7f0dd01dfd0a60260fb68b82841bb576c53fb9d2c686e99c5a0c543f9544
+./.git/objects/pack/pack-ca1242a01260bcdedc3523253692a3f5bafdf5c5.pack
