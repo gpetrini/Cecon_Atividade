@@ -187,7 +187,7 @@ fig <- ggplot(df, aes(fill = Idade, y = trab_home_office, x = Sexo)) +
     scale_y_discrete(limits=factor(0:100), breaks = c(0,10,20,30,40,50,60,70,80,90,100), name = "Percentual (%)")# Salvando em PNG
 
 fig<- ggdraw(fig) + 
-    draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
+    draw_image(logo_file, x = .975, y = .95, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 
 
 ggsave(plot = fig, "./figs/PNAD_COVID/home_sexo_idade.png",
@@ -276,7 +276,7 @@ fig <- ggplot(df, aes(fill = Faixa_salario, y = trab_home_office, x = Cor)) +
     scale_y_discrete(limits=factor(0:100), breaks = c(0,10,20,30,40,50,60,70,80,90,100), name = "Percentual (%)")# Salvando em PNG
 
 fig<- ggdraw(fig) + 
-    draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
+    draw_image(logo_file, x = .975, y = .95, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 
 
 ggsave(plot = fig, "./figs/PNAD_COVID/home_renda.png",
@@ -318,7 +318,7 @@ fig <- ggplot(df, aes(fill = Faixa_salario, y = pessoas_auxilio, x = Faixa_salar
 
 # Salvando em PNG
 fig<- ggdraw(fig) + 
-    draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
+    draw_image(logo_file, x = .975, y = .94, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 
 
 ggsave(plot = fig, "./figs/PNAD_COVID/auxilio_renda.png",
@@ -367,7 +367,7 @@ fig <- ggplot(df, aes(fill = domicilio_situacao, y = pessoas_auxilio, x = domici
 # Salvando em PNG
 
 fig<- ggdraw(fig) + 
-    draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
+    draw_image(logo_file, x = .975, y = .95, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 
 ggsave(plot = fig, "./figs/PNAD_COVID/auxilio_domicilio.png",
        width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
@@ -404,7 +404,7 @@ fig <- ggplot(df, aes(fill = Cor, y = pessoas_auxilio, x = Sexo)) +
     scale_y_discrete(limits=factor(0:100), breaks = c(0,10,20,30,40,50,60,70,80,90,100), name = "Percentual (%)")
 
 fig<- ggdraw(fig) + 
-    draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
+    draw_image(logo_file, x = .975, y = .95, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 
 
 # Salvando em PNG
