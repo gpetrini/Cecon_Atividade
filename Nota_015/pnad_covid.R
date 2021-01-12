@@ -2,7 +2,10 @@ library(dplyr)
 library(srvyr) 
 library(readr)
 library(ggplot2)
-library(Cairo)# Pasta de Trabalho
+library(Cairo)
+library(cowplot)
+
+logo_file <- './figs/Cecon_Logo.png'
 
 pnad_covid <- read_csv("./raw/PNAD_COVID/PNAD_COVID_112020.csv", col_types = cols(.default = "d"))
 mes <- "Novembro"
