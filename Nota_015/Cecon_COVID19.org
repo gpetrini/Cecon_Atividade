@@ -52,6 +52,14 @@ def line_format(label):
     return month
 #ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
 
+def line_format_day(label):
+    """
+    Convert time label to the format of pandas line plot
+    """
+    month = label.month_name()[:3]
+    day = label.day
+    string = f"{day}/{month}"
+    return month
 def interpolator(df):
     for col in df:
         df[col] = pd.to_numeric(df[col], errors='coerce')
@@ -173,8 +181,271 @@ fig.savefig(
 
 ** Bloomberg adaptado ao COVID-19 ([[https://www.bloomberg.com/news/articles/2020-11-13/alternative-data-show-activity-crashes-as-virus-resurges-chart][Link]])
 
-- Não é público
-- Substituiria CLIs
+** Google Reports: Brasil
+
+#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/GoogleReport_Brasil.png
+import matplotlib.dates as mdates
+
+
+df = pd.read_csv(
+    'https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/google_reports/mobility_report_brazil.csv',
+    index_col = 'date',
+    dayfirst=True
+)
+df = df[df['sub region 1'] == 'Total'].copy(deep=True)
+df.drop(['country', 'sub region 1', 'sub region 2'], axis = 'columns', inplace=True)
+df.index.name=''
+df.index = pd.to_datetime(df.index)
+df.columns = [
+    'Varejo e recreação',
+    'Mercados e Farmácias',
+    'Parques',
+    'Estações de transporte público',
+    'Locais de trabalho',
+    'Residência',
+]
+
+fig, ax = plt.subplots(figsize=(8, 5))
+df.rolling(7).mean().plot(
+    title='Relatório de mobilidade do google\nSemana Móvel',
+    ax=ax,
+    lw=2,
+)
+ax.axvline(
+    x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento\nsocial em SP"
+)
+
+ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+
+# Formatando eixos
+days = mdates.DayLocator()   # every day
+months = mdates.MonthLocator()  # every month
+m_fmt = mdates.DateFormatter('%b')
+#
+# format the ticks
+ax.xaxis.set_major_locator(months)
+ax.xaxis.set_major_formatter(m_fmt)
+# ax.xaxis.set_minor_locator(days)
+ax.format_xdata = mdates.DateFormatter('%d/%m')
+
+ax2 = plt.axes([0.9, 0.675, 0.2, 0.2])
+
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+fig.autofmt_xdate()
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/Granulares/GoogleReport_Brasil" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Granulares/GoogleReport_Brasil.png]]
+
+** Apple: Tendências de mobilidade
+
+#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/AppleReport_Brasil.png
+df = pd.read_csv(
+    'https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/apple_reports/applemobilitytrends.csv',
+    # index_col = 'date',
+    # dayfirst=True
+)
+df = df[df['country'] == 'Brazil'].copy(deep=True)
+df = df[df['geo_type'] == 'sub-region'].copy(deep=True)
+df = df[df['transportation_type'] == 'driving'].copy(deep=True)
+df.drop([
+    'country',
+    'geo_type',
+    'transportation_type',
+    'sub-region',
+    'alternative_name',
+], axis = 'columns', inplace=True)
+df.set_index('region', inplace=True)
+df.index.name=''
+df = df.transpose().bfill()
+df.index = pd.to_datetime(df.index)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+df.rolling(7).mean().plot(
+    title=f'Relatório de mobilidade da Apple: Direção\nSemana Móvel - {df.index[0]: %d/%b/%Y} = 100',
+    ax=ax,
+    lw=2,
+)
+ax.axvline(
+    x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento\nsocial em SP"
+)
+
+ax.legend(
+    loc='upper center',
+    bbox_to_anchor=(0.5, -0.05),
+    ncol=4
+)
+
+# Formatando eixos
+days = mdates.DayLocator()   # every day
+months = mdates.MonthLocator()  # every month
+m_fmt = mdates.DateFormatter('%b')
+#
+# format the ticks
+ax.xaxis.set_major_locator(months)
+ax.xaxis.set_major_formatter(m_fmt)
+# ax.xaxis.set_minor_locator(days)
+ax.format_xdata = mdates.DateFormatter('%d/%m')
+
+ax2 = plt.axes([0.9, 0.675, 0.2, 0.2])
+
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+fig.autofmt_xdate()
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/Granulares/AppleReport_Brasil" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Granulares/AppleReport_Brasil.png]]
+
+** Waze: $\Delta \%$ Km
+
+#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/Waze_Brasil.png
+df = pd.read_csv(
+    'https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/waze_reports/Waze_Country-Level_Data.csv',
+    index_col = 'Date',
+    dayfirst=True
+)
+df = df[df['Country'] == 'Brazil'].copy(deep=True)
+df.index.name=''
+df.index = pd.to_datetime(df.index)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+df.rolling(7).mean().plot(
+    title='Waze: Mudança percentual de Kilometros andados\nSemana Móvel',
+    ax=ax,
+    lw=2,
+)
+ax.axvline(
+    x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento\nsocial em SP"
+)
+
+ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+
+# Formatando eixos
+days = mdates.DayLocator()   # every day
+months = mdates.MonthLocator()  # every month
+m_fmt = mdates.DateFormatter('%b')
+#
+# format the ticks
+ax.xaxis.set_major_locator(months)
+ax.xaxis.set_major_formatter(m_fmt)
+# ax.xaxis.set_minor_locator(days)
+ax.format_xdata = mdates.DateFormatter('%d/%m')
+
+ax2 = plt.axes([0.9, 0.675, 0.2, 0.2])
+
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+fig.autofmt_xdate()
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/Granulares/Waze_Brasil" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Granulares/Waze_Brasil.png]]
+
+** TomTom: Congestionamento
+
+#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/TomTom_Brasil.png
+df = pd.read_csv(
+    'https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/tomtom_reports/tomtom_trafic_index.csv',
+    index_col = 'date',
+    dayfirst=True
+)
+df = df[df['country'] == 'Brazil'].copy(deep=True)
+df.index.name=''
+df.index = pd.to_datetime(df.index)
+
+df['Capitais'] = df['city']
+df['Variação do congestionamento'] = df['diffRatio'].rolling(7).mean()
+
+df = df[[
+    'Capitais',
+    'Variação do congestionamento'
+]].dropna()
+df['Capitais'] = df['Capitais'].astype('category')
+df = pd.pivot(df, columns='Capitais')
+df.columns = df.columns.get_level_values(1)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+df.plot(
+    title='TomTom: Variação percentual do congestionamento\nem relação a 2019 - Semana Móvel',
+    ax=ax,
+    lw=1.5,
+)
+ax.axvline(
+    x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento\nsocial em SP"
+)
+
+ax.legend(
+    loc="center left",
+    bbox_to_anchor=(1, 0.5),
+    title = 'Capitais',
+)
+
+# Formatando eixos
+days = mdates.DayLocator()   # every day
+months = mdates.MonthLocator()  # every month
+m_fmt = mdates.DateFormatter('%b')
+#
+# format the ticks
+ax.xaxis.set_major_locator(months)
+ax.xaxis.set_major_formatter(m_fmt)
+# ax.xaxis.set_minor_locator(days)
+ax.format_xdata = mdates.DateFormatter('%d/%m')
+
+ax2 = plt.axes([0.7, 0.675, 0.2, 0.2])
+
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+fig.autofmt_xdate()
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/Granulares/TomTom_Brasil" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Granulares/TomTom_Brasil.png]]
 
 * Atividade
 
@@ -1236,7 +1507,7 @@ fig.savefig(
 
 ** Recolhimentos compulsórios de instituições financeiras
 
-#+BEGIN_SRC python :results graphics file :file ./figs/Credito/Requerimentos_Total.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Credito/Recolhimentos_Total.png
 titulo = "Recolhimentos compulsórios de instituições financeira\nSaldo Total"
 porcentagem=False
 unidade="u.m.c (mil)"
@@ -1281,7 +1552,7 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Credito/Requerimentos_Total.png]]
+[[file:./figs/Credito/Recolhimentos_Total.png]]
 
 * Índices de atividade setoriais
 
@@ -1826,13 +2097,12 @@ fig.savefig(
 
 * Relatório do Tesouro :noexport:
 
-* IPEA e importância do Auxílio Emergencial :noexport:
 
-* Base de dados FMI (Fiscal Monitor e WEO) :noexport:
 
-** Fiscal monitor
+* IMF Fiscal Monitor
+** Medidas fiscais em % do PIB
 
-#+BEGIN_SRC python
+#+BEGIN_SRC python :results graphics file :file ./figs/IMF/FiscalMonitor_Covid.png
 df = pd.read_excel(
     './raw/IMF/fiscal-monitor-database-oct-2020-for-webpage.xlsx',
     sheet_name='Summary.Global',
@@ -1861,29 +2131,201 @@ df = df[[
 ]]
 
 df.columns = [
+    'Gastos adicionais totais',
+    'Setor de saúde totais',
+    'Outros setores totais',
     'Gastos adicionais',
     'Setor de saúde',
     'Outros setores',
-    'Gastos adicionais (%PIB)',
-    'Setor de saúde (%PIB)',
-    'Outros setores (%PIB)',
 ]
 df.index.name = 'G20 - Países Emergentes'
-print(df)
-df.plot()
+df = df.sort_values(
+    'Gastos adicionais',
+    ascending=False
+)
+fig, ax = plt.subplots(figsize=(8, 5))
+df[[
+    # "Gastos adicionais",
+    "Setor de saúde",
+    "Outros setores",
+]].plot(
+    title=f"Resumo das medidas fiscais dos países emergentes\nem resposta à pandemia COVID-19 em % do PIB",
+    ax=ax,
+    lw=2.5,
+    kind = 'bar', edgecolor='black', width=.8,
+)
+ax.legend(
+    # loc="center left", bbox_to_anchor=(1, 0.5)
+)
+ax.set_yticklabels(['{:,.0%}'.format(x/100) for x in ax.get_yticks()])
+ax2 = plt.axes([0.675, 0.55, 0.2, 0.2])
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/IMF/FiscalMonitor_Covid" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
 #+END_SRC
 
 #+RESULTS:
-:results:
-                        Gastos adicionais Setor de saúde Outros setores Gastos adicionais (%PIB) Setor de saúde (%PIB) Outros setores (%PIB)
-G20 - Países Emergentes
-Argentina                         15.0086        0.83168        14.1769                  3.92115              0.217285               3.70386
-Brazil                            112.858        12.1967        100.661                  8.27546              0.894338               7.38112
-China                             706.667        21.8327        684.834                  4.64236              0.143427               4.49893
-India                             46.3915        4.89835        41.4931                  1.78939              0.188937               1.60046
-Indonesia                         29.0331        5.19791        23.8352                   2.6666              0.477413               2.18919
-Mexico                             6.7455        1.83177        4.91373                 0.648374              0.176069              0.472305
-Russia                            34.9583        3.24542        31.6988                  2.38773               0.22167               2.16511
-Saudi Arabia                        15.36        12.5333        2.82667                  2.25585               1.84071              0.415139
-South Africa                      14.9708        1.16959        13.8012                  5.29772              0.413885               4.88384
-:end:
+[[file:./figs/IMF/FiscalMonitor_Covid.png]]
+
+** Medidas fiscais em % do PIB: Setor de saúde/Outros setores
+
+#+BEGIN_SRC python :results graphics file :file ./figs/IMF/FiscalMonitor_Covid_ratio.png
+df = pd.read_excel(
+    './raw/IMF/fiscal-monitor-database-oct-2020-for-webpage.xlsx',
+    sheet_name='Summary.Global',
+    index_col=1,
+    skiprows=[0,1,2,]
+)
+df = df.loc[[
+    # 'G20: Emerging markets',
+    'Argentina',
+    'Brazil',
+    'China',
+    'India',
+    'Indonesia',
+    'Mexico',
+    'Russia',
+    'Saudi Arabia',
+    'South Africa'
+],:].copy()
+df = df[[
+    'Above the line measures',
+    'Unnamed: 3',
+    'Unnamed: 4',
+    'Above the line measures.1',
+    'Unnamed: 15',
+    'Unnamed: 16',
+]]
+
+df.columns = [
+    'Gastos adicionais totais',
+    'Setor de saúde totais',
+    'Outros setores totais',
+    'Gastos adicionais',
+    'Setor de saúde',
+    'Outros setores',
+]
+df.index.name = 'G20 - Países Emergentes'
+
+df["Saúde/Outros setores"] = df["Setor de saúde"]/df["Outros setores"]
+
+df = df.sort_values(
+    'Saúde/Outros setores',
+    ascending=False
+)
+fig, ax = plt.subplots(figsize=(8, 5))
+df[[
+    "Saúde/Outros setores"
+]].plot(
+    title=f"Razão entre gastos com saúde e outros setores\nem resposta à pandemia COVID-19",
+    ax=ax,
+    lw=2.5,
+    kind = 'bar', edgecolor='black', width=.8,
+)
+ax.legend(
+    # loc="center left", bbox_to_anchor=(1, 0.5)
+)
+ax.set_yticklabels(['{:,.0%}'.format(x/100) for x in ax.get_yticks()])
+ax2 = plt.axes([0.675, 0.55, 0.2, 0.2])
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/IMF/FiscalMonitor_Covid_ratio" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/IMF/FiscalMonitor_Covid_ratio.png]]
+
+** Medidas fiscais em % do PIB: Setor de saúde/Total
+
+#+BEGIN_SRC python :results graphics file :file ./figs/IMF/FiscalMonitor_Covid_total.png
+df = pd.read_excel(
+    './raw/IMF/fiscal-monitor-database-oct-2020-for-webpage.xlsx',
+    sheet_name='Summary.Global',
+    index_col=1,
+    skiprows=[0,1,2,]
+)
+df = df.loc[[
+    # 'G20: Emerging markets',
+    'Argentina',
+    'Brazil',
+    'China',
+    'India',
+    'Indonesia',
+    'Mexico',
+    'Russia',
+    'Saudi Arabia',
+    'South Africa'
+],:].copy()
+df = df[[
+    'Above the line measures',
+    'Unnamed: 3',
+    'Unnamed: 4',
+    'Above the line measures.1',
+    'Unnamed: 15',
+    'Unnamed: 16',
+]]
+
+df.columns = [
+    'Gastos adicionais totais',
+    'Setor de saúde totais',
+    'Outros setores totais',
+    'Gastos adicionais',
+    'Setor de saúde',
+    'Outros setores',
+]
+df.index.name = 'G20 - Países Emergentes'
+
+df["Saúde/Gastos adicionais"] = df["Setor de saúde"]/df["Gastos adicionais"]
+
+df = df.sort_values(
+    'Saúde/Gastos adicionais',
+    ascending=False
+)
+fig, ax = plt.subplots(figsize=(8, 5))
+df[[
+    "Saúde/Gastos adicionais"
+]].plot(
+    title=f"Razão entre gastos com saúde e total dos gastos adicionais\nem resposta à pandemia COVID-19",
+    ax=ax,
+    lw=2.5,
+    kind = 'bar', edgecolor='black', width=.8,
+)
+ax.legend(
+    # loc="center left", bbox_to_anchor=(1, 0.5)
+)
+ax.set_yticklabels(['{:,.0%}'.format(x) for x in ax.get_yticks()])
+ax2 = plt.axes([0.675, 0.55, 0.2, 0.2])
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/IMF/FiscalMonitor_Covid_total" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/IMF/FiscalMonitor_Covid_total.png]]
