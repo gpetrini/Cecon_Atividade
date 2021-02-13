@@ -2070,7 +2070,7 @@ fig.savefig(
 
 * PNAD-COVID
 ** R trial
-#+begin_src R
+#+begin_src R :eval no
 library(dplyr)
 library(srvyr)
 library(readr)
