@@ -458,28 +458,6 @@ unzip -o Tab_Compl_CNT.zip
 mv *.xls Tab_Compl_CNT.xlsx
 #+END_SRC
 
-#+RESULTS:
-:results:
-
---2021-01-06 17:25:59--  ftp://ftp.ibge.gov.br/Contas_Nacionais/Contas_Nacionais_Trimestrais/Tabelas_Completas/Tab_Compl_CNT.zip
-“.listing”
-Resolvendo ftp.ibge.gov.br (ftp.ibge.gov.br)... 170.84.40.44
-Conectando-se a ftp.ibge.gov.br (ftp.ibge.gov.br)|170.84.40.44|:21... conectado.
-Acessando como anonymous ... Acesso autorizado!
-SYST ... feito.    ==> PWD ... feito.
-TYPE I ... feito.  ==> CWD (1) /Contas_Nacionais/Contas_Nacionais_Trimestrais/Tabelas_Completas ... feito.
-PASV ... feito.    ==> LIST ... feito.
-Failed to rename .listing to .listing.1: (2) Arquivo ou diretório não encontrado
-]       0  --.-KB/s               .listing                [ <=>                ]     194  --.-KB/s    em 0s
-
-2021-01-06 17:26:00 (577 KB/s) - “.listing” salvo [194]
-
-Removeu “.listing”.
-O arquivo remoto não é mais novo que o local “Tab_Compl_CNT.zip” -- ignorando.
-Archive:  Tab_Compl_CNT.zip
-  inflating: Tab_Compl_CNT.xls
-:end:
-
 #+BEGIN_SRC python
 Colunas = [
     "Agropecuaria",

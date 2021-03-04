@@ -2,7 +2,7 @@
 * Article Information                                        :ignore:journal:
 
 #+BEGIN_EXPORT latex
-\JournalInfo{Nota de Conjuntura No 15} % Journal information
+\JournalInfo{Nota de Conjuntura No 16} % Journal information
 \Archive{} % Additional notes (e.g. copyright, DOI, review/research article)
 
 \Authors{Pedro Paulo Zahluth Bastos\textsuperscript{1}*, Lorena Dourado\textsuperscript{2}, Gabriel Petrini\textsuperscript{3}, Antônio Ibarra\textsuperscript{3}}} % Authors
