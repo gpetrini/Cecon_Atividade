@@ -1998,9 +1998,6 @@ fig.savefig(
 )
 #+END_SRC
 
-#+RESULTS:
-[[file:./figs/Setoriais/PMS_IBGE.png]]
-
 * Emprego
 
 ** Rendimento médio real habitual das pessoas ocupadas
@@ -3017,3 +3014,5 @@ plt.close()
 
 #+RESULTS:
 [[file:./figs/Granulares/OCDE_Semanal.png]]
+
+* Our world in data
