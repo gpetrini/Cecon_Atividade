@@ -11,7 +11,7 @@
 #+LATEX: \onecolumn
 
 * Initial setup :noexport:ignore:
-
+** Python
 #+BEGIN_SRC python
 import pandas as pd
 import numpy as np
@@ -147,6 +147,24 @@ def add_value_labels(ax, spacing=5):
 #+RESULTS:
 :results:
 :end:
+** R
+
+#+begin_src R
+library(sidrar)
+library(tidyverse)
+#+end_src
+
+#+RESULTS:
+:results:
+── [1mAttaching packages[22m ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+[32m✔[39m [34mggplot2[39m 3.3.2     [32m✔[39m [34mpurrr  [39m 0.3.4
+[32m✔[39m [34mtibble [39m 3.0.4     [32m✔[39m [34mdplyr  [39m 1.0.2
+[32m✔[39m [34mtidyr  [39m 1.1.2     [32m✔[39m [34mstringr[39m 1.4.0
+[32m✔[39m [34mreadr  [39m 1.4.0     [32m✔[39m [34mforcats[39m 0.5.0
+── [1mConflicts[22m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+[31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
+[31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
+:end:
 
 * Indicadores de antecedente
 ** IBC-Br (acumulado 12 meses vs 12 meses anteriores)
@@ -173,7 +191,7 @@ ax.axhline(y=0, color="gray", ls="-")
 ax.set_yticklabels(["{:,.2%}".format(x) for x in ax.get_yticks()])
 ax.legend()
 # ax.set_ylabel("Taxa de crescimento YoY (%)")
-# ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
+ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
 ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
 ax2.axis("off")
 
@@ -1948,7 +1966,7 @@ fig.savefig(
 
 
 ** Pesquisa Mensal de Serviços (PMS)
-
+*** Receita nominal sem ajuste sazonal
 #+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/PMS_IBGE.png
 file_name = "PMS_IBGE"
 df = pd.concat(
@@ -1980,7 +1998,7 @@ df.columns = [
 
 fig, ax = plt.subplots(figsize=(8, 5))
 df.plot(
-    title=f"Pesquisa Mensal de Serviços (PMS)\nÍndice de Volume de serviços dessazonalizado\n{base} = 100",
+    title=f"Pesquisa Mensal de Serviços (PMS)\nReceita nominal\n{base} = 100",
     ax=ax,
     lw=2.5,
 )
@@ -1997,6 +2015,156 @@ fig.savefig(
     "./figs/Setoriais/PMS_IBGE" + ".png", dpi=300, bbox_inches="tight", pad_inches=0
 )
 #+END_SRC
+
+#+RESULTS:
+[[file:./figs/Setoriais/PMS_IBGE.png]]
+
+*** Volume com ajuste sazonal
+
+
+#+begin_src R :exports none
+df <- get_sidra(
+  api = "/t/6443/n1/all/v/8677/p/all/c11046/40312/c12355/31399,31426,106869,106874,106876,107071/d/v8677%201"
+) %>%
+  select( "Mês (Código)", "Atividades de serviços", "Valor") %>%
+  mutate(Data =  paste0(`Mês (Código)`, "01")) %>%
+  mutate(Data = as.Date(Data, format="%Y%m%d")) %>%
+  select(-c(`Mês (Código)`)) %>%
+  pivot_wider(names_from = "Atividades de serviços", values_from = Valor)
+
+names(df) <- c(
+  "Data",
+  "Profissionais, Administrativos e Complementares",
+  "Outros",
+  "Prestados às famílias",
+  "Informação e comunicação",
+  "Transportes, Serviços auxiliares e Correio",
+  "Total"
+  )
+write.csv(
+  df,
+  './clean/IBGE/PMS_volume_dessazonalizada.csv',
+  row.names=FALSE
+)
+#+end_src
+
+#+RESULTS:
+:results:
+All others arguments are desconsidered when 'api' is informed
+:end:
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/PMS_vol_dessazonalizada.png
+df = pd.read_csv(
+    "./clean/IBGE/PMS_volume_dessazonalizada.csv", index_col="Data", parse_dates=True
+)
+
+df.index.name = ""
+
+for col in df:
+    df[col] = df[col].apply(lambda x: (100 * x) / df[col].loc[base])
+
+df = df[start_year:]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+df.plot(
+    title=f"Pesquisa Mensal de Serviços (PMS)\nÍndice de Volume de serviços dessazonalizado\n{base} = 100",
+    ax=ax,
+    lw=2.5,
+)
+ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP")
+ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/Setoriais/PMS_vol_dessazonalizada" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Setoriais/PMS_vol_dessazonalizada.png]]
+
+*** Volume com ajuste sazonal (em relação ao mês anterior)
+
+
+#+begin_src R :exports none
+df <- get_sidra(
+  api = "/t/6443/n1/all/v/8677/p/all/c11046/40312/c12355/31399,31426,106869,106874,106876,107071/d/v8677%201"
+) %>%
+  select( "Mês (Código)", "Atividades de serviços", "Valor") %>%
+  mutate(Data =  paste0(`Mês (Código)`, "01")) %>%
+  mutate(Data = as.Date(Data, format="%Y%m%d")) %>%
+  select(-c(`Mês (Código)`)) %>%
+  pivot_wider(names_from = "Atividades de serviços", values_from = Valor)
+
+names(df) <- c(
+  "Data",
+  "Profissionais, Administrativos e Complementares",
+  "Outros",
+  "Prestados às famílias",
+  "Informação e comunicação",
+  "Transportes, Serviços auxiliares e Correio",
+  "Total"
+  )
+write.csv(
+  df,
+  './clean/IBGE/PMS_volume_dessazonalizada.csv',
+  row.names=FALSE
+)
+#+end_src
+
+#+RESULTS:
+:results:
+All others arguments are desconsidered when 'api' is informed
+:end:
+
+#+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/PMS_vol_dessazonalizada_diff.png
+df = pd.read_csv(
+    "./clean/IBGE/PMS_volume_dessazonalizada.csv", index_col="Data", parse_dates=True
+)
+
+df.index.name = ""
+
+for col in df:
+    df[col] = df[col].apply(lambda x: (100 * x) / df[col].loc[base])
+
+df = df["2020-01-01":]
+df = interpolator(df)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+df.diff().plot(
+    title=f"Pesquisa Mensal de Serviços (PMS)\nÍndice de Volume de serviços dessazonalizado\nComparado ao mês anterior",
+    ax=ax,
+    lw=2.5,
+)
+ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP")
+ax.axhline(y=0, color="black", ls="-", lw=1)
+ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/Setoriais/PMS_vol_dessazonalizada_diff" + ".png",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Setoriais/PMS_vol_dessazonalizada_diff.png]]
 
 * Emprego
 
@@ -3015,4 +3183,248 @@ plt.close()
 #+RESULTS:
 [[file:./figs/Granulares/OCDE_Semanal.png]]
 
-* Our world in data
+* Our world in data and stringency
+
+** TODOs
+*** TODO Unir os dataframes
+*** TODO Plotar com diferenciação de isolamento voluntário ou imposto
+**** Cores?
+
+** Loading data :ignore:noexport:
+
+*** Our world data
+
+#+BEGIN_SRC python
+df = pd.read_csv(
+    "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv",
+    index_col="date",
+    parse_dates=True,
+    usecols=[  # subseting
+        "date",
+        "iso_code",
+        "continent",
+        "new_cases_smoothed",
+        "new_deaths_smoothed",
+        "new_deaths_per_million",
+        "new_cases_per_million",
+        "new_cases_smoothed_per_million",
+        "new_deaths_smoothed_per_million",
+        "new_tests_smoothed_per_thousand",
+        "people_fully_vaccinated",
+        "new_vaccinations_smoothed_per_million",
+        "stringency_index",
+        "new_vaccinations_smoothed_per_million",
+    ],
+)
+df[["stringency_index"]] = df[["stringency_index"]].shift(14)
+df = df.groupby("iso_code").rolling(window=14).mean().reset_index().set_index("date")
+df.to_csv("./clean/COVID/cases_deaths.csv")
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+*** Stringency 
+
+
+#+BEGIN_SRC python
+df = pd.read_csv(
+    "https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv",
+    index_col="Date",
+    parse_dates=True,
+    usecols=[  # subseting
+        "Date",
+        "CountryCode",
+        "C1_School closing",
+        "C1_Flag",
+        "C2_Workplace closing",
+        "C2_Flag",
+        "C3_Cancel public events",
+        "C3_Flag",
+        "C4_Restrictions on gatherings",
+        "C4_Flag",
+        "C5_Close public transport",
+        "C5_Flag",
+        "C6_Stay at home requirements",
+        "C6_Flag",
+        "C7_Restrictions on internal movement",
+        "C7_Flag",
+        "C8_International travel controls",
+    ],
+)
+
+closure = [
+    "C1_School closing",
+    "C2_Workplace closing",
+    "C3_Cancel public events",
+    "C4_Restrictions on gatherings",
+    "C5_Close public transport",
+    "C6_Stay at home requirements",
+    "C7_Restrictions on internal movement",
+    "C8_International travel controls",
+]
+
+flags = [
+    "C1_Flag",
+    "C2_Flag",
+    "C3_Flag",
+    "C4_Flag",
+    "C5_Flag",
+    "C6_Flag",
+    "C7_Flag",
+]
+
+df["Closure"] = (
+    df.reset_index().set_index("CountryCode")[closure].mean(axis="columns").values
+)
+df = df[df["Closure"].diff() != 0]
+df["Restrict"] = [i > 0 for i in df["Closure"] > 0]
+df = df[["CountryCode", "Closure", "Restrict"]].dropna()
+df.columns = ["iso_code", "Closure", "Restrict"]
+df.to_csv("./clean/COVID/closes.csv")
+#+END_SRC
+
+#+RESULTS:
+:results:
+:end:
+
+*** Google mobility
+
+#+BEGIN_SRC python
+url = "https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv"
+
+cols = [
+    "country_region",
+    "sub_region_1",
+    "sub_region_2",
+    "metro_area",
+    "iso_3166_2_code",
+    "census_fips_code",
+    "date",
+    "retail_and_recreation_percent_change_from_baseline",
+    "grocery_and_pharmacy_percent_change_from_baseline",
+    "parks_percent_change_from_baseline",
+    "transit_stations_percent_change_from_baseline",
+    "workplaces_percent_change_from_baseline",
+    "residential_percent_change_from_baseline",
+]
+
+df = pd.read_csv(
+    url,
+    usecols=cols,
+    parse_dates=True,
+    dtype={
+        "country_region": str,
+        "sub_region_1": str,
+        "sub_region_2": str,
+        "metro_area": str,
+        "iso_3166_2_code": str,
+        "census_fips_code": str,
+        "date": str,
+        "retail_and_recreation_percent_change_from_baseline": np.float64,
+        "grocery_and_pharmacy_percent_change_from_baseline": np.float64,
+        "parks_percent_change_from_baseline": np.float64,
+        "transit_stations_percent_change_from_baseline": np.float64,
+        "workplaces_percent_change_from_baseline": np.float64,
+        "residential_percent_change_from_baseline": np.float64,
+    },
+)
+# Convert date column to days of the year
+# df['date'] = pd.to_datetime(df['date'], format="%Y/%m/%d", utc=True)
+
+
+# Remove subnational data, keeping only country figures
+filter_cols = [
+    "sub_region_1",
+    "sub_region_2",
+    "metro_area",
+    "iso_3166_2_code",
+    "census_fips_code",
+]
+df = df[df[filter_cols].isna().all(1)]
+
+# Delete columns
+df = df.drop(
+    [
+        # "country_region",
+        "sub_region_1",
+        "sub_region_2",
+        "metro_area",
+        "census_fips_code",
+        "iso_3166_2_code",
+    ],
+    axis="columns",
+)
+
+
+# Standardise country names to OWID country names
+df = df.reset_index().set_index("country_region")
+df.index = cc.convert(
+    names=list(df.index), to="ISO3", not_found=None
+)  # To avoid string problems
+df = df.reset_index().set_index("date").drop("index", axis="columns")
+# Converting the index as date
+df.index = pd.to_datetime(df.index)
+# Assign new column names
+rename_dict = {
+    "date": "Date",
+    "level_0": "iso_code",
+    "retail_and_recreation_percent_change_from_baseline": "Retail & Recreation",
+    "grocery_and_pharmacy_percent_change_from_baseline": "Grocery & Pharmacy",
+    "parks_percent_change_from_baseline": "Parks",
+    "transit_stations_percent_change_from_baseline": "Transit Stations",
+    "workplaces_percent_change_from_baseline": "Workplaces",
+    "residential_percent_change_from_baseline": "Residential",
+}
+
+# Rename columns
+df = df.rename(columns=rename_dict)
+df["Isolamento"] = df["Residential"].pct_change(7)
+df.to_csv("./clean/COVID/google_mobility.csv")
+#+END_SRC
+
+** Merging
+
+#+BEGIN_SRC python
+df = pd.read_csv(
+    "./clean/COVID/cases_deaths.csv",
+    index_col="date",
+    parse_dates=True,
+).merge(
+    pd.read_csv(
+        "./clean/COVID/closes.csv",
+        index_col="Date",
+        parse_dates=True,
+    ),
+    left_on="iso_code",
+    right_on="iso_code",
+).merge(
+    pd.read_csv(
+        "./clean/COVID/google_mobility.csv",
+        index_col="date",
+        parse_dates=True,
+    ),
+    left_on="iso_code",
+    right_on="iso_code",
+)
+print(df)
+#+END_SRC
+
+#+RESULTS:
+:results:
+        iso_code  new_cases_smoothed  new_deaths_smoothed  new_cases_per_million  ...  new_vaccinations_smoothed_per_million  stringency_index  Closure  Restrict
+0            AFG                 NaN                  NaN                    NaN  ...                                    NaN               NaN    0.000     False
+1            AFG                 NaN                  NaN                    NaN  ...                                    NaN               NaN    0.375      True
+2            AFG                 NaN                  NaN                    NaN  ...                                    NaN               NaN    0.625      True
+3            AFG                 NaN                  NaN                    NaN  ...                                    NaN               NaN    1.000      True
+4            AFG                 NaN                  NaN                    NaN  ...                                    NaN               NaN    1.375      True
+...          ...                 ...                  ...                    ...  ...                                    ...               ...      ...       ...
+2181074      ZWE           34.734714             3.459214                  1.831  ...                             149.928571         86.638571    1.875      True
+2181075      ZWE           34.734714             3.459214                  1.831  ...                             149.928571         86.638571    2.500      True
+2181076      ZWE           34.734714             3.459214                  1.831  ...                             149.928571         86.638571    2.250      True
+2181077      ZWE           34.734714             3.459214                  1.831  ...                             149.928571         86.638571    2.375      True
+2181078      ZWE           34.734714             3.459214                  1.831  ...                             149.928571         86.638571    0.875      True
+
+[2181079 rows x 13 columns]
+:end:
