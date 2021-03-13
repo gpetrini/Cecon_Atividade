@@ -117,8 +117,8 @@ fig <- ggplot(df, aes(fill = Cor, y = trab_home_office, x = Sexo)) +
 fig<- ggdraw(fig) + 
     draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 # Salvando
-ggsave(plot = fig, "./figs/PNAD_COVID/home_sexo_cor.png",
-       width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
+ggsave(plot = fig, "./figs/PNAD_COVID/home_sexo_cor.pdf",
+       width = 10, height = 5, dpi = 120, units = "in")
 
 ############## Home office - Por Cor e Escolaridade ###########
 df <- pnad_covid %>%
@@ -153,8 +153,8 @@ fig <- ggplot(df, aes(fill = Escolaridade, y = trab_home_office, x = Cor)) +
 fig<- ggdraw(fig) + 
     draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 
-ggsave(plot = fig, "./figs/PNAD_COVID/home_edu_cor.png",
-       width = 14, height = 7, dpi = 150, units = "in",type = "cairo")
+ggsave(plot = fig, "./figs/PNAD_COVID/home_edu_cor.pdf",
+       width = 14, height = 7, dpi = 150, units = "in")
 
 
 ################## Home office - Por Sexo e Idade ################
@@ -190,8 +190,8 @@ fig<- ggdraw(fig) +
     draw_image(logo_file, x = .975, y = .95, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 
 
-ggsave(plot = fig, "./figs/PNAD_COVID/home_sexo_idade.png",
-       width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
+ggsave(plot = fig, "./figs/PNAD_COVID/home_sexo_idade.pdf",
+       width = 10, height = 5, dpi = 120, units = "in")
 
 ########################## Home office - Por trabalho ################
 
@@ -243,8 +243,8 @@ fig<- ggdraw(fig) +
     draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 
 
-ggsave(plot = fig, "./figs/PNAD_COVID/home_emprego.png",
-       width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
+ggsave(plot = fig, "./figs/PNAD_COVID/home_emprego.pdf",
+       width = 10, height = 5, dpi = 120, units = "in")
 
 
 ############## Home office - Por faixa salarial e cor ##############
@@ -279,8 +279,8 @@ fig<- ggdraw(fig) +
     draw_image(logo_file, x = .975, y = .95, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 
 
-ggsave(plot = fig, "./figs/PNAD_COVID/home_renda.png",
-       width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
+ggsave(plot = fig, "./figs/PNAD_COVID/home_renda.pdf",
+       width = 10, height = 5, dpi = 120, units = "in")
 
 
 ##################### Auxilio - Faixa Salarial ####################
@@ -321,8 +321,8 @@ fig<- ggdraw(fig) +
     draw_image(logo_file, x = .975, y = .94, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 
 
-ggsave(plot = fig, "./figs/PNAD_COVID/auxilio_renda.png",
-       width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
+ggsave(plot = fig, "./figs/PNAD_COVID/auxilio_renda.pdf",
+       width = 10, height = 5, dpi = 120, units = "in")
 
 
 ################## Auxilio - Por tipo do domicilio #####################   
@@ -369,8 +369,8 @@ fig <- ggplot(df, aes(fill = domicilio_situacao, y = pessoas_auxilio, x = domici
 fig<- ggdraw(fig) + 
     draw_image(logo_file, x = .975, y = .95, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 
-ggsave(plot = fig, "./figs/PNAD_COVID/auxilio_domicilio.png",
-       width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
+ggsave(plot = fig, "./figs/PNAD_COVID/auxilio_domicilio.pdf",
+       width = 10, height = 5, dpi = 120, units = "in")
 
 ########################### Auxilio - Sexo e Cor #########################
 df <- pnad_covid %>%
@@ -408,5 +408,5 @@ fig<- ggdraw(fig) +
 
 
 # Salvando em PNG
-ggsave(plot = fig, "./figs/PNAD_COVID/auxilio_cor_sexo.png",
-       width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
+ggsave(plot = fig, "./figs/PNAD_COVID/auxilio_cor_sexo.pdf",
+       width = 10, height = 5, dpi = 120, units = "in")
