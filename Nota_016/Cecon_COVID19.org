@@ -30,30 +30,36 @@ import requests
 import json
 
 import country_converter as coco
+
 cc = coco.CountryConverter()
 
 import matplotlib.image as image
 
 logo = "./figs/Cecon_Logo.png"
 logo = image.imread(logo)
-corona_sp = '2020-03-24'
+ax2 = plt.axes([0.135, 0.135, 0.2, 0.2])
+corona_sp = "2020-03-24"
 corona_sp_txt = "Início isolamento social em SP"
 
-corona_60 = '2020-03-18'
+corona_60 = "2020-03-18"
 corona_60_txt = "Mais de 60 casos de COVID-19"
 
 start_year = "2018-01-01"
 base = "2014-12-01"
+
 
 def line_format(label):
     """
     Convert time label to the format of pandas line plot
     """
     month = label.month_name()[:3]
-    if month == 'Jan':
-        month += f'\n{label.year}'
+    if month == "Jan":
+        month += f"\n{label.year}"
     return month
-#ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
+
+
+# ax.set_xticklabels(map(lambda x: line_format(x), df[start_year:].index))
+
 
 def line_format_day(label):
     """
@@ -63,45 +69,59 @@ def line_format_day(label):
     day = label.day
     string = f"{day}/{month}"
     return month
+
+
 def interpolator(df):
     for col in df:
-        df[col] = pd.to_numeric(df[col], errors='coerce')
-        df = df.resample('D').interpolate(method='time')
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+        df = df.resample("D").interpolate(method="time")
 
     return df
+
 
 def line_format(label):
     """
     Convert time label to the format of pandas line plot
     """
     month = label.month_name()[:3]
-    if month == 'Jan':
-        month += f'\n{label.year}'
+    if month == "Jan":
+        month += f"\n{label.year}"
     return month
+
 
 def rebase(df, base=base):
     for col in df:
-        df[col] = df[col].apply(lambda x: (100*x)/df[col][base])
+        df[col] = df[col].apply(lambda x: (100 * x) / df[col][base])
     return df
 
 
-def consulta_bc(codigo_bcb, nome = ["Nome da série"]):
-  url = 'http://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados?formato=json'.format(codigo_bcb)
-  df = pd.read_json(url)
-  df['data'] = pd.to_datetime(df['data'], dayfirst=True)
-  df.set_index('data', inplace=True)
-  df.index.name = ''
-  df.columns = nome
-  return df
+def consulta_bc(codigo_bcb, nome=["Nome da série"]):
+    url = "http://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados?formato=json".format(
+        codigo_bcb
+    )
+    df = pd.read_json(url)
+    df["data"] = pd.to_datetime(df["data"], dayfirst=True)
+    df.set_index("data", inplace=True)
+    df.index.name = ""
+    df.columns = nome
+    return df
+
+
 def autolabel(rects):
     """
     Attach a text label above each bar displaying its height
     """
     for rect in rects:
         height = rect.get_height()
-        ax.text(rect.get_x() + rect.get_width()/2., 1.05*height,
-                '%d' % int(height),
-                ha='center', va='bottom')
+        ax.text(
+            rect.get_x() + rect.get_width() / 2.0,
+            1.05 * height,
+            "%d" % int(height),
+            ha="center",
+            va="bottom",
+        )
+
+
 def add_value_labels(ax, spacing=5):
     """Add labels to the end of each bar in a bar chart.
 
@@ -120,56 +140,59 @@ def add_value_labels(ax, spacing=5):
         # Number of points between bar and label. Change to your liking.
         space = spacing
         # Vertical alignment for positive values
-        va = 'bottom'
+        va = "bottom"
 
         # If value of bar is negative: Place label below bar
         if y_value < 0:
             # Invert space to place label below
             space *= -1
             # Vertically align label at top
-            va = 'top'
+            va = "top"
 
         # Use Y value as label and format number with one decimal place
         label = "{:.1f}".format(y_value)
 
         # Create annotation
         ax.annotate(
-            label,                      # Use `label` as label
-            (x_value, y_value),         # Place label at end of the bar
-            xytext=(0, space),          # Vertically shift label by `space`
-            textcoords="offset points", # Interpret `xytext` as offset in points
-            ha='center',                # Horizontally center label
-            va=va)                      # Vertically align label differently for
-                                        # positive and negative values.
-
+            label,  # Use `label` as label
+            (x_value, y_value),  # Place label at end of the bar
+            xytext=(0, space),  # Vertically shift label by `space`
+            textcoords="offset points",  # Interpret `xytext` as offset in points
+            ha="center",  # Horizontally center label
+            va=va,
+        )  # Vertically align label differently for
+        # positive and negative values.
 #+END_SRC
 
 #+RESULTS:
 :results:
+
+(python3:53122): Gtk-[1;33mWARNING[0m **: [34m15:31:11.985[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
 :end:
 ** R
 
 #+begin_src R
 library(sidrar)
 library(tidyverse)
+library(cowplot)
+logo_file <- './figs/Cecon_Logo.png'
+
+## get_png <- function(filename) {
+##   grid::rasterGrob(png::readPNG(filename), interpolate = TRUE)
+## }
+
+## logo_file %>% get_png() -> logo_file
+
 #+end_src
 
 #+RESULTS:
 :results:
-── [1mAttaching packages[22m ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
-[32m✔[39m [34mggplot2[39m 3.3.2     [32m✔[39m [34mpurrr  [39m 0.3.4
-[32m✔[39m [34mtibble [39m 3.0.4     [32m✔[39m [34mdplyr  [39m 1.0.2
-[32m✔[39m [34mtidyr  [39m 1.1.2     [32m✔[39m [34mstringr[39m 1.4.0
-[32m✔[39m [34mreadr  [39m 1.4.0     [32m✔[39m [34mforcats[39m 0.5.0
-── [1mConflicts[22m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
-[31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
 :end:
 
 * Indicadores de antecedente
 ** IBC-Br (acumulado 12 meses vs 12 meses anteriores)
 
-#+BEGIN_SRC python :results graphics file :file ./figs/Antecedente/IBCBr.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Antecedente/IBCBr.pdf
 
 df = consulta_bc(24364, ["IBCBr (%YoY)"])
 df.index.name = ""
@@ -198,7 +221,7 @@ ax2.axis("off")
 sns.despine()
 
 fig.savefig(
-    "./figs/Antecedente/" + "IBCBr" + ".png",
+    "./figs/Antecedente/" + "IBCBr" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -207,12 +230,12 @@ plt.close()
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Antecedente/IBCBr.png]]
+[[file:./figs/Antecedente/IBCBr.pdf]]
 
 ** Tráfego de veículos pesados nas estradas pedagiadas - ABCR - Dados dessazonalizados
 
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/TrafegoPedagio.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/TrafegoPedagio.pdf
 df = consulta_bc(28553, ["ABCR"])
 
 
@@ -235,7 +258,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Setoriais/TrafegoPedagio" + ".png",
+    "./figs/Setoriais/TrafegoPedagio" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -243,7 +266,7 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Setoriais/TrafegoPedagio.png]]
+[[file:./figs/Setoriais/TrafegoPedagio.pdf]]
 
 
 * Dados de alta frequência
@@ -252,7 +275,7 @@ fig.savefig(
 
 ** Google Reports: Brasil
 
-#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/GoogleReport_Brasil.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/GoogleReport_Brasil.pdf
 import matplotlib.dates as mdates
 
 
@@ -308,7 +331,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Granulares/GoogleReport_Brasil" + ".png",
+    "./figs/Granulares/GoogleReport_Brasil" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -316,11 +339,11 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Granulares/GoogleReport_Brasil.png]]
+[[file:./figs/Granulares/GoogleReport_Brasil.pdf]]
 
 ** Apple: Tendências de mobilidade
 
-#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/AppleReport_Brasil.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/AppleReport_Brasil.pdf
 df = pd.read_csv(
     'https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/apple_reports/applemobilitytrends.csv',
     # index_col = 'date',
@@ -379,7 +402,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Granulares/AppleReport_Brasil" + ".png",
+    "./figs/Granulares/AppleReport_Brasil" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -387,11 +410,11 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Granulares/AppleReport_Brasil.png]]
+[[file:./figs/Granulares/AppleReport_Brasil.pdf]]
 
 ** Waze: $\Delta \%$ Km
 
-#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/Waze_Brasil.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/Waze_Brasil.pdf
 df = pd.read_csv(
     'https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/waze_reports/Waze_Country-Level_Data.csv',
     index_col = 'Date',
@@ -435,7 +458,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Granulares/Waze_Brasil" + ".png",
+    "./figs/Granulares/Waze_Brasil" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -443,11 +466,11 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Granulares/Waze_Brasil.png]]
+[[file:./figs/Granulares/Waze_Brasil.pdf]]
 
 ** TomTom: Congestionamento
 
-#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/TomTom_Brasil.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/TomTom_Brasil.pdf
 df = pd.read_csv(
     'https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/tomtom_reports/tomtom_trafic_index.csv',
     index_col = 'date',
@@ -506,7 +529,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Granulares/TomTom_Brasil" + ".png",
+    "./figs/Granulares/TomTom_Brasil" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -514,7 +537,7 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Granulares/TomTom_Brasil.png]]
+[[file:./figs/Granulares/TomTom_Brasil.pdf]]
 
 * Atividade
 
@@ -593,9 +616,13 @@ df.columns = Colunas
 df["Importacao"] = -df["Importacao"]
 #+END_SRC
 
+#+RESULTS:
+:results:
+:end:
+
 ** Trimestre Contra trimestre imediatamente anterior
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/PIB.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/PIB.pdf
 fig = plt.figure(figsize=(9, 4))
 ax = plt.axes()
 ax2 = plt.axes([0.15, 0.6, 0.2, 0.2])
@@ -639,7 +666,7 @@ ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
 ax2.axis("off")
 
 fig.savefig(
-    "./figs/PIB/PIB.png",
+    "./figs/PIB/PIB.pdf",
     dpi=300,
     bbox_inches="tight",
 )
@@ -647,11 +674,11 @@ plt.close()
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/PIB.png]]
+[[file:./figs/PIB/PIB.pdf]]
 
 ** Trimestre Contra mesmo trimestre do ano anterior
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/PIB_YoY.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/PIB_YoY.pdf
 fig = plt.figure(figsize=(9,4))
 ax = plt.axes()
 ax2 = plt.axes([0.15,0.6,0.2,0.2])
@@ -689,16 +716,16 @@ ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
 ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 
-fig.savefig('./figs/PIB/PIB_YoY.png', dpi=300)
+fig.savefig('./figs/PIB/PIB_YoY.pdf', dpi=300)
 plt.close()
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/PIB_YoY.png]]
+[[file:./figs/PIB/PIB_YoY.pdf]]
 
 ** Agropecuária
 
-#+BEGIN_SRC python :results graphics file :file ./figs/PIB/Agropecuaria.png
+#+BEGIN_SRC python :results graphics file :file ./figs/PIB/Agropecuaria.pdf
 fig, ax = plt.subplots(figsize=(9,4))
 ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
 
@@ -734,7 +761,7 @@ ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 
 fig.savefig(
-    './figs/PIB/Agropecuaria.png',
+    './figs/PIB/Agropecuaria.pdf',
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -743,11 +770,11 @@ plt.close()
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/Agropecuaria.png]]
+[[file:./figs/PIB/Agropecuaria.pdf]]
 
 ** Indústria
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Industria.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Industria.pdf
 fig, ax = plt.subplots(figsize=(9,4))
 ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
 
@@ -782,7 +809,7 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
 ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 fig.savefig(
-    './figs/PIB/Industria.png',
+    './figs/PIB/Industria.pdf',
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -791,12 +818,12 @@ plt.close()
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/Industria.png]]
+[[file:./figs/PIB/Industria.pdf]]
 
 
 ** Serviços
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Servicos.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Servicos.pdf
 fig, ax = plt.subplots(figsize=(8,5))
 ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
 
@@ -835,7 +862,7 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
 ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 fig.savefig(
-    './figs/PIB/Servicos.png',
+    './figs/PIB/Servicos.pdf',
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -844,11 +871,11 @@ plt.close()
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/Servicos.png]]
+[[file:./figs/PIB/Servicos.pdf]]
 
 ** Demanda
 
-#+BEGIN_SRC python   :results graphics file :file ./figs/PIB/Demanda.png
+#+BEGIN_SRC python   :results graphics file :file ./figs/PIB/Demanda.pdf
 fig, ax = plt.subplots(figsize=(9,4))
 ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
 
@@ -885,7 +912,7 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
 ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 fig.savefig(
-    './figs/PIB/Demanda.png',
+    './figs/PIB/Demanda.pdf',
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -894,12 +921,12 @@ plt.close()
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/Demanda.png]]
+[[file:./figs/PIB/Demanda.pdf]]
 
 ** Oferta
 
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Oferta.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Oferta.pdf
 fig, ax = plt.subplots(figsize=(9,4))
 ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
 
@@ -937,7 +964,7 @@ ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 plt.close()
 fig.savefig(
-    './figs/PIB/Oferta.png',
+    './figs/PIB/Oferta.pdf',
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -945,12 +972,12 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/Oferta.png]]
+[[file:./figs/PIB/Oferta.pdf]]
 
 
 ** Contribuição para variação: Demanda
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Contrib_Demanda.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Contrib_Demanda.pdf
 fig, ax = plt.subplots(figsize=(8,5))
 ax2 = fig.add_axes([0.15,0.7,0.2,0.2])
 
@@ -998,7 +1025,7 @@ ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 fig.savefig(
-    './figs/PIB/Contrib_Demanda.png',
+    './figs/PIB/Contrib_Demanda.pdf',
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -1007,11 +1034,11 @@ plt.close()
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/Contrib_Demanda.png]]
+[[file:./figs/PIB/Contrib_Demanda.pdf]]
 
 ** Contribuição para variação: Oferta
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Contrib_Oferta.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Contrib_Oferta.pdf
 fig, ax = plt.subplots(1,1,figsize=(9,4))
 ax2 = fig.add_axes([0.15,0.6,0.2,0.2])
 
@@ -1061,7 +1088,7 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
 ax2.imshow(logo, aspect='auto', zorder=0, alpha=.5)
 ax2.axis('off')
 fig.savefig(
-    './figs/PIB/Contrib_Oferta.png',
+    './figs/PIB/Contrib_Oferta.pdf',
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -1070,12 +1097,12 @@ plt.close()
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/Contrib_Oferta.png]]
+[[file:./figs/PIB/Contrib_Oferta.pdf]]
 
 
 ** Contribuição para variação: Serviços
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Contrib_Servicos.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/PIB/Contrib_Servicos.pdf
 fig, ax = plt.subplots(1, 1, figsize=(9, 4))
 ax2 = fig.add_axes([0.15, 0.6, 0.2, 0.2])
 
@@ -1143,7 +1170,7 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
 ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
 ax2.axis("off")
 fig.savefig(
-    "./figs/PIB/Contrib_Servicos.png",
+    "./figs/PIB/Contrib_Servicos.pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -1152,7 +1179,7 @@ plt.close()
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/Contrib_Servicos.png]]
+[[file:./figs/PIB/Contrib_Servicos.pdf]]
 
 ** Acumulado no ano (sem ajuste)
 
@@ -1233,7 +1260,7 @@ df.index = df.index.to_timestamp()
 
 *** Serviços
 
-#+BEGIN_SRC python :results graphics file :file ./figs/PIB/Servicos_Acum.png
+#+BEGIN_SRC python :results graphics file :file ./figs/PIB/Servicos_Acum.pdf
 df = pd.read_excel('./raw/ContasNacionais/Tab_Compl_CNT.xlsx', header=3, sheet_name='Acum. em 4 trimestres', index_col=0)
 df.index = df.index.str.replace('.', 'Q').str.replace('IV', '4').str.replace('III', '3').str.replace('II', '2').str.replace('I', '1')
 df.index = pd.PeriodIndex(df.index, freq='Q')
@@ -1264,7 +1291,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/PIB/Servicos_Acum" + ".png",
+    "./figs/PIB/Servicos_Acum" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -1272,11 +1299,11 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/Servicos_Acum.png]]
+[[file:./figs/PIB/Servicos_Acum.pdf]]
 
 *** Serviços (comparação com ano anterior)
 
-#+BEGIN_SRC python :results graphics file :file ./figs/PIB/Servicos_Acum_Comparativo.png
+#+BEGIN_SRC python :results graphics file :file ./figs/PIB/Servicos_Acum_Comparativo.pdf
 df = pd.read_excel('./raw/ContasNacionais/Tab_Compl_CNT.xlsx', header=3, sheet_name='Acum. em 4 trimestres', index_col=0)
 df.index = df.index.str.replace('.', 'Q').str.replace('IV', '4').str.replace('III', '3').str.replace('II', '2').str.replace('I', '1')
 df.index = pd.PeriodIndex(df.index, freq='Q')
@@ -1309,7 +1336,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/PIB/Servicos_Acum_Comparativo" + ".png",
+    "./figs/PIB/Servicos_Acum_Comparativo" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -1317,11 +1344,11 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/Servicos_Acum_Comparativo.png]]
+[[file:./figs/PIB/Servicos_Acum_Comparativo.pdf]]
 
 *** Demanda
 
-#+BEGIN_SRC python :results graphics file :file ./figs/PIB/Demanda_Acum.png
+#+BEGIN_SRC python :results graphics file :file ./figs/PIB/Demanda_Acum.pdf
 df = pd.read_excel('./raw/ContasNacionais/Tab_Compl_CNT.xlsx', header=3, sheet_name='Acum. em 4 trimestres', index_col=0)
 df.index = df.index.str.replace('.', 'Q').str.replace('IV', '4').str.replace('III', '3').str.replace('II', '2').str.replace('I', '1')
 df.index = pd.PeriodIndex(df.index, freq='Q')
@@ -1349,7 +1376,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/PIB/Demanda_Acum" + ".png",
+    "./figs/PIB/Demanda_Acum" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -1357,11 +1384,11 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/Demanda_Acum.png]]
+[[file:./figs/PIB/Demanda_Acum.pdf]]
 
 *** Demanda (comparação com ano anterior)
 
-#+BEGIN_SRC python :results graphics file :file ./figs/PIB/Demanda_Acum_Comparativo.png
+#+BEGIN_SRC python :results graphics file :file ./figs/PIB/Demanda_Acum_Comparativo.pdf
 df = pd.read_excel('./raw/ContasNacionais/Tab_Compl_CNT.xlsx', header=3, sheet_name='Acum. em 4 trimestres', index_col=0)
 df.index = df.index.str.replace('.', 'Q').str.replace('IV', '4').str.replace('III', '3').str.replace('II', '2').str.replace('I', '1')
 df.index = pd.PeriodIndex(df.index, freq='Q')
@@ -1398,7 +1425,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/PIB/Demanda_Acum_Comparativo" + ".png",
+    "./figs/PIB/Demanda_Acum_Comparativo" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -1406,7 +1433,7 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/PIB/Demanda_Acum_Comparativo.png]]
+[[file:./figs/PIB/Demanda_Acum_Comparativo.pdf]]
 
 * Crédito
 #+begin_src python
@@ -1419,7 +1446,7 @@ start_year = '2019-01-01'
 
 ** Endividamento das famílias
 
-#+BEGIN_SRC python :results graphics file :file ./figs/Credito/EndividamentoFamilias.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Credito/EndividamentoFamilias.pdf
 titulo = "Endividamento das famílias\nTotal e Exceto crédito habitacional"
 porcentagem = True
 unidade = "renda acum.\núltimos 12 meses"
@@ -1461,7 +1488,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Credito/EndividamentoFamilias" + ".png",
+    "./figs/Credito/EndividamentoFamilias" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -1469,12 +1496,12 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Credito/EndividamentoFamilias.png]]
+[[file:./figs/Credito/EndividamentoFamilias.pdf]]
 
 
 ** Saldo Pessoal Jurídica - Nível
      
-#+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoPJ.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoPJ.pdf
 titulo = "Saldo Pessoa jurídica"
 porcentagem=False
 unidade="Milhões"
@@ -1514,19 +1541,19 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    './figs/Credito/SaldoPJ' +   '.png',
+    './figs/Credito/SaldoPJ' +   '.pdf',
     dpi = 300, 
     bbox_inches='tight',pad_inches=0
     )
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Credito/SaldoPJ.png]]
+[[file:./figs/Credito/SaldoPJ.pdf]]
 
 
 
 ** Saldo Pessoa Jurídica - em % do PIB
-#+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoPJ_PIB.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoPJ_PIB.pdf
 titulo = "Saldo Pessoa jurídica\nem % PIB"
 porcentagem = True
 unidade = "PIB"
@@ -1568,7 +1595,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Credito/SaldoPJ_PIB" + ".png",
+    "./figs/Credito/SaldoPJ_PIB" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -1576,11 +1603,11 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Credito/SaldoPJ_PIB.png]]
+[[file:./figs/Credito/SaldoPJ_PIB.pdf]]
 
 ** Saldo Pessoa física - Nível
 
-#+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoPF.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoPF.pdf
 titulo = "Saldo Pessoa física"
 porcentagem = False
 unidade = "Milhões"
@@ -1622,17 +1649,17 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Credito/SaldoPF" + ".png", dpi=300, bbox_inches="tight", pad_inches=0
+    "./figs/Credito/SaldoPF" + ".pdf", dpi=300, bbox_inches="tight", pad_inches=0
 )
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Credito/SaldoPF.png]]
+[[file:./figs/Credito/SaldoPF.pdf]]
 
 
 ** Saldo Pessoa física - em % do PIB
 
-#+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoPF_PIB.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoPF_PIB.pdf
 titulo = "Saldo Pessoa física\nem % PIB"
 porcentagem = True
 unidade = "PIB"
@@ -1674,7 +1701,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Credito/SaldoPF_PIB" + ".png",
+    "./figs/Credito/SaldoPF_PIB" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -1682,12 +1709,12 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Credito/SaldoPF_PIB.png]]
+[[file:./figs/Credito/SaldoPF_PIB.pdf]]
 
 
 ** Crédito ampliado em % do Total
 
-#+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoCreditoAmpliado_Total.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Credito/SaldoCreditoAmpliado_Total.pdf
 titulo = "Saldo Crédito Ampliado\nem % do Total"
 porcentagem=True
 unidade="do Total"
@@ -1734,18 +1761,18 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    './figs/Credito/SaldoCreditoAmpliado_Total' + '.png',
+    './figs/Credito/SaldoCreditoAmpliado_Total' + '.pdf',
     dpi = 300,
     bbox_inches='tight',pad_inches=0
     )
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Credito/SaldoCreditoAmpliado_Total.png]]
+[[file:./figs/Credito/SaldoCreditoAmpliado_Total.pdf]]
 
 ** Indicadores de aprovação de crédito
 
-#+BEGIN_SRC python :results graphics file :file ./figs/Credito/PTC.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Credito/PTC.pdf
 titulo = "Indicadores de aprovação de crédito\nAprovações Esperadas - Observadas"
 porcentagem=False
 unidade="Pontos"
@@ -1802,18 +1829,18 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    './figs/Credito/PTC' + '.png',
+    './figs/Credito/PTC' + '.pdf',
     dpi = 300,
     bbox_inches='tight',pad_inches=0
     )
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Credito/PTC.png]]
+[[file:./figs/Credito/PTC.pdf]]
 
 ** Recolhimentos compulsórios de instituições financeiras
 
-#+BEGIN_SRC python :results graphics file :file ./figs/Credito/Recolhimentos_Total.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Credito/Recolhimentos_Total.pdf
 titulo = "Recolhimentos compulsórios de instituições financeira\nSaldo Total"
 porcentagem=False
 unidade="u.m.c (mil)"
@@ -1851,21 +1878,21 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    './figs/Credito/Recolhimentos_Total' + '.png',
+    './figs/Credito/Recolhimentos_Total' + '.pdf',
     dpi = 300,
     bbox_inches='tight',pad_inches=0
     )
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Credito/Recolhimentos_Total.png]]
+[[file:./figs/Credito/Recolhimentos_Total.pdf]]
 
 * Índices de atividade setoriais
 
 
 ** Pesquisa Mensal do Comércio (PMC)
 
-#+BEGIN_SRC python  :file ./figs/Setoriais/PMC_IBGE.png :results graphics file
+#+BEGIN_SRC python  :file ./figs/Setoriais/PMC_IBGE.pdf :results graphics file
 df = pd.concat(
     [
         consulta_bc(28473, ["Total"]),
@@ -1906,19 +1933,19 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    './figs/Setoriais/PMC_IBGE' + '.png',
+    './figs/Setoriais/PMC_IBGE' + '.pdf',
     dpi = 300,
     bbox_inches='tight',pad_inches=0
     )
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Setoriais/PMC_IBGE.png]]
+[[file:./figs/Setoriais/PMC_IBGE.pdf]]
 
 
 ** Pesquisa Industrial Mensal (PIM)
 
-#+BEGIN_SRC python  :file ./figs/Setoriais/PIM_IBGE.png :results graphics file
+#+BEGIN_SRC python  :file ./figs/Setoriais/PIM_IBGE.pdf :results graphics file
 df = pd.concat(
     [
         consulta_bc(28503, ["Geral"]),
@@ -1957,17 +1984,17 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Setoriais/PIM_IBGE" + ".png", dpi=300, bbox_inches="tight", pad_inches=0
+    "./figs/Setoriais/PIM_IBGE" + ".pdf", dpi=300, bbox_inches="tight", pad_inches=0
 )
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Setoriais/PIM_IBGE.png]]
+[[file:./figs/Setoriais/PIM_IBGE.pdf]]
 
 
 ** Pesquisa Mensal de Serviços (PMS)
 *** Receita nominal sem ajuste sazonal
-#+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/PMS_IBGE.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/PMS_IBGE.pdf
 file_name = "PMS_IBGE"
 df = pd.concat(
     [
@@ -2012,12 +2039,12 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Setoriais/PMS_IBGE" + ".png", dpi=300, bbox_inches="tight", pad_inches=0
+    "./figs/Setoriais/PMS_IBGE" + ".pdf", dpi=300, bbox_inches="tight", pad_inches=0
 )
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Setoriais/PMS_IBGE.png]]
+[[file:./figs/Setoriais/PMS_IBGE.pdf]]
 
 *** Volume com ajuste sazonal
 
@@ -2053,7 +2080,7 @@ write.csv(
 All others arguments are desconsidered when 'api' is informed
 :end:
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/PMS_vol_dessazonalizada.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/PMS_vol_dessazonalizada.pdf
 df = pd.read_csv(
     "./clean/IBGE/PMS_volume_dessazonalizada.csv", index_col="Data", parse_dates=True
 )
@@ -2082,7 +2109,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Setoriais/PMS_vol_dessazonalizada" + ".png",
+    "./figs/Setoriais/PMS_vol_dessazonalizada" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -2090,7 +2117,7 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Setoriais/PMS_vol_dessazonalizada.png]]
+[[file:./figs/Setoriais/PMS_vol_dessazonalizada.pdf]]
 
 *** Volume com ajuste sazonal (em relação ao mês anterior)
 
@@ -2126,7 +2153,7 @@ write.csv(
 All others arguments are desconsidered when 'api' is informed
 :end:
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/PMS_vol_dessazonalizada_diff.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/PMS_vol_dessazonalizada_diff.pdf
 df = pd.read_csv(
     "./clean/IBGE/PMS_volume_dessazonalizada.csv", index_col="Data", parse_dates=True
 )
@@ -2156,7 +2183,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Setoriais/PMS_vol_dessazonalizada_diff" + ".png",
+    "./figs/Setoriais/PMS_vol_dessazonalizada_diff" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -2164,14 +2191,14 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Setoriais/PMS_vol_dessazonalizada_diff.png]]
+[[file:./figs/Setoriais/PMS_vol_dessazonalizada_diff.pdf]]
 
 * Emprego
 
 ** Rendimento médio real habitual das pessoas ocupadas
 
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/RMHPO.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/RMHPO.pdf
 df = pd.concat(
     [
         consulta_bc(24383, ["Com carteira"]),
@@ -2203,7 +2230,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Emprego/RMHPO" + ".png",
+    "./figs/Emprego/RMHPO" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -2211,11 +2238,11 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Emprego/RMHPO.png]]
+[[file:./figs/Emprego/RMHPO.pdf]]
 
 ** Massa de rendimento real efetiva e habitual de todos os trabalhos
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/MRR_Efetiva_Habitual.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/MRR_Efetiva_Habitual.pdf
 df = pd.concat(
     [
         consulta_bc(28544, ["Efetiva"]),
@@ -2243,7 +2270,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Emprego/MRR_Efetiva_Habitual" + ".png",
+    "./figs/Emprego/MRR_Efetiva_Habitual" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -2251,11 +2278,11 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Emprego/MRR_Efetiva_Habitual.png]]
+[[file:./figs/Emprego/MRR_Efetiva_Habitual.pdf]]
 
 ** Massa Salarial Ampliada Disponível - PNADC
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/MSAD.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/MSAD.pdf
 df = consulta_bc(22079, ["MSAD - PNADC"])
 
 df = df[start_year:]
@@ -2279,7 +2306,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Emprego/MSAD" + ".png",
+    "./figs/Emprego/MSAD" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -2287,7 +2314,7 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Emprego/MSAD.png]]
+[[file:./figs/Emprego/MSAD.pdf]]
 
 ** Rendimento habitual médio por atividade
 
@@ -2321,7 +2348,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    image_path + file_path.strip("/")[-1] + "RHM_Setor" + "_" + '.png',
+    image_path + file_path.strip("/")[-1] + "RHM_Setor" + "_" + '.pdf',
     dpi = 300, 
     bbox_inches='tight',pad_inches=0
     )
@@ -2333,7 +2360,7 @@ fig.savefig(
 
 ** Número de horas trabalhadas - indústria de transformação
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/Horas_Transformacao.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/Horas_Transformacao.pdf
 df = consulta_bc(24348, ["Indústria de transformação"])
 
 df = rebase(df, base='2020-01-01')
@@ -2356,7 +2383,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Emprego/Horas_Transformacao" + ".png",
+    "./figs/Emprego/Horas_Transformacao" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -2364,11 +2391,11 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Emprego/Horas_Transformacao.png]]
+[[file:./figs/Emprego/Horas_Transformacao.pdf]]
 
 ** Novo CAGED  - Por atividade (dados dessazonalizados)
 
-#+BEGIN_SRC python :results graphics file :file ./figs/Emprego/NovoCaged_Atividade.png
+#+BEGIN_SRC python :results graphics file :file ./figs/Emprego/NovoCaged_Atividade.pdf
 df = pd.concat(
     [
         # consulta_bc(28784, ["Total"]),
@@ -2420,20 +2447,20 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    './figs/Emprego/NovoCaged_Atividade.png',
+    './figs/Emprego/NovoCaged_Atividade.pdf',
     dpi = 300,
     bbox_inches='tight',pad_inches=0
     )
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Emprego/NovoCaged_Atividade.png]]
+[[file:./figs/Emprego/NovoCaged_Atividade.pdf]]
 
 
 
 ** Taxa de desocupação
 
-#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/TaxaDesocupacao.png
+#+BEGIN_SRC python  :results graphics file :file ./figs/Emprego/TaxaDesocupacao.pdf
 df = consulta_bc(24369, ["Taxa de desocupação - PNADC"])
 
 
@@ -2456,7 +2483,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/Emprego/TaxaDesocupacao" + ".png",
+    "./figs/Emprego/TaxaDesocupacao" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -2464,7 +2491,7 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/Emprego/TaxaDesocupacao.png]]
+[[file:./figs/Emprego/TaxaDesocupacao.pdf]]
 
 
 ** Desalentados e subocupados :noexport:
@@ -2508,7 +2535,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + '.png',
+    image_path + file_path.strip("/")[-1] + var.replace(" ", "_") + "_" + '.pdf',
     dpi = 300,
     bbox_inches='tight',pad_inches=0
     )
@@ -2529,7 +2556,7 @@ library(Cairo)
 library(cowplot)
 library(magick)
 
-logo_file <- './figs/Cecon_Logo.png'
+logo_file <- './figs/Cecon_Logo.pdf'
 
 pnad_covid <- read_csv("./raw/PNAD_COVID/PNAD_COVID_112020.csv", col_types = cols(.default = "d"))
 mes <- "Novembro"
@@ -2640,7 +2667,7 @@ fig <- ggplot(df, aes(fill = Cor, y = trab_home_office, x = Sexo)) +
 fig<- ggdraw(fig) +
     draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
 # Salvando
-ggsave(plot = fig, "./figs/PNAD_COVID/home_sexo_cor.png",
+ggsave(plot = fig, "./figs/PNAD_COVID/home_sexo_cor.pdf",
        width = 10, height = 5, dpi = 120, units = "in",type = "cairo")
 
 #+end_src
@@ -2652,24 +2679,24 @@ ggsave(plot = fig, "./figs/PNAD_COVID/home_sexo_cor.png",
 
 
 
-[[./figs/PNAD_COVID/home_sexo_cor.png]]
+[[./figs/PNAD_COVID/home_sexo_cor.pdf]]
 
 ** Home office - Por Cor e Escolaridade
-[[./figs/PNAD_COVID/home_edu_cor.png]]
+[[./figs/PNAD_COVID/home_edu_cor.pdf]]
 ** Home office - Por Cor e Idade
-[[./figs/PNAD_COVID/home_sexo_idade.png]]
+[[./figs/PNAD_COVID/home_sexo_idade.pdf]]
 
 ** Home office - Por Trabalho
-[[./figs/PNAD_COVID/home_emprego.png]]
+[[./figs/PNAD_COVID/home_emprego.pdf]]
 
 ** Home office - Por faixa salarial e cor
-[[./figs/PNAD_COVID/home_renda.png]]
+[[./figs/PNAD_COVID/home_renda.pdf]]
 ** Auxilio - Faixa Salarial
-[[./figs/PNAD_COVID/auxilio_renda.png]]
+[[./figs/PNAD_COVID/auxilio_renda.pdf]]
 ** Auxilio - Por tipo do domicilio
-[[./figs/PNAD_COVID/auxilio_domicilio.png]]
+[[./figs/PNAD_COVID/auxilio_domicilio.pdf]]
 ** Auxilio - Sexo e Cor
-[[./figs/PNAD_COVID/auxilio_cor_sexo.png]]
+[[./figs/PNAD_COVID/auxilio_cor_sexo.pdf]]
 
 
 * Relatório do Tesouro :noexport:
@@ -2679,7 +2706,7 @@ ggsave(plot = fig, "./figs/PNAD_COVID/home_sexo_cor.png",
 * IMF Fiscal Monitor
 ** Medidas fiscais em % do PIB
 
-#+BEGIN_SRC python :results graphics file :file ./figs/IMF/FiscalMonitor_Covid.png
+#+BEGIN_SRC python :results graphics file :file ./figs/IMF/FiscalMonitor_Covid.pdf
 df = pd.read_excel(
     './raw/IMF/fiscal-monitor-database-oct-2020-for-webpage.xlsx',
     sheet_name='Summary.Global',
@@ -2743,7 +2770,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/IMF/FiscalMonitor_Covid" + ".png",
+    "./figs/IMF/FiscalMonitor_Covid" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -2751,11 +2778,11 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/IMF/FiscalMonitor_Covid.png]]
+[[file:./figs/IMF/FiscalMonitor_Covid.pdf]]
 
 ** Medidas fiscais em % do PIB: Setor de saúde/Outros setores
 
-#+BEGIN_SRC python :results graphics file :file ./figs/IMF/FiscalMonitor_Covid_ratio.png
+#+BEGIN_SRC python :results graphics file :file ./figs/IMF/FiscalMonitor_Covid_ratio.pdf
 df = pd.read_excel(
     './raw/IMF/fiscal-monitor-database-oct-2020-for-webpage.xlsx',
     sheet_name='Summary.Global',
@@ -2820,16 +2847,19 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/IMF/FiscalMonitor_Covid_ratio" + ".png",
+    "./figs/IMF/FiscalMonitor_Covid_ratio" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
 )
 #+END_SRC
 
+#+RESULTS:
+[[file:./figs/IMF/FiscalMonitor_Covid_ratio.pdf]]
+
 ** Medidas fiscais em % do PIB: Setor de saúde/Total
 
-#+BEGIN_SRC python :results graphics file :file ./figs/IMF/FiscalMonitor_Covid_total.png
+#+BEGIN_SRC python :results graphics file :file ./figs/IMF/FiscalMonitor_Covid_total.pdf
 df = pd.read_excel(
     './raw/IMF/fiscal-monitor-database-oct-2020-for-webpage.xlsx',
     sheet_name='Summary.Global',
@@ -2894,7 +2924,7 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/IMF/FiscalMonitor_Covid_total" + ".png",
+    "./figs/IMF/FiscalMonitor_Covid_total" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -2902,7 +2932,7 @@ fig.savefig(
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/IMF/FiscalMonitor_Covid_total.png]]
+[[file:./figs/IMF/FiscalMonitor_Covid_total.pdf]]
 
 * World Economic outlook
 
@@ -2968,7 +2998,7 @@ fig.savefig(
 |---------+--------------------+---------------------|
 
 
-#+BEGIN_SRC python :var df=IMF_fig_1() :results graphics file :file ./figs/IMF/GDP_Lockdown.png
+#+BEGIN_SRC python :var df=IMF_fig_1() :results graphics file :file ./figs/IMF/GDP_Lockdown.pdf
 df = pd.DataFrame(
     df,
 )
@@ -2998,7 +3028,7 @@ label_point(df["Lockdown Stringency"], df["GDP Forecast Error"], df["Country"], 
 sns.despine()
 
 fig.savefig(
-    "./figs/IMF/" + "GDP_Lockdown" + ".png",
+    "./figs/IMF/" + "GDP_Lockdown" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -3007,7 +3037,7 @@ plt.close()
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/IMF/GDP_Lockdown.png]]
+[[file:./figs/IMF/GDP_Lockdown.pdf]]
 
 
 
@@ -3023,7 +3053,7 @@ plt.close()
 | LICs           | -5,8                | -2,83                       |
 |----------------+---------------------+-----------------------------|
 
-#+BEGIN_SRC python :var df=Vol_String :results graphics file :file ./figs/IMF/Vol_String.png
+#+BEGIN_SRC python :var df=Vol_String :results graphics file :file ./figs/IMF/Vol_String.pdf
 df = pd.DataFrame(
     df,
 )
@@ -3056,7 +3086,7 @@ ax2.axis("off")
 sns.despine()
 
 fig.savefig(
-    "./figs/IMF/" + "Vol_String" + ".png",
+    "./figs/IMF/" + "Vol_String" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -3065,7 +3095,7 @@ plt.close()
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/IMF/Vol_String.png]]
+[[file:./figs/IMF/Vol_String.pdf]]
 
 ** Sequencing of lockdown measures
 #+NAME: Lock_measure
@@ -3083,7 +3113,7 @@ plt.close()
 | International travel controls  |      1 |   0 |    9 |
 |--------------------------------+--------+-----+------|
 
-#+BEGIN_SRC python :var df=Lock_measure() :results graphics file :file ./figs/IMF/Lock_measures.png
+#+BEGIN_SRC python :var df=Lock_measure() :results graphics file :file ./figs/IMF/Lock_measures.pdf
 df = pd.DataFrame(
     df,
 )
@@ -3133,7 +3163,7 @@ ax2.axis("off")
 sns.despine()
 
 fig.savefig(
-    "./figs/IMF/" + "Lock_measures" + ".png",
+    "./figs/IMF/" + "Lock_measures" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -3142,7 +3172,7 @@ plt.close()
 #+END_SRC
 
 #+RESULTS:
-[[file:./figs/IMF/Lock_measures.png]]
+[[file:./figs/IMF/Lock_measures.pdf]]
 
 * OECD Weekly tracker
 
@@ -3150,7 +3180,7 @@ plt.close()
 wget -q https://github.com/NicolasWoloszko/OECD-Weekly-Tracker/raw/main/Data/weekly_tracker.xlsx
 #+end_src
 
-#+begin_src python :results graphics file :file ./figs/Granulares/OCDE_Semanal.png
+#+begin_src python :results graphics file :file ./figs/Granulares/OCDE_Semanal.pdf
 df = pd.read_excel("./raw/OECD/weekly_tracker.xlsx", parse_dates=True, index_col="date")
 df = df[df["ISO3"] == "BRA"][["Tracker"]]["2019-01-01":]
 df.index.name = ""
@@ -3172,7 +3202,7 @@ ax2.axis("off")
 
 sns.despine()
 fig.savefig(
-    "./figs/Granulares/OCDE_Semanal" + ".png",
+    "./figs/Granulares/OCDE_Semanal" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
@@ -3181,15 +3211,16 @@ plt.close()
 #+end_src
 
 #+RESULTS:
-[[file:./figs/Granulares/OCDE_Semanal.png]]
+[[file:./figs/Granulares/OCDE_Semanal.pdf]]
 
-* Our world in data and stringency
+* Novos casos x Restrição de mobilidade por tipo de isolamento
+** TODOs :noexport:
 
-** TODOs
-*** TODO Unir os dataframes
-*** TODO Plotar com diferenciação de isolamento voluntário ou imposto
-**** Cores?
+*** TODO Tamanho imagen
 
+*** TODO Fixar logo
+
+*** TODO Selecionar menos países?
 ** Loading data :ignore:noexport:
 
 *** Our world data
@@ -3385,6 +3416,10 @@ df["Isolamento"] = df["Residential"].pct_change(7)
 df.to_csv("./clean/COVID/google_mobility.csv")
 #+END_SRC
 
+#+RESULTS:
+:results:
+:end:
+
 ** Merging :noexport:
 
 
@@ -3408,12 +3443,25 @@ df <- df %>%
   mutate(Restrict = Policy_change > 0) %>%
   mutate(stayhome_growth = (Residential/lag(Residential) - 1) * 100) %>%
   mutate(stayhome_growth_7 = (Residential/lag(Residential,7) - 1) * 100) %>%
+  mutate(stayhome_growth_14 = (Residential/lag(Residential,14) - 1) * 100) %>%
   mutate(Isolamento = case_when(
+     stayhome_growth > 0 & Restrict == TRUE ~ "Imposto", # Queda da mobilidade junto da imposição
+     stayhome_growth > 0 & Restrict == FALSE ~ "Voluntário", # Queda da mobilidade sem restrição
+     stayhome_growth <= 0 ~ "Queda",
+           )) %>%
+  mutate(Isolamento_14 = case_when(
+     stayhome_growth_14 > 0 & Restrict == TRUE ~ "Imposto", # Queda da mobilidade junto da imposição
+     stayhome_growth_14 > 0 & Restrict == FALSE ~ "Voluntário", # Queda da mobilidade sem restrição
+     stayhome_growth_14 <= 0 ~ "Queda",
+           )) %>%
+  mutate(Isolamento_7 = case_when(
      stayhome_growth_7 > 0 & Restrict == TRUE ~ "Imposto", # Queda da mobilidade junto da imposição
      stayhome_growth_7 > 0 & Restrict == FALSE ~ "Voluntário", # Queda da mobilidade sem restrição
      stayhome_growth_7 <= 0 ~ "Queda",
            )) %>%
   mutate(Isolamento = as.factor(Isolamento)) %>%
+  mutate(Isolamento_7 = as.factor(Isolamento_7)) %>%
+  mutate(Isolamento_14 = as.factor(Isolamento_14)) %>%
   mutate(cases_growth = (new_cases_per_million/lag(new_cases_per_million) - 1) * 100) %>%
   mutate(deaths_growth = (new_deaths_per_million/lag(new_deaths_per_million) - 1) * 100) %>%
   mutate(vaccine_growth = (people_fully_vaccinated/lag(people_fully_vaccinated) - 1) * 100) %>%
@@ -3445,8 +3493,6 @@ cols(
   stringency_index = [32mcol_double()[39m
 )
 
-|======                                                                                                                                                   | 4%|========                                                                                                                                                 | 5%|==========                                                                                                                                               | 6%|============                                                                                                                                             | 7%|==============                                                                                                                                           | 9%|===============                                                                                                                                    | 10% 1 MB|================                                                                                                                                   | 11% 1 MB|==================                                                                                                                                 | 12% 1 MB|====================                                                                                                                               | 13% 1 MB|=====================                                                                                                                              | 14% 1 MB|=======================                                                                                                                            | 15% 1 MB|=========================                                                                                                                          | 16% 1 MB|==========================                                                                                                                         | 18% 1 MB|============================                                                                                                                       | 19% 1 MB|==============================                                                                                                                     | 20% 2 MB|===============================                                                                                                                    | 21% 2 MB|=================================                                                                                                                  | 22% 2 MB|===================================                                                                                                                | 23% 2 MB|====================================                                                                                                               | 24% 2 MB|======================================                                                                                                             | 26% 2 MB|========================================                                                                                                           | 27% 2 MB|==========================================                                                                                                         | 28% 2 MB|===========================================                                                                                                        | 29% 2 MB|=============================================                                                                                                      | 30% 3 MB|===============================================                                                                                                    | 31% 3 MB|================================================                                                                                                   | 32% 3 MB|==================================================                                                                                                 | 34% 3 MB|====================================================                                                                                               | 35% 3 MB|=====================================================                                                                                              | 36% 3 MB|======================================================                                                                                             | 37% 3 MB|========================================================                                                                                           | 38% 3 MB|==========================================================                                                                                         | 39% 3 MB|============================================================                                                                                       | 40% 4 MB|==============================================================                                                                                     | 42% 4 MB|================================================================                                                                                   | 43% 4 MB|=================================================================                                                                                  | 44% 4 MB|===================================================================                                                                                | 45% 4 MB|=====================================================================                                                                              | 46% 4 MB|======================================================================                                                                             | 47% 4 MB|========================================================================                                                                           | 48% 4 MB|=========================================================================                                                                          | 49% 5 MB|===========================================================================                                                                        | 50% 5 MB|=============================================================================                                                                      | 52% 5 MB|==============================================================================                                                                     | 53% 5 MB|================================================================================                                                                   | 54% 5 MB|==================================================================================                                                                 | 55% 5 MB|====================================================================================                                                               | 56% 5 MB|=====================================================================================                                                              | 57% 5 MB|=======================================================================================                                                            | 58% 5 MB|========================================================================================                                                           | 60% 6 MB|==========================================================================================                                                         | 61% 6 MB|============================================================================================                                                       | 62% 6 MB|=============================================================================================                                                      | 63% 6 MB|===============================================================================================                                                    | 64% 6 MB|=================================================================================================                                                  | 65% 6 MB|===================================================================================================                                                | 67% 6 MB|====================================================================================================                                               | 68% 6 MB|======================================================================================================                                             | 69% 6 MB|=======================================================================================================                                            | 70% 7 MB|=========================================================================================================                                          | 71% 7 MB|==========================================================================================================                                         | 72% 7 MB|============================================================================================================                                       | 73% 7 MB|==============================================================================================================                                     | 74% 7 MB|===============================================================================================================                                    | 75% 7 MB|=================================================================================================================                                  | 76% 7 MB|===================================================================================================================                                | 78% 7 MB|=====================================================================================================================                              | 79% 7 MB|=======================================================================================================================                            | 80% 8 MB|========================================================================================================================                           | 81% 8 MB|==========================================================================================================================                         | 82% 8 MB|============================================================================================================================                       | 83% 8 MB|=============================================================================================================================                      | 84% 8 MB|===============================================================================================================================                    | 86% 8 MB|=================================================================================================================================                  | 87% 8 MB|==================================================================================================================================                 | 88% 8 MB|====================================================================================================================================               | 89% 8 MB|======================================================================================================================================             | 90% 9 MB|=======================================================================================================================================            | 91% 9 MB|=========================================================================================================================================          | 92% 9 MB|==========================================================================================================================================         | 93% 9 MB|============================================================================================================================================       | 95% 9 MB|==============================================================================================================================================     | 96% 9 MB|===============================================================================================================================================    | 96% 9 MB|================================================================================================================================================   | 97% 9 MB|================================================================================================================================================== | 98% 9 MB|==================================================================================================================================================| 100% 10 MB
-
 [36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   date = [34mcol_date(format = "")[39m,
@@ -3471,17 +3517,16 @@ cols(
 Joining, by = c("date", "iso_code")
 :end:
 
-** Ploting stringency vs cases and voluntary :ignore:
+** Aparando dataframe :noexport:
 
 #+begin_src R
-
 df <-read_csv(
   './clean/COVID/cases_closes_google_merged.csv',
   guess_max = 3000
 ) %>%
   mutate(Isolamento = as.factor(Isolamento)) %>%
-  mutate(iso_code = as.factor(iso_code)) %>%
-  ## filter(Policy_change != 0) %>%
+  mutate(Isolamento_7 = as.factor(Isolamento_7)) %>%
+  mutate(Isolamento_14 = as.factor(Isolamento_14)) %>%
   select(date,
          iso_code,
          new_cases_per_million,
@@ -3491,16 +3536,67 @@ df <-read_csv(
          Policy_change,
          Restrict,
          Isolamento,
+         Isolamento_7,
+         Isolamento_14,
          Residential,
          Closure,
          stayhome_growth,
          stayhome_growth_7,
+         stayhome_growth_14,
          vaccine_growth
          ) %>%
-  mutate(cases_growth_after14 = lead(cases_growth, 14))
-
-print(head(df))
-df %>% drop_na(Isolamento) %>% filter(date > as.Date("2020-06-01")) %>% filter(cases_growth_after14 < 100,cases_growth_after14>-50, stayhome_growth_7<100, Isolamento != "Queda", Policy_change !=0) %>% ggplot(aes(x=stayhome_growth_7, y= cases_growth_after14)) + geom_point() + facet_wrap(~Isolamento)
+  mutate(cases_growth_after14 = lead(cases_growth, 14)) %>%
+  filter(
+    date > as.Date("2020-02-01"), # same start date for all
+    cases_growth < 10, # Removing outliers
+    cases_growth > -10,
+    cases_growth>-50,
+    cases_growth_after14 > -10,
+    cases_growth_after14<10,
+    stayhome_growth_7<100) %>%
+  drop_na(Isolamento, Isolamento_7, Isolamento_14, cases_growth, Policy_change) %>%
+  filter(iso_code %in% c(
+                       "ARG",
+                       "AUS",
+                       "BEL",
+                       "BOL",
+                       "BRA",
+                       "CAN",
+                       "CHE",
+                       "CHL",
+                       "COL",
+                       "DEU",
+                       "DNK",
+                       "ECU",
+                       "ESP",
+                       "FIN",
+                       "FRA",
+                       "GBR",
+                       "IND",
+                       "IRL",
+                       "ISR",
+                       "ITA",
+                       "JPN",
+                       "KOR",
+                       "MEX",
+                       "NDL",
+                       "NOR",
+                       "NZL",
+                       "PRT",
+                       "RUS",
+                       "SWE",
+                       "URY",
+                       "USA",
+                       "VEN",
+                       "ZAF"
+                     )) %>%
+  mutate(iso_code = as.factor(iso_code)) %>%
+  mutate(Policy = case_when(
+           Policy_change > 0 ~ "Restrição",
+           Policy_change < 0 ~ "Flexibilização",
+           Policy_change == 0 ~ "Sem novas medidas"
+         )) %>%
+  mutate(Policy = as.factor(Policy))
 #+end_src
 
 #+RESULTS:
@@ -3512,17 +3608,295 @@ cols(
   date = [34mcol_date(format = "")[39m,
   iso_code = [31mcol_character()[39m,
   Restrict = [33mcol_logical()[39m,
-  Isolamento = [31mcol_character()[39m
+  Isolamento = [31mcol_character()[39m,
+  Isolamento_14 = [31mcol_character()[39m,
+  Isolamento_7 = [31mcol_character()[39m
 )
 [36mℹ[39m Use [30m[47m[30m[47m`spec()`[47m[30m[49m[39m for the full column specifications.
-[90m# A tibble: 6 x 14[39m
-  date       iso_code new_cases_per_m… cases_growth deaths_growth vaccine_growth Policy_change Restrict Isolamento Residential Closure stayhome_growth
-  [3m[90m<date>[39m[23m     [3m[90m<fct>[39m[23m               [3m[90m<dbl>[39m[23m        [3m[90m<dbl>[39m[23m         [3m[90m<dbl>[39m[23m          [3m[90m<dbl>[39m[23m         [3m[90m<dbl>[39m[23m [3m[90m<lgl>[39m[23m    [3m[90m<fct>[39m[23m            [3m[90m<dbl>[39m[23m   [3m[90m<dbl>[39m[23m           [3m[90m<dbl>[39m[23m
-[90m1[39m 2020-02-24 AFG                    [31mNA[39m           [31mNA[39m            [31mNA[39m             [31mNA[39m            [31mNA[39m [31mNA[39m       [31mNA[39m                   0   0.375              [31mNA[39m
-[90m2[39m 2020-02-25 AFG                    [31mNA[39m           [31mNA[39m            [31mNA[39m             [31mNA[39m             0 FALSE    [31mNA[39m                   0   0.375              [31mNA[39m
-[90m3[39m 2020-02-26 AFG                    [31mNA[39m           [31mNA[39m            [31mNA[39m             [31mNA[39m             0 FALSE    [31mNA[39m                   1   0.375             [31mInf[39m
-[90m4[39m 2020-02-27 AFG                    [31mNA[39m           [31mNA[39m            [31mNA[39m             [31mNA[39m             0 FALSE    [31mNA[39m                   2   0.375             100
-[90m5[39m 2020-02-28 AFG                    [31mNA[39m           [31mNA[39m            [31mNA[39m             [31mNA[39m             0 FALSE    [31mNA[39m                   2   0.375               0
-[90m6[39m 2020-02-29 AFG                    [31mNA[39m           [31mNA[39m            [31mNA[39m             [31mNA[39m             0 FALSE    [31mNA[39m                   1   0.375             -[31m50[39m
-[90m# … with 2 more variables: stayhome_growth_7 [3m[90m<dbl>[90m[23m, cases_growth_after14 [3m[90m<dbl>[90m[23m[39m
+:end:
+
+** Econômico: Pandemia $\Rightarrow$ Isolamento
+
+#+begin_src R :exports none
+ylab = "Taxa de crescimento de casos"
+#+end_src
+
+#+RESULTS:
+:results:
+:end:
+
+*** Novos casos por milhão > 10 para todos os dias
+
+#+begin_src R :results value file :var figname="Casos_Policy_10_Todos"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+    
+df %>%
+  filter(
+    ## Policy_change != 0,
+    new_cases_per_million > 10
+  ) %>%
+  ggplot(aes(x=Policy_change, y= cases_growth, fill=Isolamento_14)) +
+  geom_vline(xintercept=0, color="black") + 
+  geom_violin(alpha=0.5,width = 0.5) +
+  labs(
+    x = "Variação imposição de restrição",
+    y = ylab
+  ) + 
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+ facet_wrap(~iso_code) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Casos_Policy_10_Todos.pdf]]
+:end:
+*** Novos casos por milhão > 10 apenas nos dias que houve mudança na política de restrição
+
+#+begin_src R :results value file :var figname="Casos_Policy_10_Restricao"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+    
+df %>%
+  filter(
+    Policy_change != 0,
+    new_cases_per_million > 10
+  ) %>%
+  ggplot(aes(x=Policy_change, y= cases_growth, fill=Isolamento_14)) +
+  geom_vline(xintercept=0, color="black") + 
+  geom_violin(alpha=0.5,width = 0.5) +
+  labs(
+    x = "Variação imposição de restrição",
+    y = ylab
+  ) + 
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+  facet_wrap(~iso_code) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Casos_Policy_10_Restricao.pdf]]
+:end:
+
+
+
+*** Novos casos por milhão > 100 para todos os dias
+
+#+begin_src R :results value file :var figname="Casos_Policy_100_Todos"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+
+df %>%
+  filter(
+    ## Policy_change != 0,
+    new_cases_per_million > 100
+  ) %>%
+  ggplot(aes(x=Policy_change, y= cases_growth, fill=Isolamento_14)) +
+  geom_vline(xintercept=0, color="black") +
+  geom_violin(alpha=0.5,width = 0.5) +
+  labs(
+    x = "Variação imposição de restrição",
+    y = ylab
+  ) +
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+ facet_wrap(~iso_code) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Casos_Policy_100_Todos.pdf]]
+:end:
+*** Novos casos por milhão > 100 apenas nos dias que houve mudança na política de restrição
+
+#+begin_src R :results value file :var figname="Casos_Policy_100_Restricao"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+
+df %>%
+  filter(
+    Policy_change != 0,
+    new_cases_per_million > 100
+  ) %>%
+  ggplot(aes(x=Policy_change, y= cases_growth, fill=Isolamento_14)) +
+  geom_vline(xintercept=0, color="black") +
+  geom_violin(alpha=0.5,width = 0.5) +
+  labs(
+    x = "Variação imposição de restrição",
+    y = ylab
+  ) +
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+  facet_wrap(~iso_code) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Casos_Policy_100_Restricao.pdf]]
+:end:
+
+
+
+** Epidemiológico: Isolamento $\Rightarrow$ Pandemia
+
+#+begin_src R :exports none
+ylab = "Taxa de crescimento de casos após 14 dias"
+#+end_src
+
+#+RESULTS:
+:results:
+[1] "./figs/COVID/Casos_Policy_10_Todos.pdf"
+There were 31 warnings (use warnings() to see them)
+[1] "./figs/COVID/Casos_Policy_10_Restricao.pdf"
+There were 15 warnings (use warnings() to see them)
+[1] "./figs/COVID/Casos_Policy_100_Todos.pdf"
+There were 17 warnings (use warnings() to see them)
+[1] "./figs/COVID/Casos_Policy_100_Restricao.pdf"
+There were 20 warnings (use warnings() to see them)
+:end:
+
+*** Novos casos por milhão > 10 para todos os dias
+
+#+begin_src R :results value file :var figname="Pandemia_Casos_Policy_10_Todos"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+
+df %>%
+  filter(
+    ## Policy_change != 0,
+    new_cases_per_million > 10
+  ) %>%
+  ggplot(aes(x=Policy_change, y= cases_growth_after14, fill=Isolamento_14)) +
+  geom_hline(yintercept=0, color="black") +
+  geom_violin(alpha=0.5,width = 0.5) +
+  labs(
+    x = "Variação imposição de restrição",
+    y = ylab
+  ) +
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+ facet_wrap(~iso_code) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Pandemia_Casos_Policy_10_Todos.pdf]]
+:end:
+*** Novos casos por milhão > 10 apenas nos dias que houve mudança na política de restrição
+
+#+begin_src R :results value file :var figname="Pandemia_Casos_Policy_10_Restricao"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+
+df %>%
+  filter(
+    Policy_change != 0,
+    new_cases_per_million > 10
+  ) %>%
+  ggplot(aes(x=Policy_change, y= cases_growth_after14, fill=Isolamento_14)) +
+  geom_hline(yintercept=0, color="black") +
+  geom_violin(alpha=0.5,width = 0.5) +
+  labs(
+    x = "Variação imposição de restrição",
+    y = ylab
+  ) +
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+  facet_wrap(~iso_code) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Pandemia_Casos_Policy_10_Restricao.pdf]]
+:end:
+
+
+
+*** Novos casos por milhão > 100 para todos os dias
+
+#+begin_src R :results value file :var figname="Pandemia_Casos_Policy_100_Todos"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+
+df %>%
+  filter(
+    ## Policy_change != 0,
+    new_cases_per_million > 100
+  ) %>%
+  ggplot(aes(x=Policy_change, y= cases_growth_after14, fill=Isolamento_14)) +
+  geom_hline(yintercept=0, color="black") +
+  geom_violin(alpha=0.5,width = 0.5) +
+  labs(
+    x = "Variação imposição de restrição",
+    y = ylab
+  ) +
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+ facet_wrap(~iso_code) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Pandemia_Casos_Policy_100_Todos.pdf]]
+:end:
+*** Novos casos por milhão > 100 apenas nos dias que houve mudança na política de restrição
+
+#+begin_src R :results value file :var figname="Pandemia_Casos_Policy_100_Restricao"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+
+df %>%
+  filter(
+    Policy_change != 0,
+    new_cases_per_million > 100
+  ) %>%
+  ggplot(aes(x=Policy_change, y= cases_growth_after14, fill=Isolamento_14)) +
+  geom_hline(yintercept=0, color="black") +
+  geom_violin(alpha=0.5,width = 0.5) +
+  labs(
+    x = "Variação imposição de restrição",
+    y = ylab
+  ) +
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+  facet_wrap(~iso_code) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Pandemia_Casos_Policy_100_Restricao.pdf]]
 :end:
