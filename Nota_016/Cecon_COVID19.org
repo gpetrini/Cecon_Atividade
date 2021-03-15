@@ -167,7 +167,7 @@ def add_value_labels(ax, spacing=5):
 #+RESULTS:
 :results:
 
-(python3:53122): Gtk-[1;33mWARNING[0m **: [34m15:31:11.985[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
+(python3:13490): Gtk-[1;33mWARNING[0m **: [34m17:23:58.782[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
 :end:
 ** R
 
@@ -176,7 +176,7 @@ library(sidrar)
 library(tidyverse)
 library(cowplot)
 logo_file <- './figs/Cecon_Logo.png'
-
+source('https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R')
 ## get_png <- function(filename) {
 ##   grid::rasterGrob(png::readPNG(filename), interpolate = TRUE)
 ## }
@@ -187,6 +187,14 @@ logo_file <- './figs/Cecon_Logo.png'
 
 #+RESULTS:
 :results:
+── [1mAttaching packages[22m ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+[32m✔[39m [34mggplot2[39m 3.3.2     [32m✔[39m [34mpurrr  [39m 0.3.4
+[32m✔[39m [34mtibble [39m 3.0.4     [32m✔[39m [34mdplyr  [39m 1.0.2
+[32m✔[39m [34mtidyr  [39m 1.1.2     [32m✔[39m [34mstringr[39m 1.4.0
+[32m✔[39m [34mreadr  [39m 1.4.0     [32m✔[39m [34mforcats[39m 0.5.0
+── [1mConflicts[22m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+[31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
+[31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
 :end:
 
 * Indicadores de antecedente
@@ -3477,7 +3485,7 @@ write.csv(
 #+RESULTS:
 :results:
 
-[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[36m──[39m [1m[1mColumn specification[1m[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   date = [34mcol_date(format = "")[39m,
   iso_code = [31mcol_character()[39m,
@@ -3493,7 +3501,7 @@ cols(
   stringency_index = [32mcol_double()[39m
 )
 
-[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[36m──[39m [1m[1mColumn specification[1m[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   date = [34mcol_date(format = "")[39m,
   iso_code = [31mcol_character()[39m,
@@ -3502,7 +3510,7 @@ cols(
 )
 Joining, by = c("date", "iso_code")
 
-[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[36m──[39m [1m[1mColumn specification[1m[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   date = [34mcol_date(format = "")[39m,
   iso_code = [31mcol_character()[39m,
@@ -3583,6 +3591,7 @@ df <-read_csv(
                        "NOR",
                        "NZL",
                        "PRT",
+                       "PRY",
                        "RUS",
                        "SWE",
                        "URY",
@@ -3594,9 +3603,13 @@ df <-read_csv(
   mutate(Policy = case_when(
            Policy_change > 0 ~ "Restrição",
            Policy_change < 0 ~ "Flexibilização",
-           Policy_change == 0 ~ "Sem novas medidas"
+           Policy_change == 0 ~ "Sem mudanças"
          )) %>%
   mutate(Policy = as.factor(Policy))
+
+
+    
+ylab = "Taxa de crescimento de casos"
 #+end_src
 
 #+RESULTS:
@@ -3617,13 +3630,7 @@ cols(
 
 ** Econômico: Pandemia $\Rightarrow$ Isolamento
 
-#+begin_src R :exports none
-ylab = "Taxa de crescimento de casos"
-#+end_src
 
-#+RESULTS:
-:results:
-:end:
 
 *** Novos casos por milhão > 10 para todos os dias
 
@@ -3636,13 +3643,17 @@ df %>%
     ## Policy_change != 0,
     new_cases_per_million > 10
   ) %>%
-  ggplot(aes(x=Policy_change, y= cases_growth, fill=Isolamento_14)) +
+  ggplot(aes(y=Policy, x= cases_growth, fill=Isolamento_14)) +
   geom_vline(xintercept=0, color="black") + 
-  geom_violin(alpha=0.5,width = 0.5) +
+  geom_boxplot(alpha=0.5) +
+  geom_boxplot(outlier.shape = NA) +
   labs(
-    x = "Variação imposição de restrição",
-    y = ylab
-  ) + 
+    y = "Variação imposição de restrição",
+    x = ylab
+  ) +
+  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) + 
+  ## coord_flip() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
  guides(fill=guide_legend(title="Tipo de isolamento")) +
  facet_wrap(~iso_code) -> fig
 
@@ -3656,26 +3667,62 @@ print(name)
 :results:
 [[file:./figs/COVID/Casos_Policy_10_Todos.pdf]]
 :end:
-*** Novos casos por milhão > 10 apenas nos dias que houve mudança na política de restrição
+*** Novos casos por milhão > 50 para todos os dias
+
+#+begin_src R :results value file :var figname="Casos_Policy_50_Todos"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+
+df %>%
+  filter(
+    ## Policy_change != 0,
+    new_cases_per_million > 50
+  ) %>%
+  ggplot(aes(y=Policy, x= cases_growth, fill=Isolamento_14)) +
+  geom_vline(xintercept=0, color="black") +
+  geom_boxplot() +
+  labs(
+    y = "Variação imposição de restrição",
+    x = ylab
+  ) +
+  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) +
+  coord_flip() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+ facet_wrap(~iso_code) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Casos_Policy_50_Todos.pdf]]
+:end:
+
+*** Novos casos por milhão > 10 para os dias em que foi decretada alguma medida de mobilidade
 
 #+begin_src R :results value file :var figname="Casos_Policy_10_Restricao"
 
 name = paste0('./figs/COVID/', figname, ".pdf")
-    
+
 df %>%
   filter(
     Policy_change != 0,
     new_cases_per_million > 10
   ) %>%
-  ggplot(aes(x=Policy_change, y= cases_growth, fill=Isolamento_14)) +
-  geom_vline(xintercept=0, color="black") + 
-  geom_violin(alpha=0.5,width = 0.5) +
+  ggplot(aes(y=Policy, x= cases_growth, fill=Isolamento_14)) +
+  geom_vline(xintercept=0, color="black") +
+  geom_boxplot(alpha=0.5, scale = "area") +
   labs(
-    x = "Variação imposição de restrição",
-    y = ylab
-  ) + 
+    y = "Variação imposição de restrição",
+    x = ylab
+  ) +
+  scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) +
+  coord_flip() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
  guides(fill=guide_legend(title="Tipo de isolamento")) +
-  facet_wrap(~iso_code) -> fig
+ facet_wrap(~iso_code) -> fig
 
  fig <- ggdraw(fig) +
    draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
@@ -3687,9 +3734,6 @@ print(name)
 :results:
 [[file:./figs/COVID/Casos_Policy_10_Restricao.pdf]]
 :end:
-
-
-
 *** Novos casos por milhão > 100 para todos os dias
 
 #+begin_src R :results value file :var figname="Casos_Policy_100_Todos"
@@ -3703,7 +3747,7 @@ df %>%
   ) %>%
   ggplot(aes(x=Policy_change, y= cases_growth, fill=Isolamento_14)) +
   geom_vline(xintercept=0, color="black") +
-  geom_violin(alpha=0.5,width = 0.5) +
+  geom_boxplot(alpha=0.5) +
   labs(
     x = "Variação imposição de restrição",
     y = ylab
@@ -3734,7 +3778,7 @@ df %>%
   ) %>%
   ggplot(aes(x=Policy_change, y= cases_growth, fill=Isolamento_14)) +
   geom_vline(xintercept=0, color="black") +
-  geom_violin(alpha=0.5,width = 0.5) +
+  geom_boxplot(alpha=0.5) +
   labs(
     x = "Variação imposição de restrição",
     y = ylab
@@ -3755,7 +3799,7 @@ print(name)
 
 
 
-** Epidemiológico: Isolamento $\Rightarrow$ Pandemia
+** Epidemiológico: Isolamento $\Rightarrow$ Pandemia :noexport:
 
 #+begin_src R :exports none
 ylab = "Taxa de crescimento de casos após 14 dias"
@@ -3764,11 +3808,11 @@ ylab = "Taxa de crescimento de casos após 14 dias"
 #+RESULTS:
 :results:
 [1] "./figs/COVID/Casos_Policy_10_Todos.pdf"
-There were 31 warnings (use warnings() to see them)
+There were 32 warnings (use warnings() to see them)
 [1] "./figs/COVID/Casos_Policy_10_Restricao.pdf"
-There were 15 warnings (use warnings() to see them)
+There were 16 warnings (use warnings() to see them)
 [1] "./figs/COVID/Casos_Policy_100_Todos.pdf"
-There were 17 warnings (use warnings() to see them)
+There were 18 warnings (use warnings() to see them)
 [1] "./figs/COVID/Casos_Policy_100_Restricao.pdf"
 There were 20 warnings (use warnings() to see them)
 :end:
@@ -3786,7 +3830,7 @@ df %>%
   ) %>%
   ggplot(aes(x=Policy_change, y= cases_growth_after14, fill=Isolamento_14)) +
   geom_hline(yintercept=0, color="black") +
-  geom_violin(alpha=0.5,width = 0.5) +
+  geom_boxplot(alpha=0.5) +
   labs(
     x = "Variação imposição de restrição",
     y = ylab
@@ -3817,7 +3861,7 @@ df %>%
   ) %>%
   ggplot(aes(x=Policy_change, y= cases_growth_after14, fill=Isolamento_14)) +
   geom_hline(yintercept=0, color="black") +
-  geom_violin(alpha=0.5,width = 0.5) +
+  geom_boxplot(alpha=0.5) +
   labs(
     x = "Variação imposição de restrição",
     y = ylab
@@ -3851,7 +3895,7 @@ df %>%
   ) %>%
   ggplot(aes(x=Policy_change, y= cases_growth_after14, fill=Isolamento_14)) +
   geom_hline(yintercept=0, color="black") +
-  geom_violin(alpha=0.5,width = 0.5) +
+  geom_boxplot(alpha=0.5) +
   labs(
     x = "Variação imposição de restrição",
     y = ylab
@@ -3882,7 +3926,7 @@ df %>%
   ) %>%
   ggplot(aes(x=Policy_change, y= cases_growth_after14, fill=Isolamento_14)) +
   geom_hline(yintercept=0, color="black") +
-  geom_violin(alpha=0.5,width = 0.5) +
+  geom_boxplot(alpha=0.5) +
   labs(
     x = "Variação imposição de restrição",
     y = ylab
