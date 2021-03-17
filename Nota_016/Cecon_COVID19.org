@@ -167,7 +167,7 @@ def add_value_labels(ax, spacing=5):
 #+RESULTS:
 :results:
 
-(python3:13490): Gtk-[1;33mWARNING[0m **: [34m17:23:58.782[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
+(python3:53652): Gtk-[1;33mWARNING[0m **: [34m16:10:56.191[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
 :end:
 ** R
 
@@ -177,24 +177,36 @@ library(tidyverse)
 library(cowplot)
 logo_file <- './figs/Cecon_Logo.png'
 source('https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R')
-## get_png <- function(filename) {
-##   grid::rasterGrob(png::readPNG(filename), interpolate = TRUE)
-## }
 
-## logo_file %>% get_png() -> logo_file
 
+                                        # funçãozinha dos esquemas --------------------------------------------------------------------
+
+gen_poly <- function(x, .deg=3) {
+  options(na.action="na.exclude")
+  t <- 1:length(x)
+  fit <- lm(x ~ poly(t, degree = .deg))
+  pred <- predict(fit, data.frame(t = t))
+  return(pred)
+}
+
+
+                                        # aplica na baguia toda -----------------------------------------------------------------------
+
+deg <- 5 # degree do poly
+
+argmax <- function(smoothed, w=1, ...) {
+  require(zoo)
+  n <- length(smoothed)
+  smoothed <- zoo(smoothed)
+  y.max <- rollapply(smoothed, 2*w+1, max, align="center")
+  delta <- y.max - smoothed[-c(1:w, n+1-1:w)]
+  i.max <- which(delta <= 0) + w
+  return(i.max)
+}
 #+end_src
 
 #+RESULTS:
 :results:
-── [1mAttaching packages[22m ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
-[32m✔[39m [34mggplot2[39m 3.3.2     [32m✔[39m [34mpurrr  [39m 0.3.4
-[32m✔[39m [34mtibble [39m 3.0.4     [32m✔[39m [34mdplyr  [39m 1.0.2
-[32m✔[39m [34mtidyr  [39m 1.1.2     [32m✔[39m [34mstringr[39m 1.4.0
-[32m✔[39m [34mreadr  [39m 1.4.0     [32m✔[39m [34mforcats[39m 0.5.0
-── [1mConflicts[22m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
-[31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
 :end:
 
 * Indicadores de antecedente
@@ -3221,14 +3233,24 @@ plt.close()
 #+RESULTS:
 [[file:./figs/Granulares/OCDE_Semanal.pdf]]
 
+** Informações adicionais
+
+Conforme sugere o Anexo A (p. 40) de textcite:woloszko_2020_Tracking, a semana considerada se inicia aos domingos.
+Compara-se com a mesma semana do ano anterior cujos dias da semana são os mais próximos da data de referência do ano corrente.
+Exemplo dado pelo autor (p. 43):
+
+#+begin_quote
+The log difference for, say, 03-01-2020, is obtained by taking the difference between the $svi_{03 −01 −2020}$ and the log of a weighted average of the closest known values before and after 03-01-2019, that is 31-12-2018 and 07-01-2019.
+#+end_quote
+
+
 * Novos casos x Restrição de mobilidade por tipo de isolamento
 ** TODOs :noexport:
+*** TODO Refinar datação dos picos
+*** TODO Remover outlier dos boxplots
+*** TODO Repensar nome das ondas
+*** TODO Reordenar factors
 
-*** TODO Tamanho imagen
-
-*** TODO Fixar logo
-
-*** TODO Selecionar menos países?
 ** Loading data :ignore:noexport:
 
 *** Our world data
@@ -3242,6 +3264,8 @@ df = pd.read_csv(
         "date",
         "iso_code",
         "continent",
+        "total_cases",
+        "total_deaths",
         "new_cases_smoothed",
         "new_deaths_smoothed",
         "new_deaths_per_million",
@@ -3485,11 +3509,13 @@ write.csv(
 #+RESULTS:
 :results:
 
-[36m──[39m [1m[1mColumn specification[1m[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   date = [34mcol_date(format = "")[39m,
   iso_code = [31mcol_character()[39m,
+  total_cases = [32mcol_double()[39m,
   new_cases_smoothed = [32mcol_double()[39m,
+  total_deaths = [32mcol_double()[39m,
   new_deaths_smoothed = [32mcol_double()[39m,
   new_cases_per_million = [32mcol_double()[39m,
   new_cases_smoothed_per_million = [32mcol_double()[39m,
@@ -3501,7 +3527,7 @@ cols(
   stringency_index = [32mcol_double()[39m
 )
 
-[36m──[39m [1m[1mColumn specification[1m[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   date = [34mcol_date(format = "")[39m,
   iso_code = [31mcol_character()[39m,
@@ -3510,7 +3536,7 @@ cols(
 )
 Joining, by = c("date", "iso_code")
 
-[36m──[39m [1m[1mColumn specification[1m[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   date = [34mcol_date(format = "")[39m,
   iso_code = [31mcol_character()[39m,
@@ -3525,7 +3551,7 @@ cols(
 Joining, by = c("date", "iso_code")
 :end:
 
-** Aparando dataframe :noexport:
+** Adaptando dataframe :noexport:
 
 #+begin_src R
 df <-read_csv(
@@ -3538,6 +3564,7 @@ df <-read_csv(
   select(date,
          iso_code,
          new_cases_per_million,
+         new_cases_smoothed_per_million,
          cases_growth,
          deaths_growth,
          vaccine_growth,
@@ -3551,7 +3578,8 @@ df <-read_csv(
          stayhome_growth,
          stayhome_growth_7,
          stayhome_growth_14,
-         vaccine_growth
+         vaccine_growth,
+         total_deaths
          ) %>%
   mutate(cases_growth_after14 = lead(cases_growth, 14)) %>%
   filter(
@@ -3559,10 +3587,12 @@ df <-read_csv(
     cases_growth < 10, # Removing outliers
     cases_growth > -10,
     cases_growth>-50,
-    cases_growth_after14 > -10,
-    cases_growth_after14<10,
-    stayhome_growth_7<100) %>%
-  drop_na(Isolamento, Isolamento_7, Isolamento_14, cases_growth, Policy_change) %>%
+    ## cases_growth_after14 > -10,
+    ## cases_growth_after14<10,
+    ## stayhome_growth_7<100,
+    total_deaths >= 5
+    ) %>%
+  ## drop_na(Isolamento, Isolamento_7, Isolamento_14, cases_growth, Policy_change) %>%
   filter(iso_code %in% c(
                        "ARG",
                        "AUS",
@@ -3605,11 +3635,37 @@ df <-read_csv(
            Policy_change < 0 ~ "Flexibilização",
            Policy_change == 0 ~ "Sem mudanças"
          )) %>%
-  mutate(Policy = as.factor(Policy))
+  mutate(Policy = as.factor(Policy)) %>%
+  mutate(cases_rolling_14 = zoo::rollapply(cases_growth, width = 14, FUN = mean, fill = NA)) %>%
+  mutate(cum_negative_day = zoo::rollapply(cases_rolling_14 < 0, width=14, FUN = sum, fill = NA))
 
-
-    
 ylab = "Taxa de crescimento de casos"
+w <- 14*2
+th_new_cases <- 150
+
+df <- df %>%
+  mutate(y.max = zoo::rollapply(new_cases_smoothed_per_million, 2*w +1, max, fill = NA, align="center")) %>%
+  mutate(delta = y.max - new_cases_smoothed_per_million) %>%
+  mutate(Pico = new_cases_smoothed_per_million >= 200 & delta <=0) %>%
+  group_by(iso_code) %>%
+  fill(Pico, .direction = "up") %>%
+  mutate(nPico = cumsum(Pico)) %>%
+  ungroup() %>%
+  mutate(Onda = case_when(
+           total_deaths >= th_new_cases & nPico == 0 ~ "Início ao 1o pico",
+           total_deaths >=th_new_cases & nPico == 1 ~ "1o ao 2o Pico",
+           total_deaths >= th_new_cases & nPico >= 2 ~ "pós 2o pico"
+         )) %>%
+  mutate(Onda = as.factor(Onda)) %>%
+  fill(Onda) %>%
+  fill(Onda, .direction = "up") %>%
+  mutate(Onda = fct_relevel(Onda, "Início ao 1o pico", "1o ao 2o Pico", "pós 2o pico"))
+
+write.csv(
+  df,
+  './clean/COVID/casos_TipoIsolamento_Onda.csv',
+  row.names = FALSE
+)
 #+end_src
 
 #+RESULTS:
@@ -3628,11 +3684,82 @@ cols(
 [36mℹ[39m Use [30m[47m[30m[47m`spec()`[47m[30m[49m[39m for the full column specifications.
 :end:
 
-** Econômico: Pandemia $\Rightarrow$ Isolamento
 
 
+** Inspeção dos picos
 
-*** Novos casos por milhão > 10 para todos os dias
+#+begin_src R :results value file :var figname="Picos"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+    
+# https://stackoverflow.com/questions/10942360/how-to-get-geom-vline-to-honor-facet-wrap
+df_inf <- df %>% 
+  group_by(iso_code) %>% 
+  summarise(vline = date[Pico==1])
+
+df %>% ggplot(aes(x=date)) + geom_line(aes(y=new_cases_smoothed_per_million), color="black", linetype="dashed") + 
+  geom_line(aes(y=new_cases_per_million), color="red") +
+  geom_vline(
+    data = df_inf, 
+    mapping = aes(xintercept = vline)
+  ) +
+  labs(
+    y = "Novos casos por milão de habitantes",
+    x = "Data"
+  ) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
+ guides(fill=guide_legend(title="Países")) +
+  facet_wrap(~iso_code) ->fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.95, y = 0.15, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 30, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Picos.pdf]]
+:end:
+
+** Novos casos por milhão x Fase pandemia (sem aparar dados)
+
+#+begin_src R :results value file :var figname="Casos_Policy_Todos"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+    
+df %>%
+  ## filter(
+  ##   ## Policy_change != 0,
+  ##   new_cases_per_million > 10
+  ## ) %>%
+  drop_na(Onda, cases_growth, Isolamento_14) %>%
+  ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_14)) +
+  geom_vline(xintercept=0, color="black") + 
+  geom_boxplot(alpha=0.5) +
+  geom_boxplot(outlier.shape = NA) +
+  labs(
+    y = "Fase da Pandemia",
+    x = ylab
+  ) +
+  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) + 
+  coord_flip() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+ facet_wrap(~iso_code) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Casos_Policy_Todos.pdf]]
+:end:
+
+** Novos casos por milhão x Fase pandemia (mais de 10 casos por milhão de habitante para todos os dias)
 
 #+begin_src R :results value file :var figname="Casos_Policy_10_Todos"
 
@@ -3643,16 +3770,17 @@ df %>%
     ## Policy_change != 0,
     new_cases_per_million > 10
   ) %>%
-  ggplot(aes(y=Policy, x= cases_growth, fill=Isolamento_14)) +
+  drop_na(Onda, cases_growth, Isolamento_14) %>%
+  ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_14)) +
   geom_vline(xintercept=0, color="black") + 
   geom_boxplot(alpha=0.5) +
   geom_boxplot(outlier.shape = NA) +
   labs(
-    y = "Variação imposição de restrição",
+    y = "Fase da Pandemia",
     x = ylab
   ) +
   ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) + 
-  ## coord_flip() +
+  coord_flip() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
  guides(fill=guide_legend(title="Tipo de isolamento")) +
  facet_wrap(~iso_code) -> fig
@@ -3667,26 +3795,31 @@ print(name)
 :results:
 [[file:./figs/COVID/Casos_Policy_10_Todos.pdf]]
 :end:
-*** Novos casos por milhão > 50 para todos os dias
+:results:
+[[file:./figs/COVID/Casos_Policy_10_Todos.pdf]]
+** Novos casos por milhão x Fase pandemia (mais de 50 casos por milhão de habitante para todos os dias)
 
 #+begin_src R :results value file :var figname="Casos_Policy_50_Todos"
 
 name = paste0('./figs/COVID/', figname, ".pdf")
-
+    
 df %>%
   filter(
     ## Policy_change != 0,
     new_cases_per_million > 50
   ) %>%
-  ggplot(aes(y=Policy, x= cases_growth, fill=Isolamento_14)) +
-  geom_vline(xintercept=0, color="black") +
-  geom_boxplot() +
+  drop_na(Onda, cases_growth, Isolamento_14) %>%
+  ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_14)) +
+  geom_vline(xintercept=0, color="black") + 
+  geom_boxplot(alpha=0.5) +
+  geom_boxplot(outlier.shape = NA) +
   labs(
-    y = "Variação imposição de restrição",
+    y = "Fase da Pandemia",
     x = ylab
   ) +
-  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) +
-  coord_flip() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) + 
+  coord_flip() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
  guides(fill=guide_legend(title="Tipo de isolamento")) +
  facet_wrap(~iso_code) -> fig
 
@@ -3701,40 +3834,7 @@ print(name)
 [[file:./figs/COVID/Casos_Policy_50_Todos.pdf]]
 :end:
 
-*** Novos casos por milhão > 10 para os dias em que foi decretada alguma medida de mobilidade
-
-#+begin_src R :results value file :var figname="Casos_Policy_10_Restricao"
-
-name = paste0('./figs/COVID/', figname, ".pdf")
-
-df %>%
-  filter(
-    Policy_change != 0,
-    new_cases_per_million > 10
-  ) %>%
-  ggplot(aes(y=Policy, x= cases_growth, fill=Isolamento_14)) +
-  geom_vline(xintercept=0, color="black") +
-  geom_boxplot(alpha=0.5, scale = "area") +
-  labs(
-    y = "Variação imposição de restrição",
-    x = ylab
-  ) +
-  scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) +
-  coord_flip() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
- guides(fill=guide_legend(title="Tipo de isolamento")) +
- facet_wrap(~iso_code) -> fig
-
- fig <- ggdraw(fig) +
-   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
-ggsave(name, width = 20, height = 20, units = "cm")
-print(name)
-#+end_src
-
-#+RESULTS:
-:results:
-[[file:./figs/COVID/Casos_Policy_10_Restricao.pdf]]
-:end:
-*** Novos casos por milhão > 100 para todos os dias
+** Novos casos por milhão x Fase pandemia (mais de 100 casos por milhão de habitante para todos os dias)
 
 #+begin_src R :results value file :var figname="Casos_Policy_100_Todos"
 
@@ -3745,13 +3845,18 @@ df %>%
     ## Policy_change != 0,
     new_cases_per_million > 100
   ) %>%
-  ggplot(aes(x=Policy_change, y= cases_growth, fill=Isolamento_14)) +
+  drop_na(Onda, cases_growth, Isolamento_14) %>%
+  ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_14)) +
   geom_vline(xintercept=0, color="black") +
   geom_boxplot(alpha=0.5) +
+  geom_boxplot(outlier.shape = NA) +
   labs(
-    x = "Variação imposição de restrição",
-    y = ylab
+    y = "Fase da Pandemia",
+    x = ylab
   ) +
+  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) +
+  coord_flip() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
  guides(fill=guide_legend(title="Tipo de isolamento")) +
  facet_wrap(~iso_code) -> fig
 
@@ -3764,183 +3869,4 @@ print(name)
 #+RESULTS:
 :results:
 [[file:./figs/COVID/Casos_Policy_100_Todos.pdf]]
-:end:
-*** Novos casos por milhão > 100 apenas nos dias que houve mudança na política de restrição
-
-#+begin_src R :results value file :var figname="Casos_Policy_100_Restricao"
-
-name = paste0('./figs/COVID/', figname, ".pdf")
-
-df %>%
-  filter(
-    Policy_change != 0,
-    new_cases_per_million > 100
-  ) %>%
-  ggplot(aes(x=Policy_change, y= cases_growth, fill=Isolamento_14)) +
-  geom_vline(xintercept=0, color="black") +
-  geom_boxplot(alpha=0.5) +
-  labs(
-    x = "Variação imposição de restrição",
-    y = ylab
-  ) +
- guides(fill=guide_legend(title="Tipo de isolamento")) +
-  facet_wrap(~iso_code) -> fig
-
- fig <- ggdraw(fig) +
-   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
-ggsave(name, width = 20, height = 20, units = "cm")
-print(name)
-#+end_src
-
-#+RESULTS:
-:results:
-[[file:./figs/COVID/Casos_Policy_100_Restricao.pdf]]
-:end:
-
-
-
-** Epidemiológico: Isolamento $\Rightarrow$ Pandemia :noexport:
-
-#+begin_src R :exports none
-ylab = "Taxa de crescimento de casos após 14 dias"
-#+end_src
-
-#+RESULTS:
-:results:
-[1] "./figs/COVID/Casos_Policy_10_Todos.pdf"
-There were 32 warnings (use warnings() to see them)
-[1] "./figs/COVID/Casos_Policy_10_Restricao.pdf"
-There were 16 warnings (use warnings() to see them)
-[1] "./figs/COVID/Casos_Policy_100_Todos.pdf"
-There were 18 warnings (use warnings() to see them)
-[1] "./figs/COVID/Casos_Policy_100_Restricao.pdf"
-There were 20 warnings (use warnings() to see them)
-:end:
-
-*** Novos casos por milhão > 10 para todos os dias
-
-#+begin_src R :results value file :var figname="Pandemia_Casos_Policy_10_Todos"
-
-name = paste0('./figs/COVID/', figname, ".pdf")
-
-df %>%
-  filter(
-    ## Policy_change != 0,
-    new_cases_per_million > 10
-  ) %>%
-  ggplot(aes(x=Policy_change, y= cases_growth_after14, fill=Isolamento_14)) +
-  geom_hline(yintercept=0, color="black") +
-  geom_boxplot(alpha=0.5) +
-  labs(
-    x = "Variação imposição de restrição",
-    y = ylab
-  ) +
- guides(fill=guide_legend(title="Tipo de isolamento")) +
- facet_wrap(~iso_code) -> fig
-
- fig <- ggdraw(fig) +
-   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
-ggsave(name, width = 20, height = 20, units = "cm")
-print(name)
-#+end_src
-
-#+RESULTS:
-:results:
-[[file:./figs/COVID/Pandemia_Casos_Policy_10_Todos.pdf]]
-:end:
-*** Novos casos por milhão > 10 apenas nos dias que houve mudança na política de restrição
-
-#+begin_src R :results value file :var figname="Pandemia_Casos_Policy_10_Restricao"
-
-name = paste0('./figs/COVID/', figname, ".pdf")
-
-df %>%
-  filter(
-    Policy_change != 0,
-    new_cases_per_million > 10
-  ) %>%
-  ggplot(aes(x=Policy_change, y= cases_growth_after14, fill=Isolamento_14)) +
-  geom_hline(yintercept=0, color="black") +
-  geom_boxplot(alpha=0.5) +
-  labs(
-    x = "Variação imposição de restrição",
-    y = ylab
-  ) +
- guides(fill=guide_legend(title="Tipo de isolamento")) +
-  facet_wrap(~iso_code) -> fig
-
- fig <- ggdraw(fig) +
-   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
-ggsave(name, width = 20, height = 20, units = "cm")
-print(name)
-#+end_src
-
-#+RESULTS:
-:results:
-[[file:./figs/COVID/Pandemia_Casos_Policy_10_Restricao.pdf]]
-:end:
-
-
-
-*** Novos casos por milhão > 100 para todos os dias
-
-#+begin_src R :results value file :var figname="Pandemia_Casos_Policy_100_Todos"
-
-name = paste0('./figs/COVID/', figname, ".pdf")
-
-df %>%
-  filter(
-    ## Policy_change != 0,
-    new_cases_per_million > 100
-  ) %>%
-  ggplot(aes(x=Policy_change, y= cases_growth_after14, fill=Isolamento_14)) +
-  geom_hline(yintercept=0, color="black") +
-  geom_boxplot(alpha=0.5) +
-  labs(
-    x = "Variação imposição de restrição",
-    y = ylab
-  ) +
- guides(fill=guide_legend(title="Tipo de isolamento")) +
- facet_wrap(~iso_code) -> fig
-
- fig <- ggdraw(fig) +
-   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
-ggsave(name, width = 20, height = 20, units = "cm")
-print(name)
-#+end_src
-
-#+RESULTS:
-:results:
-[[file:./figs/COVID/Pandemia_Casos_Policy_100_Todos.pdf]]
-:end:
-*** Novos casos por milhão > 100 apenas nos dias que houve mudança na política de restrição
-
-#+begin_src R :results value file :var figname="Pandemia_Casos_Policy_100_Restricao"
-
-name = paste0('./figs/COVID/', figname, ".pdf")
-
-df %>%
-  filter(
-    Policy_change != 0,
-    new_cases_per_million > 100
-  ) %>%
-  ggplot(aes(x=Policy_change, y= cases_growth_after14, fill=Isolamento_14)) +
-  geom_hline(yintercept=0, color="black") +
-  geom_boxplot(alpha=0.5) +
-  labs(
-    x = "Variação imposição de restrição",
-    y = ylab
-  ) +
- guides(fill=guide_legend(title="Tipo de isolamento")) +
-  facet_wrap(~iso_code) -> fig
-
- fig <- ggdraw(fig) +
-   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
-ggsave(name, width = 20, height = 20, units = "cm")
-print(name)
-#+end_src
-
-#+RESULTS:
-:results:
-[[file:./figs/COVID/Pandemia_Casos_Policy_100_Restricao.pdf]]
 :end:
