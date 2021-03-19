@@ -1466,7 +1466,7 @@ fig.savefig(
 #+RESULTS:
 [[file:./figs/PIB/Demanda_Acum_Comparativo.pdf]]
 
-*** Oferta e serviços
+*** PIB
 
 #+BEGIN_SRC python :exports none
 Colunas = [
@@ -1552,7 +1552,7 @@ df.index = df.index.to_timestamp()
 :results:
 :end:
 
-#+BEGIN_SRC python :results graphics file :file ./figs/PIB/OfertaServicos_Acum.pdf
+#+BEGIN_SRC python :results graphics file :file ./figs/PIB/PIB_Acum.pdf
 df = pd.read_excel(
     "./raw/ContasNacionais/Tab_Compl_CNT.xlsx",
     header=3,
@@ -1604,12 +1604,15 @@ sns.despine()
 plt.close()
 
 fig.savefig(
-    "./figs/PIB/OfertaServicos_Acum" + ".pdf",
+    "./figs/PIB/PIB_Acum" + ".pdf",
     dpi=300,
     bbox_inches="tight",
     pad_inches=0,
 )
 #+END_SRC
+
+#+RESULTS:
+[[file:./figs/PIB/PIB_Acum.pdf]]
 
 * Crédito
 #+begin_src python
