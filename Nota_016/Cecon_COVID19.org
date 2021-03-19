@@ -207,6 +207,8 @@ argmax <- function(smoothed, w=1, ...) {
   i.max <- which(delta <= 0) + w
   return(i.max)
 }
+
+ggthemr::ggthemr('pale')
 #+end_src
 
 #+RESULTS:
@@ -3895,6 +3897,25 @@ print(name)
 |---------+------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Altura  | -                                  | Os boxplots serão tão mais altos quanto maior a dispersão nas taxas de crescimento                                                                                                                                                                                                                                     | -                                                                                                                     | -                                                                                                                                                                                                      |
 |---------+------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+** Texto explicativo
+
+A relevância do isolamento social voluntário pode ser visualizada na figura X.
+Nela, associa-se o tipo de isolamento social (se voluntário, imposto ou em queda) com as diferentes fases da pandemia e com as taxas de crescimento de novos casos por meio de /boxplots/.
+O eixo das coordenadas indica a taxa de crescimento de novos casos por milhão de habitantes e possui uma linha em torno de zero para facilitar a visualização.
+O eixo das abscissas apresenta a respectiva fase da pandemia em casa países.
+Denomina-se de "início ao primeiro pico" como período em que o número acumulado de mortes é superior à src_R[:exports results :results value]{print(th_total_deaths)} {{{results(100)}}} e que a taxa de crescimento de novos casos foi a maior em uma janela de src_R[:export results :results value]{print(w)} {{{results(28)}}} dias.
+O mesmo raciocínio foi aplicado para categorizar o período entre o primeiro e segundo pico.
+Após o segundo pico de contágio, denominou-se no gráfico de "pós segundo pico".
+Para determinar o tipo de isolamente social, comparou-se o tempo que as pessoas ficaram em casa em relação a 14 dias atrás a partir dos dados de mobilidade do Google (Citar).
+Caso o tempo de permanência nas residências tenha aumentado, mas não tenha ocorrido nenhuma política de restrição neste dia; denota-se esse tipo de isolamento de "voluntário".
+Por outro lado, se o tempo de permanência tenha aumentado, mas houve uma medida de restrição neste dia, denominou-se de "imposto".
+Por fim, caso tenha ocorrido uma redução da permaência nas casas, logo diminuição do isolamento social, foi categorizado como "queda".
+Os dados de política de restrição são extraídos da base BASE e foram utilizadas as medidas do grupo "C" que dizem respeito à medidas de mobilidade que englobal: C1 ... C8.
+
+INTERPRETAÇÃO
+
+
 ** Novos casos por milhão x Fase pandemia (sem aparar dados)
 #+begin_src R :results value file :var figname="Casos_Policy_Todos"
 
