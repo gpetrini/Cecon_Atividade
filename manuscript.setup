@@ -18,6 +18,7 @@ The options are intended to remove default clutter that Org adds automatically t
 #+latex_header: \usepackage{csquotes}
 #+latex_header:\setlength{\fboxrule}{0.75pt} % Width of the border around the abstract
 
+#+latex_header: \usepackage{longtable}
 #+latex_header:\definecolor{color1}{RGB}{0,0,90} % Color of the article title and sections
 #+latex_header:\definecolor{color2}{RGB}{0,20,20} % Color of the boxes behind the abstract and headings
 
