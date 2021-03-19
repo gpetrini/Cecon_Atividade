@@ -3405,11 +3405,8 @@ The log difference for, say, 03-01-2020, is obtained by taking the difference be
 
 * Novos casos x Restrição de mobilidade por tipo de isolamento
 ** TODOs :noexport:
-*** TODO Refinar datação dos picos
 *** TODO Remover outlier dos boxplots
-*** TODO Repensar nome das ondas
-*** TODO Reordenar factors
-
+*** TODO Remover NA variável de medida de restrição antes de fazer os boxplots
 ** Loading data :ignore:noexport:
 
 *** Our world data
