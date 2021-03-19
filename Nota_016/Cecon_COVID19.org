@@ -3842,31 +3842,6 @@ df %>%
 
 #+end_src
 
-#+RESULTS:
-:results:
-
-[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
-cols(
-  .default = col_double(),
-  date = [34mcol_date(format = "")[39m,
-  iso_code = [31mcol_character()[39m,
-  Isolamento = [31mcol_character()[39m,
-  Restrict = [33mcol_logical()[39m,
-  Isolamento_14 = [31mcol_character()[39m,
-  Isolamento_7 = [31mcol_character()[39m
-)
-[36mℹ[39m Use [30m[47m[30m[47m`spec()`[47m[30m[49m[39m for the full column specifications.
-WARNING: An illegal reflective access operation has occurred
-WARNING: Illegal reflective access by org.apache.poi.util.SAXHelper (file:/home/gpetrini/R/x86_64-pc-linux-gnu-library/3.6/xlsxjars/java/poi-ooxml-3.10.1-20140818.jar) to method com.sun.org.apache.xerces.internal.util.SecurityManager.setEntityExpansionLimit(int)
-WARNING: Please consider reporting this to the maintainers of org.apache.poi.util.SAXHelper
-WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
-WARNING: All illegal access operations will be denied in a future release
-Error in .jcall("RJavaTools", "Ljava/lang/Object;", "invokeMethod", cl,  : 
-  java.lang.OutOfMemoryError: Java heap space
-Erro: Results 1, 2, 3, 4, 5, ... must be data frames, not NULL
-[90mRun `rlang::last_error()` to see where the error occurred.[39m
-:end:
-
 
 
 ** Inspeção dos picos
@@ -3933,8 +3908,7 @@ df %>%
   drop_na(Policy_change, Onda, cases_growth, Isolamento_14) %>%
   ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_14)) +
   geom_vline(xintercept=0, color="black") + 
-  geom_boxplot(alpha=0.5) +
-  geom_boxplot(outlier.shape = NA) +
+  geom_boxplot(outlier.shape = NA, outlier.color=NA, outlier.alpha=1) +
   labs(
     y = "Fase da Pandemia",
     x = ylab
@@ -3971,7 +3945,7 @@ df %>%
   drop_na(Policy_change, Onda, cases_growth, Isolamento_14) %>%
   ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_14)) +
   geom_vline(xintercept=0, color="black") + 
-  geom_boxplot(alpha=0.5) +
+
   geom_boxplot(outlier.shape = NA) +
   labs(
     y = "Fase da Pandemia",
@@ -4010,7 +3984,7 @@ df %>%
   drop_na(Policy_change, Onda, cases_growth, Isolamento_14) %>%
   ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_14)) +
   geom_vline(xintercept=0, color="black") + 
-  geom_boxplot(alpha=0.5) +
+
   geom_boxplot(outlier.shape = NA) +
   labs(
     y = "Fase da Pandemia",
@@ -4047,7 +4021,7 @@ df %>%
   drop_na(Policy_change, Onda, cases_growth, Isolamento_14) %>%
   ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_14)) +
   geom_vline(xintercept=0, color="black") +
-  geom_boxplot(alpha=0.5) +
+
   geom_boxplot(outlier.shape = NA) +
   labs(
     y = "Fase da Pandemia",
