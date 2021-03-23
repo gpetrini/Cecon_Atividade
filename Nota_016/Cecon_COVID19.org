@@ -9,6 +9,7 @@
 #+LATEX:\maketitle % Print the title and abstract box
 #+LATEX:\thispagestyle{empty} % Removes page numbering from the first page
 #+LATEX: \onecolumn
+#+LATEX_HEADER: \usepackage{multirow, numprint}
 
 * Initial setup :noexport:ignore:
 ** Python
@@ -4064,3 +4065,23 @@ print(name)
 :results:
 [[file:./figs/COVID/Casos_Policy_100_Todos.pdf]]
 :end:
+
+* Auxílio emergencial
+
+#+begin_export latex
+\npdecimalsign{,}
+\npthousandsep{.}
+\nprounddigits{0}
+\begin{figure}[h]
+    \begin{minipage}[t]{.85\textwidth}% or {.6\linewidth}, it's the same here
+        \resizebox{\linewidth}{!}{%
+        \input{./tabs/AE.tex}
+        }
+    \end{minipage}
+    % \hfill
+    \begin{minipage}[t]{.1\textwidth}
+    \vspace{-2.1cm}
+        \includegraphics[width=\linewidth]{./figs/Cecon_Logo.png}% caution: here you cannot replace \linewidth by \textwidth, since within this minipage, \linewidth=.3\textwidth
+    \end{minipage}
+\end{figure}      
+#+end_export
