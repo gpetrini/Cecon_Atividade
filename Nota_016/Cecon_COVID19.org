@@ -10,6 +10,7 @@
 #+LATEX:\thispagestyle{empty} % Removes page numbering from the first page
 #+LATEX: \onecolumn
 #+LATEX_HEADER: \usepackage{multirow, numprint}
+bibliography:refs.bib
 
 * Initial setup :noexport:ignore:
 ** Python
@@ -214,6 +215,14 @@ ggthemr::ggthemr('pale')
 
 #+RESULTS:
 :results:
+── [1mAttaching packages[22m ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+[32m✔[39m [34mggplot2[39m 3.3.3     [32m✔[39m [34mpurrr  [39m 0.3.4
+[32m✔[39m [34mtibble [39m 3.1.0     [32m✔[39m [34mdplyr  [39m 1.0.5
+[32m✔[39m [34mtidyr  [39m 1.1.2     [32m✔[39m [34mstringr[39m 1.4.0
+[32m✔[39m [34mreadr  [39m 1.4.0     [32m✔[39m [34mforcats[39m 0.5.0
+── [1mConflicts[22m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+[31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
+[31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
 :end:
 
 * Indicadores de antecedente
@@ -3709,39 +3718,39 @@ Joining, by = c("date", "iso_code")
 ** Adaptando dataframe :noexport:
 
 #+begin_src R
-df <-read_csv(
-  './clean/COVID/cases_closes_google_merged.csv',
+df <- read_csv(
+  "./clean/COVID/cases_closes_google_merged.csv",
   guess_max = 3000
 ) %>%
   mutate(Isolamento = as.factor(Isolamento)) %>%
   mutate(Isolamento_7 = as.factor(Isolamento_7)) %>%
   mutate(Isolamento_14 = as.factor(Isolamento_14)) %>%
-  select(date,
-         iso_code,
-         new_cases_per_million,
-         new_cases_smoothed_per_million,
-         cases_growth,
-         deaths_growth,
-         vaccine_growth,
-         Policy_change,
-         Restrict,
-         Isolamento,
-         Isolamento_7,
-         Isolamento_14,
-         Residential,
-         Closure,
-         stayhome_growth,
-         stayhome_growth_7,
-         stayhome_growth_14,
-         vaccine_growth,
-         total_deaths
-         ) %>%
+  select(
+    date,
+    iso_code,
+    new_cases_per_million,
+    new_cases_smoothed_per_million,
+    cases_growth,
+    deaths_growth,
+    vaccine_growth,
+    Policy_change,
+    Restrict,
+    Isolamento,
+    Isolamento_7,
+    Isolamento_14,
+    Residential,
+    Closure,
+    stayhome_growth,
+    stayhome_growth_7,
+    stayhome_growth_14,
+    vaccine_growth,
+    total_deaths
+  ) %>%
   mutate(cases_growth_after14 = lead(cases_growth, 14)) %>%
   filter(
     ## date > as.Date("2020-02-01"), # same start date for all
     cases_growth < 10, # Removing outliers
     cases_growth > -10,
-    cases_growth>-50,
     ## cases_growth_after14 > -10,
     ## cases_growth_after14<10,
     ## stayhome_growth_7<100,
@@ -3749,101 +3758,131 @@ df <-read_csv(
   ) %>%
   ## drop_na(Isolamento, Isolamento_7, Isolamento_14, cases_growth, Policy_change) %>%
   filter(iso_code %in% c(
-                         "ARG",
-                         ## "AUS",
-                         ## "BEL",
-                         "BOL",
-                         "BRA",
-                         ## "CAN",
-                         ## "CHE",
-                         "CHL",
-                         "COL",
-                         "DEU",
-                         "DNK",
-                         "ECU",
-                         "ESP",
-                         "FIN",
-                         "FRA",
-                         "GBR",
-                         ## "IND",
-                         ## "IRL",
-                         "ISR",
-                         "ITA",
-                         "JPN",
-                         "KOR",
-                         "MEX",
-                         "NDL",
-                         "NOR",
-                         ## "NZL",
-                         "PRT",
-                         "PRY",
-                         ## "RUS",
-                         "SWE",
-                         "URY",
-                         "USA",
-                         "VEN"
-                         ## "ZAF"
-                       )) %>%
+    "ARG",
+    ## "AUS",
+    ## "BEL",
+    "BOL",
+    "BRA",
+    ## "CAN",
+    ## "CHE",
+    "CHL",
+    "COL",
+    "DEU",
+    "DNK",
+    "ECU",
+    "ESP",
+    "FIN",
+    "FRA",
+    "GBR",
+    ## "IND",
+    ## "IRL",
+    "ISR",
+    "ITA",
+    "JPN",
+    "KOR",
+    "MEX",
+    "NDL",
+    "NOR",
+    ## "NZL",
+    "PRT",
+    "PRY",
+    ## "RUS",
+    "SWE",
+    "URY",
+    "USA",
+    "VEN"
+    ## "ZAF"
+  )) %>%
   mutate(iso_code = as.factor(iso_code)) %>%
   mutate(Policy = case_when(
-           Policy_change > 0 ~ "Restrição",
-           Policy_change < 0 ~ "Flexibilização",
-           Policy_change == 0 ~ "Sem mudanças"
-         )) %>%
+    Policy_change > 0 ~ "Restrição",
+    Policy_change < 0 ~ "Flexibilização",
+    Policy_change == 0 ~ "Sem mudanças"
+  )) %>%
   mutate(Policy = as.factor(Policy)) %>%
   mutate(cases_rolling_14 = zoo::rollapply(cases_growth, width = 14, FUN = mean, fill = NA)) %>%
-  mutate(cum_negative_day = zoo::rollapply(cases_rolling_14 < 0, width=14, FUN = sum, fill = NA))
+  mutate(cum_negative_day = zoo::rollapply(cases_rolling_14 < 0, width = 14, FUN = sum, fill = NA))
 
-ylab = "Taxa de crescimento de casos"
-w <- 14*2
+ylab <- "Taxa de crescimento de casos"
+w <- 14 * 2
 th_new_cases <- 100
 th_total_deaths <- 100
 
 df <- df %>%
-  mutate(y.max = zoo::rollapply(new_cases_smoothed_per_million, 2*w +1, max, fill = NA, align="center")) %>%
+  mutate(y.max = zoo::rollapply(new_cases_smoothed_per_million, 2 * w + 1, max, fill = NA, align = "center")) %>%
   mutate(delta = y.max - new_cases_smoothed_per_million) %>%
-  mutate(Pico = new_cases_smoothed_per_million >= th_new_cases & delta <=0) %>%
+  mutate(Pico = new_cases_smoothed_per_million >= th_new_cases & delta <= 0) %>%
   group_by(iso_code) %>%
   fill(Pico, .direction = "up") %>%
   mutate(nPico = cumsum(Pico)) %>%
   ungroup() %>%
   mutate(Onda = case_when(
-           total_deaths >= th_total_deaths & nPico == 0 ~ "Início ao 1o pico",
-           total_deaths >= th_total_deaths & nPico == 1 ~ "1o ao 2o Pico",
-           total_deaths >= th_total_deaths & nPico >= 2 ~ "pós 2o pico"
-         )) %>%
+    total_deaths >= th_total_deaths & nPico == 0 ~ "Início ao 1o pico",
+    total_deaths >= th_total_deaths & nPico == 1 ~ "1o ao 2o Pico",
+    total_deaths >= th_total_deaths & nPico >= 2 ~ "pós 2o pico"
+  )) %>%
   mutate(Onda = as.factor(Onda)) %>%
   fill(Onda) %>%
   fill(Onda, .direction = "up") %>%
-  mutate(Onda = fct_relevel(Onda, "Início ao 1o pico", "1o ao 2o Pico", "pós 2o pico"))
+  mutate(Onda = fct_relevel(Onda, "Início ao 1o pico", "1o ao 2o Pico", "pós 2o pico")) %>%
+  group_by(iso_code) %>%
+  mutate(Strigency_type = case_when(
+    Closure <= quantile(Closure, 0.25, na.rm = TRUE) ~ "Low",
+    Closure >= quantile(Closure, 0.75, na.rm = TRUE) ~ "High",
+    Closure < quantile(Closure, 0.75, na.rm = TRUE)  & Closure > quantile(Closure, 0.25, na.rm = TRUE) ~ "Medium",
+  )) %>%
+  ## mutate(Strigency_type = as.factor(Strigency_type)) %>%
+  ungroup() %>%
+  mutate(Isolamento_Strigency = case_when(
+    Isolamento_14 == "Imposto" & Strigency_type == "High" ~ "Rígido",
+    Isolamento_14 == "Imposto" & Strigency_type == "Low" ~ "Brando",
+    Isolamento_14 == "Imposto" & Strigency_type == "Medium" ~ "Médio",
+    Isolamento_14 != "Imposto" ~ Isolamento_14 %>% as.character()
+  )) %>%
+  mutate(Isolamento_Strigency = as.factor(Isolamento_Strigency))
 
 write.csv(
   df,
-  './clean/COVID/casos_TipoIsolamento_Onda.csv',
+  "./clean/COVID/casos_TipoIsolamento_Onda.csv",
   row.names = FALSE
 )
 
-for(iso in df$iso_code %>% unique() %>% as.character()){
-  df %>%
-    filter(iso_code == iso) %>%
-    data.frame() %>%
-    write.xlsx(
-      './clean/COVID/boxplots/data.xlsx',
-      sheetName = iso,
-      row.names = FALSE,
-      append = TRUE
-    )
-}
+## for(iso in df$iso_code %>% unique() %>% as.character()){
+##   df %>%
+##     filter(iso_code == iso) %>%
+##     data.frame() %>%
+##     write.xlsx(
+##       './clean/COVID/boxplots/data.xlsx',
+##       sheetName = iso,
+##       row.names = FALSE,
+##       append = TRUE
+##     )
+## }
 
-df %>%
-  group_by(iso_code) %>%
-  do(write.csv(
-    .,
-    paste0('./clean/COVID/boxplots/', unique(.$iso_code), ".csv"),
-    row.names=FALSE
-  ))
-
+## df %>%
+##   group_by(iso_code) %>%
+##   do(write.csv(
+##     . %>% data.frame(),
+##     paste0('./clean/COVID/boxplots/', unique(.$iso_code), ".csv"),
+##     row.names=FALSE
+##   ))
 #+end_src
+
+#+RESULTS:
+:results:
+
+[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+cols(
+  .default = col_double(),
+  date = [34mcol_date(format = "")[39m,
+  iso_code = [31mcol_character()[39m,
+  Isolamento = [31mcol_character()[39m,
+  Restrict = [33mcol_logical()[39m,
+  Isolamento_14 = [31mcol_character()[39m,
+  Isolamento_7 = [31mcol_character()[39m
+)
+[36mℹ[39m Use [30m[47m[30m[47m`spec()`[47m[30m[49m[39m for the full column specifications.
+:end:
 
 
 
@@ -3883,6 +3922,7 @@ print(name)
 [[file:./figs/COVID/Picos.pdf]]
 :end:
 
+
 ** Descrição dos dados
 #+ATTR_LATEX: :environment longtable :align c|p{2cm}|p{5cm}|p{5cm}|p{3cm}
 |---------+------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -3899,45 +3939,27 @@ print(name)
 | Altura  | -                                  | Os boxplots serão tão mais altos quanto maior a dispersão nas taxas de crescimento                                                                                                                                                                                                                                     | -                                                                                                                     | -                                                                                                                                                                                                      |
 |---------+------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
-** Texto explicativo
-
-A relevância do isolamento social voluntário pode ser visualizada na figura X.
-Nela, associa-se o tipo de isolamento social (se voluntário, imposto ou em queda) com as diferentes fases da pandemia e com as taxas de crescimento de novos casos por meio de /boxplots/.
-O eixo das coordenadas indica a taxa de crescimento de novos casos por milhão de habitantes e possui uma linha em torno de zero para facilitar a visualização.
-O eixo das abscissas apresenta a respectiva fase da pandemia em casa países.
-Denomina-se de "início ao primeiro pico" como período em que o número acumulado de mortes é superior à src_R[:exports results :results value]{print(th_total_deaths)} {{{results(100)}}} e que a taxa de crescimento de novos casos foi a maior em uma janela de src_R[:export results :results value]{print(w)} {{{results(28)}}} dias.
-O mesmo raciocínio foi aplicado para categorizar o período entre o primeiro e segundo pico.
-Após o segundo pico de contágio, denominou-se no gráfico de "pós segundo pico".
-Para determinar o tipo de isolamente social, comparou-se o tempo que as pessoas ficaram em casa em relação a 14 dias atrás a partir dos dados de mobilidade do Google (Citar).
-Caso o tempo de permanência nas residências tenha aumentado, mas não tenha ocorrido nenhuma política de restrição neste dia; denota-se esse tipo de isolamento de "voluntário".
-Por outro lado, se o tempo de permanência tenha aumentado, mas houve uma medida de restrição neste dia, denominou-se de "imposto".
-Por fim, caso tenha ocorrido uma redução da permaência nas casas, logo diminuição do isolamento social, foi categorizado como "queda".
-Os dados de política de restrição são extraídos da base BASE e foram utilizadas as medidas do grupo "C" que dizem respeito à medidas de mobilidade que englobal: C1 ... C8.
-
-INTERPRETAÇÃO
-
-
 ** Novos casos por milhão x Fase pandemia (sem aparar dados)
 #+begin_src R :results value file :var figname="Casos_Policy_Todos"
 
 name = paste0('./figs/COVID/', figname, ".pdf")
-    
+
 df %>%
   ## filter(
   ##   ## Policy_change != 0,
   ##   new_cases_per_million > 10
   ## ) %>%
-  drop_na(Policy_change, Onda, cases_growth, Isolamento_14) %>%
+  ## drop_na(Policy_change, Onda, cases_growth, Isolamento_14) %>%
   ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_14)) +
-  geom_vline(xintercept=0, color="black") + 
+  geom_vline(xintercept=0, color="black") +
   geom_boxplot(outlier.shape = NA, outlier.color=NA, outlier.alpha=1) +
   labs(
     y = "Fase da Pandemia",
     x = ylab
   ) +
-  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) + 
+  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) +
   coord_flip() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
  guides(fill=guide_legend(title="Tipo de isolamento")) +
  facet_wrap(~iso_code) -> fig
 
@@ -4065,6 +4087,143 @@ print(name)
 :results:
 [[file:./figs/COVID/Casos_Policy_100_Todos.pdf]]
 :end:
+
+** Novos casos por milhão x Fase pandemia (low and high strigency)
+#+begin_src R :results value file :var figname="Casos_Policy_LowHigh"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+
+df %>%
+  drop_na(Policy_change, Onda, cases_growth, Isolamento_14) %>%
+  ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_Strigency)) +
+  geom_vline(xintercept=0, color="black") +
+  geom_boxplot(outlier.shape = NA, outlier.color=NA, outlier.alpha=1) +
+  labs(
+    y = "Fase da Pandemia",
+    x = ylab
+  ) +
+  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) +
+  coord_flip() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+ facet_wrap(~iso_code) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Casos_Policy_LowHigh.pdf]]
+:end:
+
+** Novos casos por milhão x Fase pandemia (low strigency)
+#+begin_src R :results value file :var figname="Casos_Policy_Low"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+
+df %>%
+  filter(
+    Strigency_type == "Low",
+  ) %>%
+  drop_na(Policy_change, Onda, cases_growth, Isolamento_14) %>%
+  ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_Strigency)) +
+  geom_vline(xintercept=0, color="black") +
+  geom_boxplot(outlier.shape = NA, outlier.color=NA, outlier.alpha=1) +
+  labs(
+    y = "Fase da Pandemia",
+    x = ylab
+  ) +
+  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) +
+  coord_flip() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+ facet_wrap(~iso_code) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Casos_Policy_Low.pdf]]
+:end:
+
+** Novos casos por milhão x Fase pandemia (high strigency)
+#+begin_src R :results value file :var figname="Casos_Policy_High"
+
+name = paste0('./figs/COVID/', figname, ".pdf")
+
+df %>%
+  filter(
+    Strigency_type == "High",
+
+  ) %>%
+  drop_na(Policy_change, Onda, cases_growth, Isolamento_14) %>%
+  ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_Strigency)) +
+  geom_vline(xintercept=0, color="black") +
+  geom_boxplot(outlier.shape = NA, outlier.color=NA, outlier.alpha=1) +
+  labs(
+    y = "Fase da Pandemia",
+    x = ylab
+  ) +
+  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) +
+  coord_flip() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+ facet_wrap(~iso_code) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Casos_Policy_High.pdf]]
+:end:
+
+
+** Texto explicativo
+
+Neste ponto, cabe discutir a relavância do isolamento social voluntário e sua relação com o estágio da pandemia.
+Para isso, associa-se o tipo de isolamento social (se voluntário, imposto ou em queda) com as diferentes fases da pandemia e com as taxas de crescimento de novos casos por meio de /boxplots/ como indicado pela figura abaixo.
+O eixo das coordenadas indica a taxa de crescimento de novos casos por milhão de habitantes e possui uma linha horizontal em zero para facilitar a visualização.
+O eixo das abscissas apresenta a respectiva fase da pandemia em casa país.
+Denomina-se de "início ao primeiro pico" como período em que o número acumulado de mortes é superior à src_R[:exports results :results value]{print(th_total_deaths)} {{{results(100)}}} e que a taxa de crescimento de novos casos foi a maior em uma janela de src_R[:export results :results value]{print(w)} {{{results(28)}}} dias[fn::Mais precisamente, src_R[:export results :results value]{print(w/2)} {{{results(14)}}} dias depois e antes do dia em questão.].
+A mesma janela foi aplicada para categorizar o período entre o primeiro e segundo pico.
+Após o segundo pico de contágio, denominou-se no gráfico de "pós segundo pico".
+
+Em seguida, para determinar o tipo de isolamenta social, comparou-se o tempo que as pessoas ficaram em casa em relação a src_R[:export results :results value]{print(w/2)} {{{results(14)}}} dias atrás a partir dos dados de mobilidade do Google (Citar).
+Caso o tempo de permanência nas residências tenha aumentado, mas não tenha ocorrido nenhuma política de restrição neste dia; denota-se esse tipo de isolamento de "voluntário".
+Por outro lado, se o tempo de permanência tenha aumentado, mas houve uma medida de restrição neste dia, denominou-se de "imposto".
+Caso tenha ocorrido uma redução da permanência nas casas, logo diminuição do isolamento social, foi categorizado como "queda".
+
+Os dados de política de restrição são extraídos da base de monitoramento da adoção de políticas de combate à COVID-19 da universidade de Oxford cite:OxCGRT.
+Neste caso, foram utilizadas as medidas do grupo "C" que além da imposição para que as pessoas não saiam de casa (C6) englobam o fechamento/proibição de: escolas (C1); locais de trabalho (C2); eventos públicos (C3); Aglomerações (C4); Transporte público (C5); Deslocamento entre cidades e regiões (C7) e; viagens internacionais (C8).
+Em seguida, adotamos a classificação do FMI em que o tipo de isolamento é considerado como "rígido" se as medidas de restrição são as 25% maiores de acordo com o indicador mencionado anteriormente.
+Se as medias são as medidas de isolamento estão entre as 25% menores de acordo com o mesmo indicador, classificou-se como "brando".
+Para abranger o maior número de dados possíveis, nomeou-se de "médio" os tipos de isolamento em que estão entre o primeiro e terceiro quartil.
+
+Com estes dados a mão, relacionou-se tais informações por meio de /boxplots/.
+A partir deste gráfico é possível avaliar em que medida a ausência de políticas de isolamento social são acompanhadas por um aumento no isolamento dada o descontrole da pandemia.
+O caso brasileiro se destaca, dentre outras razões, por ser um dos que não foram adotadas medidas de isolamento mais rígidas uma vez passado o primeiro pico da pandemia.
+Além de insuficientes e precocemente abandonadas, as medidas de isolamento social se tornaram mais brandas ao mesmo tempo que o contagio do novo corana vírus continuo crescente.
+Por um lado, nota-se que as medidas adotadas na direção a coibir o isolamento social foram bastante efetivas no sentido de estimular as pessoas a saírem às mesmo quando a taxa de crescimento de novos casos é consideramente positiva.
+Por outro, esse movimento foi contrabalanceado pelo aumento do isolamento voluntário em proporção igual (quando não maior) à redução do isolamento.
+
+Por fim, cabe pontuar que a adoção relativamente precoce de medidas de isolamento rígidas pode sugerir o sucesso na condição do controle na pandemia.
+No entanto, quando observamos os dados para além do primeiro pico de número de novos casos é possível notar que essa postura de restrição branda não é exitosa no combate da pandemia e não tem os efeitos econômicos positivos tão almejados pelo governo dado o aumento do isolamento social voluntário.
+Este resultado nada tem de espantoso ou contraintuitivo quando analisamos a literatura acadêmica.
+Neste ponto, o WEO é enfático ao destacar que medidas mais restritivas têm efeitos menores na margem sobre o isolamento social, mas seus efeitos sobre o contágio é consideravelmente superior.
+Dessa forma, políticas de restrição mais rígidas são mais exitosas tanto sobre a controle da pandemia quanto sobre os efeitos econômicos a médio prazo do que uma postura mais branda que, por sua vez, é ineficaz em ambos.
+
+[[file:./figs/COVID/Casos_Policy_LowHigh.pdf]]
 
 * Auxílio emergencial
 
