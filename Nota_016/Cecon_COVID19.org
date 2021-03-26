@@ -169,7 +169,8 @@ def add_value_labels(ax, spacing=5):
 #+RESULTS:
 :results:
 
-(python3:52522): Gtk-[1;33mWARNING[0m **: [34m15:36:54.681[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
+(python3:8919): Gtk-[1;33mWARNING[0m **: [34m16:43:26.492[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
+Qt: Session management error: Could not open network socket
 :end:
 ** R
 
@@ -184,7 +185,7 @@ library(cowplot)
 logo_file <- './figs/Cecon_Logo.png'
 source('https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R')
 
-
+library(patchwork)
                                         # funçãozinha dos esquemas --------------------------------------------------------------------
 
 gen_poly <- function(x, .deg=3) {
@@ -215,14 +216,12 @@ ggthemr::ggthemr('pale')
 
 #+RESULTS:
 :results:
-── [1mAttaching packages[22m ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
-[32m✔[39m [34mggplot2[39m 3.3.3     [32m✔[39m [34mpurrr  [39m 0.3.4
-[32m✔[39m [34mtibble [39m 3.1.0     [32m✔[39m [34mdplyr  [39m 1.0.5
-[32m✔[39m [34mtidyr  [39m 1.1.2     [32m✔[39m [34mstringr[39m 1.4.0
-[32m✔[39m [34mreadr  [39m 1.4.0     [32m✔[39m [34mforcats[39m 0.5.0
-── [1mConflicts[22m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
-[31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
+
+Attaching package: ‘patchwork’
+
+The following object is masked from ‘package:cowplot’:
+
+    align_plots
 :end:
 
 * Indicadores de antecedente
@@ -3503,8 +3502,28 @@ df["Closure"] = (
 )
 # df = df[df["Closure"].diff() != 0]
 df["Restrict"] = [i > 0 for i in df["Closure"].diff() > 0]
-df = df[["CountryCode", "Closure", "Restrict"]].dropna()
-df.columns = ["iso_code", "Closure", "Restrict"]
+df["Stay_at_home"] = [i == 3 for i in df["C6_Stay at home requirements"]]
+df["Stay_at_home_federal"] = df["Stay_at_home"] * df["C6_Flag"]
+df["Stay_at_home_federal"] = [i == 1 for i in df["Stay_at_home_federal"]]
+df = df[
+    ["CountryCode", "Closure", "Restrict", "Stay_at_home", "Stay_at_home_federal"]
+    + closure
+    + flags
+]
+
+short_closure = ["C" + str(i) for i in range(1, len(closure) + 1)]
+
+df.columns = (
+    [
+        "iso_code",
+        "Closure",
+        "Restrict",
+        "Stay_at_home",
+        "Stay_at_home_federal",
+    ]
+    + short_closure
+    + flags
+)
 df.index.name = "date"  # for merging purposes
 df.to_csv("./clean/COVID/closes.csv")
 #+END_SRC
@@ -3640,23 +3659,18 @@ df <- df %>%
   mutate(stayhome_growth = (Residential/lag(Residential) - 1) * 100) %>%
   mutate(stayhome_growth_7 = (Residential/lag(Residential,7) - 1) * 100) %>%
   mutate(stayhome_growth_14 = (Residential/lag(Residential,14) - 1) * 100) %>%
-  mutate(Isolamento = case_when(
-     stayhome_growth > 0 & Restrict == TRUE ~ "Imposto", # Queda da mobilidade junto da imposição
-     stayhome_growth > 0 & Restrict == FALSE ~ "Voluntário", # Queda da mobilidade sem restrição
-     stayhome_growth <= 0 ~ "Queda",
-           )) %>%
   mutate(Isolamento_14 = case_when(
-     stayhome_growth_14 > 0 & Restrict == TRUE ~ "Imposto", # Queda da mobilidade junto da imposição
-     stayhome_growth_14 > 0 & Restrict == FALSE ~ "Voluntário", # Queda da mobilidade sem restrição
-     stayhome_growth_14 <= 0 ~ "Queda",
+     stayhome_growth_14 >= 0 & Stay_at_home == TRUE ~ "Rígido", # Queda da mobilidade junto da imposição
+     stayhome_growth_14 > 0 & Policy_change > 0  & Stay_at_home == FALSE ~ "Brando",
+     stayhome_growth_14 > 0 & Policy_change <=0 & Stay_at_home == FALSE ~ "Voluntário", # Queda da mobilidade sem restrição
+     stayhome_growth_14 < 0 ~ "Queda",
            )) %>%
-  mutate(Isolamento_7 = case_when(
-     stayhome_growth_7 > 0 & Restrict == TRUE ~ "Imposto", # Queda da mobilidade junto da imposição
-     stayhome_growth_7 > 0 & Restrict == FALSE ~ "Voluntário", # Queda da mobilidade sem restrição
-     stayhome_growth_7 <= 0 ~ "Queda",
+  mutate(Isolamento_Federal = case_when(
+     stayhome_growth_14 >= 0 & Stay_at_home_federal == TRUE ~ "Rígido", # Queda da mobilidade junto da imposição
+     stayhome_growth_14 > 0 & Policy_change > 0  & Stay_at_home_federal == FALSE ~ "Brando",
+     stayhome_growth_14 > 0 & Policy_change <=0 & Stay_at_home_federal == FALSE ~ "Voluntário", # Queda da mobilidade sem restrição
+     stayhome_growth_14 < 0 ~ "Queda",
            )) %>%
-  mutate(Isolamento = as.factor(Isolamento)) %>%
-  mutate(Isolamento_7 = as.factor(Isolamento_7)) %>%
   mutate(Isolamento_14 = as.factor(Isolamento_14)) %>%
   mutate(cases_growth = (new_cases_per_million/lag(new_cases_per_million) - 1) * 100) %>%
   mutate(deaths_growth = (new_deaths_per_million/lag(new_deaths_per_million) - 1) * 100) %>%
@@ -3707,11 +3721,14 @@ Joining, by = c("date", "iso_code")
 
 [36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
+  .default = col_double(),
   date = [34mcol_date(format = "")[39m,
   iso_code = [31mcol_character()[39m,
-  Closure = [32mcol_double()[39m,
-  Restrict = [33mcol_logical()[39m
+  Restrict = [33mcol_logical()[39m,
+  Stay_at_home = [33mcol_logical()[39m,
+  Stay_at_home_federal = [33mcol_logical()[39m
 )
+[36mℹ[39m Use [30m[47m[30m[47m`spec()`[47m[30m[49m[39m for the full column specifications.
 Joining, by = c("date", "iso_code")
 :end:
 
@@ -3722,9 +3739,7 @@ df <- read_csv(
   "./clean/COVID/cases_closes_google_merged.csv",
   guess_max = 3000
 ) %>%
-  mutate(Isolamento = as.factor(Isolamento)) %>%
-  mutate(Isolamento_7 = as.factor(Isolamento_7)) %>%
-  mutate(Isolamento_14 = as.factor(Isolamento_14)) %>%
+  mutate(Isolamento_14 = factor(Isolamento_14, levels = c("Rígido", "Brando", "Voluntário", "Queda", NA))) %>%
   select(
     date,
     iso_code,
@@ -3735,8 +3750,6 @@ df <- read_csv(
     vaccine_growth,
     Policy_change,
     Restrict,
-    Isolamento,
-    Isolamento_7,
     Isolamento_14,
     Residential,
     Closure,
@@ -3744,7 +3757,11 @@ df <- read_csv(
     stayhome_growth_7,
     stayhome_growth_14,
     vaccine_growth,
-    total_deaths
+    total_deaths,
+    Stay_at_home,
+    Stay_at_home_federal,
+    C1, C2, C6,
+    C1_Flag, C2_Flag, C6_Flag
   ) %>%
   mutate(cases_growth_after14 = lead(cases_growth, 14)) %>%
   filter(
@@ -3767,22 +3784,22 @@ df <- read_csv(
     ## "CHE",
     "CHL",
     "COL",
-    "DEU",
-    "DNK",
+    ## "DEU",
+    ## "DNK",
     "ECU",
-    "ESP",
-    "FIN",
-    "FRA",
+    ## "ESP",
+    ## "FIN",
+    ## "FRA",
     "GBR",
     ## "IND",
     ## "IRL",
     "ISR",
-    "ITA",
-    "JPN",
-    "KOR",
-    "MEX",
-    "NDL",
-    "NOR",
+    ## "ITA",
+    ## "JPN",
+    ## "KOR",
+    ## "MEX",
+    ## "NDL",
+    ## "NOR",
     ## "NZL",
     "PRT",
     "PRY",
@@ -3821,7 +3838,7 @@ df <- df %>%
     total_deaths >= th_total_deaths & nPico == 1 ~ "1o ao 2o Pico",
     total_deaths >= th_total_deaths & nPico >= 2 ~ "pós 2o pico"
   )) %>%
-  mutate(Onda = as.factor(Onda)) %>%
+  mutate(Onda = factor(Onda)) %>%
   fill(Onda) %>%
   fill(Onda, .direction = "up") %>%
   mutate(Onda = fct_relevel(Onda, "Início ao 1o pico", "1o ao 2o Pico", "pós 2o pico")) %>%
@@ -3832,14 +3849,7 @@ df <- df %>%
     Closure < quantile(Closure, 0.75, na.rm = TRUE)  & Closure > quantile(Closure, 0.25, na.rm = TRUE) ~ "Medium",
   )) %>%
   ## mutate(Strigency_type = as.factor(Strigency_type)) %>%
-  ungroup() %>%
-  mutate(Isolamento_Strigency = case_when(
-    Isolamento_14 == "Imposto" & Strigency_type == "High" ~ "Rígido",
-    Isolamento_14 == "Imposto" & Strigency_type == "Low" ~ "Brando",
-    Isolamento_14 == "Imposto" & Strigency_type == "Medium" ~ "Médio",
-    Isolamento_14 != "Imposto" ~ Isolamento_14 %>% as.character()
-  )) %>%
-  mutate(Isolamento_Strigency = as.factor(Isolamento_Strigency))
+  ungroup()
 
 write.csv(
   df,
@@ -3876,10 +3886,11 @@ cols(
   .default = col_double(),
   date = [34mcol_date(format = "")[39m,
   iso_code = [31mcol_character()[39m,
-  Isolamento = [31mcol_character()[39m,
   Restrict = [33mcol_logical()[39m,
+  Stay_at_home = [33mcol_logical()[39m,
+  Stay_at_home_federal = [33mcol_logical()[39m,
   Isolamento_14 = [31mcol_character()[39m,
-  Isolamento_7 = [31mcol_character()[39m
+  Isolamento_Federal = [31mcol_character()[39m
 )
 [36mℹ[39m Use [30m[47m[30m[47m`spec()`[47m[30m[49m[39m for the full column specifications.
 :end:
@@ -3975,7 +3986,7 @@ print(name)
 :end:
 
 
-** Novos casos por milhão x Fase pandemia (mais de 10 casos por milhão de habitante para todos os dias)
+** Novos casos por milhão x Fase pandemia (mais de 10 casos por milhão de habitante)
 
 #+begin_src R :results value file :var figname="Casos_Policy_10_Todos"
 
@@ -4014,7 +4025,7 @@ print(name)
 
 :results:
 [[file:./figs/COVID/Casos_Policy_10_Todos.pdf]]
-** Novos casos por milhão x Fase pandemia (mais de 50 casos por milhão de habitante para todos os dias)
+** Novos casos por milhão x Fase pandemia (mais de 50 casos por milhão de habitante)
 
 #+begin_src R :results value file :var figname="Casos_Policy_50_Todos"
 
@@ -4051,7 +4062,7 @@ print(name)
 [[file:./figs/COVID/Casos_Policy_50_Todos.pdf]]
 :end:
 
-** Novos casos por milhão x Fase pandemia (mais de 100 casos por milhão de habitante para todos os dias)
+** Novos casos por milhão x Fase pandemia (mais de 100 casos por milhão de habitante)
 
 #+begin_src R :results value file :var figname="Casos_Policy_100_Todos"
 
@@ -4086,106 +4097,6 @@ print(name)
 #+RESULTS:
 :results:
 [[file:./figs/COVID/Casos_Policy_100_Todos.pdf]]
-:end:
-
-** Novos casos por milhão x Fase pandemia (low and high strigency)
-#+begin_src R :results value file :var figname="Casos_Policy_LowHigh"
-
-name = paste0('./figs/COVID/', figname, ".pdf")
-
-df %>%
-  drop_na(Policy_change, Onda, cases_growth, Isolamento_14) %>%
-  ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_Strigency)) +
-  geom_vline(xintercept=0, color="black") +
-  geom_boxplot(outlier.shape = NA, outlier.color=NA, outlier.alpha=1) +
-  labs(
-    y = "Fase da Pandemia",
-    x = ylab
-  ) +
-  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) +
-  coord_flip() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
- guides(fill=guide_legend(title="Tipo de isolamento")) +
- facet_wrap(~iso_code) -> fig
-
- fig <- ggdraw(fig) +
-   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
-ggsave(name, width = 20, height = 20, units = "cm")
-print(name)
-#+end_src
-
-#+RESULTS:
-:results:
-[[file:./figs/COVID/Casos_Policy_LowHigh.pdf]]
-:end:
-
-** Novos casos por milhão x Fase pandemia (low strigency)
-#+begin_src R :results value file :var figname="Casos_Policy_Low"
-
-name = paste0('./figs/COVID/', figname, ".pdf")
-
-df %>%
-  filter(
-    Strigency_type == "Low",
-  ) %>%
-  drop_na(Policy_change, Onda, cases_growth, Isolamento_14) %>%
-  ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_Strigency)) +
-  geom_vline(xintercept=0, color="black") +
-  geom_boxplot(outlier.shape = NA, outlier.color=NA, outlier.alpha=1) +
-  labs(
-    y = "Fase da Pandemia",
-    x = ylab
-  ) +
-  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) +
-  coord_flip() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
- guides(fill=guide_legend(title="Tipo de isolamento")) +
- facet_wrap(~iso_code) -> fig
-
- fig <- ggdraw(fig) +
-   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
-ggsave(name, width = 20, height = 20, units = "cm")
-print(name)
-#+end_src
-
-#+RESULTS:
-:results:
-[[file:./figs/COVID/Casos_Policy_Low.pdf]]
-:end:
-
-** Novos casos por milhão x Fase pandemia (high strigency)
-#+begin_src R :results value file :var figname="Casos_Policy_High"
-
-name = paste0('./figs/COVID/', figname, ".pdf")
-
-df %>%
-  filter(
-    Strigency_type == "High",
-
-  ) %>%
-  drop_na(Policy_change, Onda, cases_growth, Isolamento_14) %>%
-  ggplot(aes(y=Onda, x= cases_growth, fill=Isolamento_Strigency)) +
-  geom_vline(xintercept=0, color="black") +
-  geom_boxplot(outlier.shape = NA, outlier.color=NA, outlier.alpha=1) +
-  labs(
-    y = "Fase da Pandemia",
-    x = ylab
-  ) +
-  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) +
-  coord_flip() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
- guides(fill=guide_legend(title="Tipo de isolamento")) +
- facet_wrap(~iso_code) -> fig
-
- fig <- ggdraw(fig) +
-   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
-ggsave(name, width = 20, height = 20, units = "cm")
-print(name)
-#+end_src
-
-#+RESULTS:
-:results:
-[[file:./figs/COVID/Casos_Policy_High.pdf]]
 :end:
 
 
@@ -4224,6 +4135,89 @@ Neste ponto, o WEO é enfático ao destacar que medidas mais restritivas têm ef
 Dessa forma, políticas de restrição mais rígidas são mais exitosas tanto sobre a controle da pandemia quanto sobre os efeitos econômicos a médio prazo do que uma postura mais branda que, por sua vez, é ineficaz em ambos.
 
 [[file:./figs/COVID/Casos_Policy_LowHigh.pdf]]
+
+* Mobilidade e políticas implementadas
+
+
+#+begin_src R
+df <- read_csv(
+  "./clean/COVID/casos_TipoIsolamento_Onda.csv",
+  guess_max = 3000
+) %>%
+  filter(iso_code == "BRA") %>%
+  select(date, Residential, C1, C1_Flag, C2, C2_Flag, C6, C6_Flag, Pico) %>%
+  mutate(`Ficar em casa` = case_when(
+           C6 == 0 ~ "Sem medida",
+           C6 == 1 ~ "Recomendado ficar em casa",
+           C6 == 2 ~ "Algumas exceções podem sair",
+           C6 == 3 ~ "Sem exceções para sair",
+           C6 == NA ~ "Sem dados")
+    ## C6 = fct_relevel(C6, "Sem dados", "Sem medida", "Recomendado ficar em casa", "Algumas exceções", "Pouca Exceções"), 
+    ## C6_bin = if_else(C6 == "Sem medida", 0, 1)
+  ) 
+
+df_inf <- df %>% 
+  ## group_by(iso_code) %>% 
+  summarise(vline = date[Pico==1])
+
+p1 <- df %>% ggplot(aes(x = date, y = Residential)) + geom_line() + 
+  geom_vline(
+    data = df_inf, 
+    mapping = aes(xintercept = vline),
+    color = "black"
+  ) +
+  labs(
+    y = "Mobilidade",
+    x = ""
+  )
+
+p2 <- df %>% ggplot(aes(x = date, y = 1, color=`Ficar em casa`) ) + 
+  geom_line(   size = 7   ) + scale_y_discrete(labels = abbreviate) +
+  scale_color_manual(values=c("#9F9F92", "#E67960", "#AB2323", "#c00000")) + 
+  theme_minimal() +
+  ## scale_colour_gradientn(
+  ##   colours=c(
+  ##     "gray",
+  ##     "orange",
+  ##     "red"),
+  ##   guide="legend"
+  ## ) + 
+  theme(legend.position = "bottom",
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.ticks.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.title.x = element_blank(),
+        axis.text.y = element_blank()) +
+  labs(
+    y = "",
+    x = ""
+  )
+
+cowplot::plot_grid(p1, p2, nrow = 2, rel_heights = c(3,1), align="v", axis="lr")
+    
+#+end_src
+
+#+RESULTS:
+:results:
+
+[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+cols(
+  .default = col_double(),
+  date = [34mcol_date(format = "")[39m,
+  iso_code = [31mcol_character()[39m,
+  Restrict = [33mcol_logical()[39m,
+  Isolamento_14 = [31mcol_character()[39m,
+  Stay_at_home = [33mcol_logical()[39m,
+  Stay_at_home_federal = [33mcol_logical()[39m,
+  Policy = [31mcol_character()[39m,
+  Pico = [33mcol_logical()[39m,
+  Onda = [31mcol_character()[39m,
+  Strigency_type = [31mcol_character()[39m
+)
+[36mℹ[39m Use [30m[47m[30m[47m`spec()`[47m[30m[49m[39m for the full column specifications.
+Warning messages:
+1: Removed 4 row(s) containing missing values (geom_path).
+2: Removed 6 row(s) containing missing values (geom_path).
+:end:
 
 * Auxílio emergencial
 
