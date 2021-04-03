@@ -137,3 +137,4 @@ Nota_016/raw/PNAD_COVID/*.csv
 ./.git/lfs/objects/1d/ed/1ded7f0dd01dfd0a60260fb68b82841bb576c53fb9d2c686e99c5a0c543f9544
 ./.git/objects/pack/pack-5201f8e87499a384774f7ec00bd4e449326aa6ff.pack
 ./Nota_016/raw/PNAD_COVID/PNAD_COVID_112020.csv
+./Nota_016/raw/Covid/*.csv
