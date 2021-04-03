@@ -169,8 +169,7 @@ def add_value_labels(ax, spacing=5):
 #+RESULTS:
 :results:
 
-(python3:8919): Gtk-[1;33mWARNING[0m **: [34m16:43:26.492[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
-Qt: Session management error: Could not open network socket
+(python3:31385): Gtk-[1;33mWARNING[0m **: [34m18:11:29.313[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
 :end:
 ** R
 
@@ -216,12 +215,48 @@ ggthemr::ggthemr('pale')
 
 #+RESULTS:
 :results:
+── [1mAttaching packages[22m ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+[32m✔[39m [34mggplot2[39m 3.3.3     [32m✔[39m [34mpurrr  [39m 0.3.4
+[32m✔[39m [34mtibble [39m 3.1.0     [32m✔[39m [34mdplyr  [39m 1.0.5
+[32m✔[39m [34mtidyr  [39m 1.1.2     [32m✔[39m [34mstringr[39m 1.4.0
+[32m✔[39m [34mreadr  [39m 1.4.0     [32m✔[39m [34mforcats[39m 0.5.0
+── [1mConflicts[22m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+[31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
+[31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
 
 Attaching package: ‘patchwork’
 
 The following object is masked from ‘package:cowplot’:
 
     align_plots
+:end:
+** Downloads
+
+*** Google mobility
+
+#+begin_src sh :dir /HDD/Cecon_Atividade/Nota_016/ :exports none
+
+wget -O ./raw/Covid/Google_Mobility.csv https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv
+#+end_src
+
+*** Brasil.io
+
+#+begin_src sh :dir /HDD/Cecon_Atividade/Nota_016/ :exports none
+wget -O ./raw/Covid/Casos_Brasilio.csv.gz https://data.brasil.io/dataset/covid19/caso_full.csv.gz
+gunzip ./raw/Covid/Casos_Brasilio.csv.gz
+#+end_src
+
+#+RESULTS:
+:results:
+--2021-04-01 17:25:00--  https://data.brasil.io/dataset/covid19/caso_full.csv.gz
+Resolvendo data.brasil.io (data.brasil.io)... 2606:4700:20::ac43:472d, 2606:4700:20::681a:9af, 2606:4700:20::681a:8af, ...
+Conectando-se a data.brasil.io (data.brasil.io)|2606:4700:20::ac43:472d|:443... conectado.
+A requisição HTTP foi enviada, aguardando resposta... 200 OK
+Tamanho: 42789488 (41M) [application/gzip]
+Salvando em: “./raw/Covid/Casos_Brasilio.csv.gz”
+[                    ]       0  --.-KB/s                        ./raw/Covi   0%[                    ]  99,52K   355KB/s                       ./raw/Covid   1%[                    ] 439,39K   751KB/s                      ./raw/Covid/   2%[                    ]   1,12M  1,42MB/s                     ./raw/Covid/C   4%[                    ]   1,91M  1,93MB/s                    ./raw/Covid/Ca   6%[>                   ]   2,77M  2,32MB/s                   ./raw/Covid/Cas   8%[>                   ]   3,46M  2,47MB/s                  ./raw/Covid/Caso  10%[=>                  ]   4,32M  2,69MB/s                 ./raw/Covid/Casos  12%[=>                  ]   4,99M  2,75MB/s                ./raw/Covid/Casos_  13%[=>                  ]   5,57M  2,76MB/s               ./raw/Covid/Casos_B  15%[==>                 ]   6,38M  2,88MB/s               /raw/Covid/Casos_Br  17%[==>                 ]   7,21M  2,98MB/s               raw/Covid/Casos_Bra  19%[==>                 ]   7,99M  3,05MB/s               aw/Covid/Casos_Bras  21%[===>                ]   8,73M  3,08MB/s               w/Covid/Casos_Brasi  22%[===>                ]   9,26M  3,05MB/s    TED 10s    /Covid/Casos_Brasil  24%[===>                ]  10,04M  3,10MB/s    TED 10s    Covid/Casos_Brasili  26%[====>               ]  10,85M  3,41MB/s    TED 10s    ovid/Casos_Brasilio  28%[====>               ]  11,69M  3,58MB/s    TED 10s    vid/Casos_Brasilio.  30%[=====>              ]  12,43M  3,67MB/s    TED 10s    id/Casos_Brasilio.c  32%[=====>              ]  13,16M  3,67MB/s    TED 9s     d/Casos_Brasilio.cs  32%[=====>              ]  13,39M  3,49MB/s    TED 9s     /Casos_Brasilio.csv  35%[======>             ]  14,57M  3,60MB/s    TED 9s     Casos_Brasilio.csv.  37%[======>             ]  15,19M  3,56MB/s    TED 9s     asos_Brasilio.csv.g  38%[======>             ]  15,85M  3,51MB/s    TED 9s     sos_Brasilio.csv.gz  40%[=======>            ]  16,60M  3,54MB/s    TED 7s     os_Brasilio.csv.gz   42%[=======>            ]  17,44M  3,62MB/s    TED 7s     s_Brasilio.csv.gz    44%[=======>            ]  18,18M  3,61MB/s    TED 7s     _Brasilio.csv.gz     46%[========>           ]  18,99M  3,57MB/s    TED 7s     Brasilio.csv.gz      48%[========>           ]  19,85M  3,60MB/s    TED 7s     rasilio.csv.gz       50%[=========>          ]  20,65M  3,61MB/s    TED 6s     asilio.csv.gz        52%[=========>          ]  21,48M  3,70MB/s    TED 6s     silio.csv.gz         54%[=========>          ]  22,27M  3,70MB/s    TED 6s     ilio.csv.gz          56%[==========>         ]  23,13M  3,72MB/s    TED 6s     lio.csv.gz           58%[==========>         ]  23,94M  3,70MB/s    TED 6s     io.csv.gz            60%[===========>        ]  24,60M  3,72MB/s    TED 5s     o.csv.gz             62%[===========>        ]  25,40M  3,73MB/s    TED 5s     .csv.gz              63%[===========>        ]  26,10M  3,77MB/s    TED 5s     csv.gz               65%[============>       ]  26,83M  3,74MB/s    TED 5s     sv.gz                67%[============>       ]  27,65M  3,84MB/s    TED 5s     v.gz                 69%[============>       ]  28,46M  3,86MB/s    TED 4s     .gz                  71%[=============>      ]  29,30M  3,89MB/s    TED 4s     gz                   73%[=============>      ]  30,15M  3,91MB/s    TED 4s     z                    75%[==============>     ]  30,93M  3,91MB/s    TED 4s                          77%[==============>     ]  31,74M  3,91MB/s    TED 4s                       .  79%[==============>     ]  32,49M  3,86MB/s    TED 2s                      ./  81%[===============>    ]  33,29M  3,87MB/s    TED 2s                     ./r  83%[===============>    ]  34,04M  3,87MB/s    TED 2s                    ./ra  85%[================>   ]  34,94M  3,89MB/s    TED 2s                   ./raw  87%[================>   ]  35,80M  3,89MB/s    TED 2s                  ./raw/  89%[================>   ]  36,63M  3,93MB/s    TED 1s                 ./raw/C  91%[=================>  ]  37,49M  3,97MB/s    TED 1s                ./raw/Co  93%[=================>  ]  38,24M  3,95MB/s    TED 1s               ./raw/Cov  95%[==================> ]  38,83M  3,91MB/s    TED 1s              ./raw/Covi  97%[==================> ]  39,66M  3,90MB/s    TED 1s             ./raw/Covid  98%[==================> ]  40,40M  3,90MB/s    TED 0s     ./raw/Covid/Casos_B 100%[===================>]  40,81M  3,91MB/s    em 11s
+
+2021-04-01 17:25:12 (3,61 MB/s) - “./raw/Covid/Casos_Brasilio.csv.gz” salvo [42789488/42789488]
 :end:
 
 * Indicadores de antecedente
@@ -2258,11 +2293,6 @@ write.csv(
 )
 #+end_src
 
-#+RESULTS:
-:results:
-All others arguments are desconsidered when 'api' is informed
-:end:
-
 #+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/PMS_vol_dessazonalizada.pdf
 df = pd.read_csv(
     "./clean/IBGE/PMS_volume_dessazonalizada.csv", index_col="Data", parse_dates=True
@@ -3407,6 +3437,18 @@ The log difference for, say, 03-01-2020, is obtained by taking the difference be
 #+end_quote
 
 
+* Auxílio emergencial
+
+#+begin_export latex
+\npdecimalsign{,}
+\npthousandsep{.}
+\nprounddigits{0}
+\begin{figure}[h]
+    \resizebox{\textwidth}{!}{%
+    \input{./tabs/AE.tex}
+\end{figure}
+#+end_export
+
 * Novos casos x Restrição de mobilidade por tipo de isolamento
 ** TODOs :noexport:
 *** TODO Remover outlier dos boxplots
@@ -3425,6 +3467,8 @@ df = pd.read_csv(
         "continent",
         "total_cases",
         "total_deaths",
+        "total_cases_per_million",
+        "total_deaths_per_million",
         "new_cases_smoothed",
         "new_deaths_smoothed",
         "new_deaths_per_million",
@@ -3627,10 +3671,6 @@ df["Isolamento"] = df["Residential"].pct_change()
 df.to_csv("./clean/COVID/google_mobility.csv")
 #+END_SRC
 
-#+RESULTS:
-:results:
-:end:
-
 ** Merging :noexport:
 
 
@@ -3695,8 +3735,10 @@ cols(
   new_cases_smoothed = [32mcol_double()[39m,
   total_deaths = [32mcol_double()[39m,
   new_deaths_smoothed = [32mcol_double()[39m,
+  total_cases_per_million = [32mcol_double()[39m,
   new_cases_per_million = [32mcol_double()[39m,
   new_cases_smoothed_per_million = [32mcol_double()[39m,
+  total_deaths_per_million = [32mcol_double()[39m,
   new_deaths_per_million = [32mcol_double()[39m,
   new_deaths_smoothed_per_million = [32mcol_double()[39m,
   new_tests_smoothed_per_thousand = [32mcol_double()[39m,
@@ -3761,7 +3803,9 @@ df <- read_csv(
     Stay_at_home,
     Stay_at_home_federal,
     C1, C2, C6,
-    C1_Flag, C2_Flag, C6_Flag
+    C1_Flag, C2_Flag, C6_Flag,
+    total_deaths_per_million,
+    total_cases_per_million
   ) %>%
   mutate(cases_growth_after14 = lead(cases_growth, 14)) %>%
   filter(
@@ -4138,62 +4182,213 @@ Dessa forma, políticas de restrição mais rígidas são mais exitosas tanto so
 
 * Mobilidade e políticas implementadas
 
+#+begin_src R  :results value file :exports results
+countries <- c(
+  "USA",
+  "SWE",
+  "ARG",
+  "BRA",
+  "PRY",
+  "URY",
+  "VEN",
+  "PRT",
+  "GBR"
+) 
 
-#+begin_src R
+policy <-"C6"
+policy_name <- "Ficar em casa"
+width <- 7
+library(RColorBrewer)
+myColors <- brewer.pal(5,"Set1")
+
 df <- read_csv(
   "./clean/COVID/casos_TipoIsolamento_Onda.csv",
   guess_max = 3000
 ) %>%
-  filter(iso_code == "BRA") %>%
-  select(date, Residential, C1, C1_Flag, C2, C2_Flag, C6, C6_Flag, Pico) %>%
-  mutate(`Ficar em casa` = case_when(
+  select(date, iso_code, Residential, C1, C1_Flag, C2, C2_Flag, C6, C6_Flag, Pico, new_cases_per_million) %>%
+  mutate(C6 = case_when(
            C6 == 0 ~ "Sem medida",
-           C6 == 1 ~ "Recomendado ficar em casa",
-           C6 == 2 ~ "Algumas exceções podem sair",
-           C6 == 3 ~ "Sem exceções para sair",
-           C6 == NA ~ "Sem dados")
-    ## C6 = fct_relevel(C6, "Sem dados", "Sem medida", "Recomendado ficar em casa", "Algumas exceções", "Pouca Exceções"), 
-    ## C6_bin = if_else(C6 == "Sem medida", 0, 1)
-  ) 
+           C6 == 1 ~ "Recomendado ficar\nem casa",
+           C6 == 2 ~ "Algumas exceções\npodem sair",
+           C6 == 3 ~ "Sem exceções\npara sair"),
+    C6 = fct_relevel(C6, "Sem medida", "Recomendado ficar\nem casa", "Algumas exceções\npodem sair", "Sem exceções\npara sair"))
 
-df_inf <- df %>% 
-  ## group_by(iso_code) %>% 
-  summarise(vline = date[Pico==1])
+names(myColors) <- levels(df$C6)
 
-p1 <- df %>% ggplot(aes(x = date, y = Residential)) + geom_line() + 
+
+  
+for(country in countries){
+    
+name <-paste0("./figs/COVID/Mobilidade_Policy_", country, "_", policy, ".pdf")
+tmp <- df %>%  filter(iso_code == country) %>%
+  mutate(Residential=zoo::rollapply(
+           Residential,
+           width,
+           mean,
+           align='right',fill=NA))
+
+df_inf <- tmp %>%
+  group_by(iso_code) %>%
+  summarise(vline = date[Pico==1]) %>%
+  ungroup()
+  
+p1 <- tmp %>% ggplot(aes(x = date, y = Residential, color = new_cases_per_million)) +
+  geom_line( size = 1.25 ) +
+  guides(
+    color = guide_colorbar(reverse = TRUE)) +
+  scale_color_continuous(name = "Novos casos\npor milhão", high = "#132B43", low = "#56B1F7") +
   geom_vline(
-    data = df_inf, 
+    data = df_inf,
     mapping = aes(xintercept = vline),
     color = "black"
   ) +
   labs(
-    y = "Mobilidade",
-    x = ""
-  )
+    y = "Tempo em casa (Semana Móvel)",
+    x = "",
+    title = country
+  ) +
+  ylim(0, 27.5)
 
-p2 <- df %>% ggplot(aes(x = date, y = 1, color=`Ficar em casa`) ) + 
-  geom_line(   size = 7   ) + scale_y_discrete(labels = abbreviate) +
-  scale_color_manual(values=c("#9F9F92", "#E67960", "#AB2323", "#c00000")) + 
+tmp %>%
+  select(date, C6, C6_Flag) %>%
+  pivot_longer(C6, names_to = "Policy", values_to = "Measure") %>%
+  mutate(Policy = 1) %>%
+  pivot_wider(values_from = Policy, values_fill = NA, names_from = Measure) %>%
+  pivot_longer(!c(date, C6_Flag), values_to = "Measure") ->tmp_long
+  
+p2 <- tmp_long %>%  ggplot(aes(x = date, y = Measure, color=name) ) +
+  geom_line(aes(size=factor(C6_Flag))) +
+  scale_y_discrete(labels = abbreviate) +
+  scale_color_manual(values=myColors, name=policy_name) +
+  scale_size_discrete(name = "Abrangência", labels = c("Focalizado", "Federal"), limits = c("0","1")) +
   theme_minimal() +
-  ## scale_colour_gradientn(
-  ##   colours=c(
-  ##     "gray",
-  ##     "orange",
-  ##     "red"),
-  ##   guide="legend"
-  ## ) + 
-  theme(legend.position = "bottom",
-        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
-        axis.ticks.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
-        axis.title.x = element_blank(),
-        axis.text.y = element_blank()) +
+  theme(
+    legend.position = "right",
+    axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+    axis.ticks.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+     axis.title.x = element_blank(),
+    axis.text.y = element_blank()
+    ) +
   labs(
     y = "",
     x = ""
   )
 
-cowplot::plot_grid(p1, p2, nrow = 2, rel_heights = c(3,1), align="v", axis="lr")
-    
+legend_1 <- get_legend(
+  # create some space to the left of the legend
+  p1 + theme(legend.box.margin = margin(0, 0, 0, 12))
+)
+  
+legend_2 <- get_legend(
+  # create some space to the left of the legend
+  p2 + theme(legend.box.margin = margin(0, 0, 0, 12))
+)
+p2 <- p2 + theme(legend.position="none")  
+p1 <- p1 + theme(legend.position="none")  
+fig <- cowplot::plot_grid(p1, p2, nrow = 2, rel_heights = c(3,0.5), align="v", axis="lr")
+assign(country, fig, envir=.GlobalEnv)
+print(name)
+ggsave(name, width = 20, height = 20, units = "cm")
+}
+# arrange the three plots in a single row
+prow <- plot_grid(
+  ARG,
+  BRA,
+  PRY,
+  URY,
+  VEN,
+  USA,
+  align = 'hv',
+  axis = 'lr',
+  ## hjust = -1,
+  nrow = 2
+)
+
+# add the legend to the row we made earlier. Give it one-third of 
+# the width of one plot (via rel_widths).
+
+name <- paste0("./figs/COVID/Mobilidade_Policy_", "selected", "_", policy, ".pdf")
+
+legends <- plot_grid(
+  legend_1,
+  legend_2,
+  nrow = 2,
+  align = 'hv',
+  hjust = -1
+)
+
+fig<- plot_grid(
+  prow,
+  NULL,
+  legends,
+  rel_widths = c(3, 0.05, .4),
+  nrow = 1
+  )
+
+
+fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 1.0, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 40, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Mobilidade_Policy_selected_C6.pdf]]
+:end:
+
+
+
+
+* Mobilidade, medidas adotadas, casos acumulados por estados brasileiros
+
+** Dados de políticas adotdas :noexport:
+
+#+begin_src R
+df <-read_csv(
+  'https://raw.githubusercontent.com/OxCGRT/Brazil-covid-policy/master/data/OxCGRT_Brazil_latest.csv',
+  guess_max = 3000
+)  %>%
+  select(Date, RegionName, RegionCode, Jurisdiction, `C6_Stay at home requirements`, C6_Flag, C6_Notes) %>%
+  rename(C6 = `C6_Stay at home requirements`) %>%
+  filter(Jurisdiction == "STATE_WIDE") %>%
+  mutate(Date = lubridate::ymd(Date)) %>%
+  mutate(
+    C6 = case_when(
+           C6 == 0 ~ "Sem medida",
+           C6 == 1 ~ "Recomendado ficar\nem casa",
+           C6 == 2 ~ "Algumas exceções\npodem sair",
+           C6 == 3 ~ "Sem exceções\npara sair",
+           is.na(C6) ~ "Dados indisponíveis"
+      )) %>%
+  mutate(C6 = factor(C6)) %>%
+  mutate(C6 = fct_relevel(C6, "Dados indisponíveis", "Sem medida", "Recomendado ficar\nem casa", "Algumas exceções\npodem sair", "Sem exceções\npara sair")) %>%
+  mutate(C6_Flag = factor(C6_Flag)) %>%
+  arrange(RegionName, Date) %>%
+  select(-c(Jurisdiction, C6_Notes)) %>%
+  rowwise() %>%  mutate(RegionCode = strsplit(RegionCode, split="_")[[1]][2]) %>%
+  rename(Estado = RegionName, Sigla = RegionCode, date = Date) %>%
+  mutate(Estado = factor(Estado), Sigla = factor(Sigla))
+
+
+
+write.csv(
+  df,
+  './clean/COVID/Estados/Medidas_Estados_Brasil.csv',
+  row.names = FALSE
+)
+
+df %>%  pivot_longer(C6, names_to = "Policy", values_to = "Measure") %>%
+  mutate(Policy = 1) %>%
+  pivot_wider(values_from = Policy, values_fill = NA, names_from = Measure) %>%
+  pivot_longer(!c(date, C6_Flag, Estado, Sigla), values_to = "Measure") %>%
+  mutate(name = factor(name)) -> df_long
+
+write.csv(
+  df_long,
+  './clean/COVID/Estados/Medidas_Estados_Brasil_Long.csv',
+  row.names = FALSE
+)
 #+end_src
 
 #+RESULTS:
@@ -4202,39 +4397,505 @@ cowplot::plot_grid(p1, p2, nrow = 2, rel_heights = c(3,1), align="v", axis="lr")
 [36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   .default = col_double(),
-  date = [34mcol_date(format = "")[39m,
-  iso_code = [31mcol_character()[39m,
-  Restrict = [33mcol_logical()[39m,
-  Isolamento_14 = [31mcol_character()[39m,
-  Stay_at_home = [33mcol_logical()[39m,
-  Stay_at_home_federal = [33mcol_logical()[39m,
-  Policy = [31mcol_character()[39m,
-  Pico = [33mcol_logical()[39m,
-  Onda = [31mcol_character()[39m,
-  Strigency_type = [31mcol_character()[39m
+  CountryName = [31mcol_character()[39m,
+  CountryCode = [31mcol_character()[39m,
+  RegionName = [31mcol_character()[39m,
+  RegionCode = [31mcol_character()[39m,
+  CityName = [31mcol_character()[39m,
+  CityCode = [31mcol_character()[39m,
+  Jurisdiction = [31mcol_character()[39m,
+  C1_Notes = [31mcol_character()[39m,
+  C2_Notes = [31mcol_character()[39m,
+  C3_Notes = [31mcol_character()[39m,
+  C4_Notes = [31mcol_character()[39m,
+  C5_Notes = [31mcol_character()[39m,
+  C6_Notes = [31mcol_character()[39m,
+  C7_Notes = [31mcol_character()[39m,
+  C8_Notes = [31mcol_character()[39m,
+  E1_Notes = [31mcol_character()[39m,
+  E2_Notes = [31mcol_character()[39m,
+  E3_Notes = [31mcol_character()[39m,
+  E4_Notes = [31mcol_character()[39m,
+  H1_Notes = [31mcol_character()[39m
+  # ... with 9 more columns
 )
 [36mℹ[39m Use [30m[47m[30m[47m`spec()`[47m[30m[49m[39m for the full column specifications.
-Warning messages:
-1: Removed 4 row(s) containing missing values (geom_path).
-2: Removed 6 row(s) containing missing values (geom_path).
 :end:
 
-* Auxílio emergencial
+** Dados de mobilidade :noexport:
 
-#+begin_export latex
-\npdecimalsign{,}
-\npthousandsep{.}
-\nprounddigits{0}
-\begin{figure}[h]
-    \begin{minipage}[t]{.85\textwidth}% or {.6\linewidth}, it's the same here
-        \resizebox{\linewidth}{!}{%
-        \input{./tabs/AE.tex}
-        }
-    \end{minipage}
-    % \hfill
-    \begin{minipage}[t]{.1\textwidth}
-    \vspace{-2.1cm}
-        \includegraphics[width=\linewidth]{./figs/Cecon_Logo.png}% caution: here you cannot replace \linewidth by \textwidth, since within this minipage, \linewidth=.3\textwidth
-    \end{minipage}
-\end{figure}      
-#+end_export
+#+begin_src R
+df <- data.table::fread(
+    './raw/Covid/Google_Mobility.csv',
+    select = c(
+        "date",
+        "country_region_code",
+        "sub_region_1",
+        "sub_region_2",
+        "residential_percent_change_from_baseline",
+        "iso_3166_2_code"
+    ),
+    na.strings="",
+    data.table = FALSE,
+    strip.white = TRUE,
+    stringsAsFactors = FALSE, 
+    fill = TRUE,
+    sep= ","
+) %>%
+  filter(country_region_code == "BR") %>%
+  drop_na(sub_region_1) %>%
+  filter(is.na(sub_region_2)) %>%
+  select(date, iso_3166_2_code, residential_percent_change_from_baseline) %>%
+  rename(Sigla = iso_3166_2_code, Residential = residential_percent_change_from_baseline) %>%
+  rowwise() %>%  mutate(Sigla = strsplit(Sigla, split="-")[[1]][2]) %>%
+  arrange(Sigla, date) %>%
+  mutate(Sigla = factor(Sigla))
+
+data.table::fwrite(
+              df,
+              './clean/COVID/Estados/Mobilidade.csv',
+              row.names = FALSE
+              )
+    
+#+end_src
+
+
+
+
+
+** Dados de casos :noexport:
+
+#+begin_src R
+
+df <- data.table::fread(
+    './raw/Covid/Casos_Brasilio.csv') %>%
+  filter(place_type == "state") %>%
+  select(date,
+         state,
+         new_confirmed,
+         new_deaths,
+         estimated_population,
+         last_available_confirmed_per_100k_inhabitants
+         ) %>%
+  arrange(state, date) %>%
+  rename(
+    Sigla = state,
+    new_cases = new_confirmed,
+    total_cases_per_million = last_available_confirmed_per_100k_inhabitants,
+    Populacao = estimated_population
+    ) %>%
+  mutate(Sigla = factor(Sigla))
+
+
+data.table::fwrite(
+              df,
+              './clean/COVID/Estados/Casos.csv',
+              row.names = FALSE
+              )
+    
+#+end_src
+
+#+RESULTS:
+:results:
+:end:
+
+** Unindo dataframes :noexport:
+
+#+begin_src R
+after <- 3
+
+df <-read_csv(
+  './clean/COVID/Estados/Medidas_Estados_Brasil.csv',
+  guess_max = 3000
+) 
+
+# check if full_join or right or left join
+tmp <- read_csv(
+  './clean/COVID/Estados/Mobilidade.csv',
+)
+df <- df %>% left_join(tmp)
+
+tmp <- read_csv(
+  './clean/COVID/Estados/Casos.csv',
+)
+df <- df %>% left_join(tmp)
+
+df <- df %>%
+  mutate(C6 = factor(C6)) %>%
+  mutate(Sigla = factor(Sigla)) %>%
+  mutate(Policy_change = c(NA, diff(C6 %>% fct_rev() %>% as.numeric()))) %>%
+  mutate(stayhome_growth_14 = (Residential/lag(Residential,14) - 1) * 100) %>%
+  mutate(stayhome_growth_after = (lead(Residential, after)/Residential - 1) * 100) %>%
+  mutate(Isolamento = case_when(
+     stayhome_growth_after >= 0 & C6 == "Algumas exceções\npara sair" |  C6 == "Sem exceções\npara sair" ~ "Rígido", # Queda da mobilidade junto da imposição
+     stayhome_growth_after > 0 & Policy_change > 0  &  C6 == "Recomendado ficar\nem casa" | C6 == "Sem medida" ~ "Brando",
+     stayhome_growth_after > 0 & Policy_change <=0 & C6 != "Sem exceções\npara sair" ~ "Voluntário", # Queda da mobilidade sem restrição
+     stayhome_growth_after < 0 ~ "Queda",
+     is.na(stayhome_growth_after) | is.na(Policy_change) ~ "Dados indisponíveis"
+           )) %>%
+  mutate(Isolamento = factor(Isolamento)) %>%
+  mutate(cases_growth = ((new_cases/lag(new_cases)) - 1) * 100) %>%
+  mutate(deaths_growth = (new_deaths/lag(new_deaths) - 1) * 100) %>%
+  mutate(new_cases_100K = (replace_na(new_cases, 0)/Populacao)*10^5) %>%
+  mutate(new_cases_100K = zoo::rollapply(new_cases_100K, width = 7, FUN = mean, fill = NA)) %>%
+  mutate(new_cases_1M = (replace_na(new_cases, 0)/Populacao)*10^6) %>%
+  mutate(new_cases_100K = zoo::rollapply(new_cases_100K, width = 7, FUN = mean, fill = NA)) %>%
+  mutate(cases_growth_100K = (((new_cases_100K)/lag(new_cases_100K))-1)*100) %>%
+  group_by(Sigla) %>%
+  mutate(cum_cases_100K = (cumsum(replace_na(new_cases, 0))/Populacao)*10^5) %>%
+  mutate(cum_cases_100K = zoo::rollapply(cum_cases_100K, width = 7, FUN = mean, fill = NA)) %>%
+  mutate(cum_cases_1M = (cumsum(replace_na(new_cases, 0))/Populacao)*10^6) %>%
+  mutate(cum_cases_1M = zoo::rollapply(cum_cases_1M, width = 7, FUN = mean, fill = NA)) %>%
+  ungroup()
+
+w <- 14 * 4
+th_new_cases <- 100
+th_total_deaths <- 100
+
+df <- df %>%
+  group_by(Sigla) %>%
+  mutate(total_deaths = cumsum(replace_na(new_deaths, 0))) %>%
+  ungroup() %>%
+  mutate(y.max = zoo::rollapply(new_cases, 2 * w + 1, max, fill = NA, align = "center")) %>%
+  mutate(delta = y.max - new_cases) %>%
+  mutate(Pico = new_cases >= th_new_cases & delta <= 0) %>%
+  group_by(Sigla) %>%
+  fill(Pico, .direction = "up") %>%
+  mutate(nPico = cumsum(Pico)) %>%
+  ungroup() %>%
+  mutate(Onda = case_when(
+    total_deaths >= th_total_deaths & nPico == 0 ~ "Início ao 1o pico",
+    total_deaths >= th_total_deaths & nPico == 1 ~ "1o ao 2o Pico",
+    total_deaths >= th_total_deaths & nPico >= 2 ~ "pós 2o pico"
+  )) %>%
+  mutate(Onda = factor(Onda)) %>%
+  fill(Onda) %>%
+  fill(Onda, .direction = "up") %>%
+  mutate(Onda = fct_relevel(Onda, "Início ao 1o pico", "1o ao 2o Pico", "pós 2o pico"))
+  
+write.csv(
+  df,
+  './clean/COVID/Estados/Merged_wide.csv',
+  row.names = FALSE
+)
+#+end_src
+
+#+RESULTS:
+:results:
+
+[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+cols(
+  date = [34mcol_date(format = "")[39m,
+  Estado = [31mcol_character()[39m,
+  Sigla = [31mcol_character()[39m,
+  C6 = [31mcol_character()[39m,
+  C6_Flag = [32mcol_double()[39m
+)
+
+[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+cols(
+  date = [34mcol_date(format = "")[39m,
+  Sigla = [31mcol_character()[39m,
+  Residential = [32mcol_double()[39m
+)
+Joining, by = c("date", "Sigla")
+
+[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+cols(
+  date = [34mcol_date(format = "")[39m,
+  Sigla = [31mcol_character()[39m,
+  new_cases = [32mcol_double()[39m,
+  new_deaths = [32mcol_double()[39m,
+  Populacao = [32mcol_double()[39m,
+  total_cases_per_million = [32mcol_double()[39m
+)
+Joining, by = c("date", "Sigla")
+:end:
+
+** Gráficos de mobilidade e política por estados
+
+#+begin_src R  :results value file :exports results
+
+
+df <- read_csv(
+  "./clean/COVID/Estados/Merged_wide.csv",
+  guess_max = 3000
+) %>%
+  mutate(C6 = factor(C6),
+         C6 = fct_relevel(C6, "Dados indisponíveis", "Sem medida", "Recomendado ficar\nem casa", "Algumas exceções\npodem sair", "Sem exceções\npara sair"))
+
+estados <- df$Sigla %>% unique()
+
+policy <-"C6"
+policy_name <- "Ficar em casa"
+width <- 7
+library(RColorBrewer)
+myColors <- brewer.pal(5,"Set1")
+
+
+names(myColors) <- levels(df$C6)
+lefts <- c(
+  "AC",
+  "DF",
+  "MT",
+  "RJ",
+  "SP"
+)
+
+rights <- c(
+  "CE",
+  "MS",
+  "PR",
+  "SC",
+  "TO"
+)   
+
+plots <- c()
+
+for(estado in estados){
+
+  name <-paste0("./figs/COVID/Estados/Mobilidade_Policy_", estado, "_", policy, ".pdf")
+  tmp <- df %>%  filter(Sigla == estado) %>%
+    mutate(Residential=zoo::rollapply(
+                              Residential,
+                              width,
+                              mean,
+                              align='right',fill=NA)) %>%
+    filter(Residential >-2)
+
+  df_inf <- tmp %>%
+    group_by(Sigla) %>%
+    summarise(vline = date[Pico==1]) %>%
+    ungroup()
+
+  rescale <- ((replace_na(tmp$new_cases_100K,0) %>% max())/(replace_na(tmp$Residential, 0) %>% max()))  %>% round()
+                                        # color = new_cases não tem legenda adequada  
+  p1 <- tmp %>% ggplot(aes(x = date, y = Residential, color = "blue")) +
+    geom_line( size = 1.25 ) +
+    geom_line( aes(x = date, y = new_cases_100K/rescale), color = "red", size = 1.25 ) +
+    ## guides(
+    ##   color = guide_colorbar(reverse = TRUE)) +
+    ## scale_color_continuous(name = "Novos casos", high = "#132B43", low = "#56B1F7") +
+    geom_vline(
+      data = df_inf,
+      mapping = aes(xintercept = vline),
+      color = "black"
+    ) +
+    ylim(0, 27.5)
+
+  if(estado %in% rights){  
+    p1 <-p1 + labs(
+                ## y = "Tempo em casa",
+                x = "",
+                title = estado
+              ) +
+                                        # Custom the Y scales:
+      scale_y_continuous(
+        name = "",
+        sec.axis = sec_axis( trans=~.*rescale, name="Novos casos / 100 mil hab")
+      ) +
+      theme(
+        axis.line.y.right = element_line(color = "red"), 
+        axis.ticks.y.right = element_line(color = "red"),
+        axis.line.y.left = element_line(color = "blue"), 
+        axis.ticks.y.left = element_line(color = "blue")
+      )
+  } else if(estado %in% lefts){
+
+    p1 <-p1 + labs(
+                x = "",
+                title = estado
+              ) +
+                                        # Custom the Y scales:
+      scale_y_continuous(
+        name = "Tempo em casa",
+        sec.axis = sec_axis( trans=~.*rescale, name="")
+      ) +
+      theme(
+        axis.line.y.right = element_line(color = "red"), 
+        axis.ticks.y.right = element_line(color = "red"),
+        axis.line.y.left = element_line(color = "blue"), 
+        axis.ticks.y.left = element_line(color = "blue")
+      )
+  } else{
+
+    p1 <-p1 + labs(
+                x = "",
+                title = estado
+              ) +
+                                        # Custom the Y scales:
+      scale_y_continuous(
+        name = "",
+        sec.axis = sec_axis( trans=~.*rescale, name="")
+      ) +
+      theme(
+        axis.line.y.right = element_line(color = "red"), 
+        axis.ticks.y.right = element_line(color = "red"),
+        axis.line.y.left = element_line(color = "blue"), 
+        axis.ticks.y.left = element_line(color = "blue")
+      )
+  }
+  
+  
+  tmp %>%
+    select(date, C6, C6_Flag) %>%
+    pivot_longer(C6, names_to = "Policy", values_to = "Measure") %>%
+    mutate(Policy = 1) %>%
+    pivot_wider(values_from = Policy, values_fill = NA, names_from = Measure) %>%
+    pivot_longer(!c(date, C6_Flag), values_to = "Measure") ->tmp_long
+
+  p2 <- tmp_long %>%
+    mutate(C6_Flag = case_when(
+             C6_Flag == 1 ~ "Estadual",
+             C6_Flag == 0 ~ "Local",
+             is.na(C6_Flag) ~ "Sem dados"
+           )) %>%
+    mutate(C6_Flag = C6_Flag %>% factor() %>% fct_rev()) %>%
+    rename(Cobertura = C6_Flag) %>%
+    ggplot(aes(x = date, y = Measure, color=name) ) +
+    ## geom_line(aes(size=1)) +
+    geom_line(aes(size = Cobertura)) +
+    scale_y_discrete(labels = abbreviate) +
+    scale_color_manual(
+      values=c("#575757", "#23AE00", "#FFCE14", "#FF7319", "#CA0014"),
+      breaks=c("Dados indisponíveis", "Sem medida", "Recomendado ficar\nem casa", "Algumas exceções\npodem sair", "Sem exceções\npara sair"),
+      name=policy_name) +
+    theme_minimal() +
+    theme(
+      legend.position = "right",
+      axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+      axis.ticks.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+      axis.title.x = element_blank(),
+      axis.text.y = element_blank()
+    ) +
+    labs(
+      y = "",
+      x = ""
+    )
+
+
+  ## legend_1 <- get_legend(
+  ##                                       # create some space to the left of the legend
+  ##   p1 + theme(legend.box.margin = margin(0, 0, 0, 12))
+  ## )
+  if(estado == "RO"){
+    legend_2 <- get_legend(
+                                        # create some space to the left of the legend
+      p2 + theme(legend.box.margin = margin(0, 0, 0, 12)) + guides(colour = guide_legend(override.aes = list(size=3)))
+    )
+  }
+  p2 <- p2 + theme(legend.position="none")
+  p1 <- p1 + theme(legend.position="none")
+  fig <- cowplot::plot_grid(
+                    p1 + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)),
+                    p2 + theme(plot.margin = margin(t=-.9, b=1., unit="cm"), axis.text.x = element_blank()),
+                    nrow = 2,
+                    rel_heights = c(3,0.5),
+                    align="v",
+                    axis="lr"
+                  )
+  assign(estado, fig, envir=.GlobalEnv)
+
+  plots <- c(plots, estado)
+
+  print(name)
+  ggsave(name, width = 20, height = 20, units = "cm")
+}
+                                        # arrange the three plots in a single row
+prow <- plot_grid(
+  AC, AL, AM, AP, BA, CE,
+  DF, ES, GO, MA, MG, MS,
+  MT, PA, PB, PE, PI, PR,
+  RJ, RN, RO, RR, RS, SC,
+  SE, SP, TO,
+  align = 'hv',
+  axis = 'lr',
+  ## hjust = -1,
+  nrow = 5
+)
+
+                                        # add the legend to the row we made earlier. Give it one-third of
+                                        # the width of one plot (via rel_widths).
+
+name <- paste0("./figs/COVID/Estados/Mobilidade_Policy_", "selected", "_", policy, ".pdf")
+
+## legends <- plot_grid(
+##   legend_1,
+##   legend_2,
+##   nrow = 2,
+##   align = 'hv',
+##   hjust = -1
+## )
+
+legends <-legend_2
+
+fig<- plot_grid(
+  prow,
+  NULL,
+  legends,
+  rel_widths = c(3, 0.05, .4),
+  nrow = 1
+)
+
+
+fig <- ggdraw(fig) +
+  draw_image(logo_file, x = 0.999, y = .975, hjust = 1, vjust = 1, width = 0.125, height = 0.1)
+ggsave(name, width = 60, height = 40, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Estados/Mobilidade_Policy_selected_C6.pdf]]
+:end:
+
+** Boxplots de taxa de crescimento e tipo de isolamento
+
+#+begin_src R :results value file :var figname="Boxplot_Isolamento"
+
+name = paste0('./figs/COVID/Estados/', figname, ".pdf")
+
+df <- read_csv(
+  "./clean/COVID/Estados/Merged_wide.csv",
+  guess_max = 3000
+) %>%
+  mutate(C6 = factor(C6)) %>%
+  mutate(Isolamento_14 = factor(Isolamento)) %>%
+  mutate(Sigla = factor(Sigla)) %>%
+  mutate(Onda = fct_relevel(Onda, "Início ao 1o pico", "1o ao 2o Pico", "pós 2o pico"))
+
+df %>%
+  filter(
+    cases_growth < 10,
+    cases_growth > -10,
+    cases_growth_100K <10,
+    cases_growth_100K > -10
+  ) %>%
+  drop_na(Policy_change, Onda, cases_growth, Isolamento) %>%
+  ggplot(aes(y=Onda, x= cases_growth_100K, fill=Isolamento)) +
+  geom_vline(xintercept=0, color="black") +
+  geom_boxplot(outlier.shape = NA, outlier.color=NA, outlier.alpha=1) +
+  labs(
+    y = "Fase da Pandemia",
+    x = "Tx. novos casos por 100 mil habitantes"
+  ) +
+  scale_fill_manual(
+      values=c("#ffffff", "#23AE00", "#FFCE14", "#CA0014", "#0700A3"),
+      breaks=c("Dados indisponíveis", "Queda", "Brando", "Rígido", "Voluntário"),
+      name="Tipo de isolamento") +
+  ## scale_fill_manual(values=c("#FF0000", "#00FF00","#0000FF")) +
+  coord_flip() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+ guides(fill=guide_legend(title="Tipo de isolamento")) +
+ facet_wrap(~Sigla) -> fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.975, y = .975, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 20, height = 20, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Estados/Boxplot_Isolamento.pdf]]
+:end:
