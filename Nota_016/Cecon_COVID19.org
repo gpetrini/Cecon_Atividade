@@ -169,7 +169,7 @@ def add_value_labels(ax, spacing=5):
 #+RESULTS:
 :results:
 
-(python3:31385): Gtk-[1;33mWARNING[0m **: [34m18:11:29.313[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
+(python3:145670): Gtk-[1;33mWARNING[0m **: [34m13:46:22.130[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
 :end:
 ** R
 
@@ -215,20 +215,6 @@ ggthemr::ggthemr('pale')
 
 #+RESULTS:
 :results:
-── [1mAttaching packages[22m ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
-[32m✔[39m [34mggplot2[39m 3.3.3     [32m✔[39m [34mpurrr  [39m 0.3.4
-[32m✔[39m [34mtibble [39m 3.1.0     [32m✔[39m [34mdplyr  [39m 1.0.5
-[32m✔[39m [34mtidyr  [39m 1.1.2     [32m✔[39m [34mstringr[39m 1.4.0
-[32m✔[39m [34mreadr  [39m 1.4.0     [32m✔[39m [34mforcats[39m 0.5.0
-── [1mConflicts[22m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
-[31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
-
-Attaching package: ‘patchwork’
-
-The following object is masked from ‘package:cowplot’:
-
-    align_plots
 :end:
 ** Downloads
 
@@ -239,6 +225,11 @@ The following object is masked from ‘package:cowplot’:
 wget -O ./raw/Covid/Google_Mobility.csv https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv
 #+end_src
 
+#+RESULTS:
+:results:
+Erro: unexpected symbol in "wget -O ."
+:end:
+
 *** Brasil.io
 
 #+begin_src sh :dir /HDD/Cecon_Atividade/Nota_016/ :exports none
@@ -248,15 +239,8 @@ gunzip ./raw/Covid/Casos_Brasilio.csv.gz
 
 #+RESULTS:
 :results:
---2021-04-01 17:25:00--  https://data.brasil.io/dataset/covid19/caso_full.csv.gz
-Resolvendo data.brasil.io (data.brasil.io)... 2606:4700:20::ac43:472d, 2606:4700:20::681a:9af, 2606:4700:20::681a:8af, ...
-Conectando-se a data.brasil.io (data.brasil.io)|2606:4700:20::ac43:472d|:443... conectado.
-A requisição HTTP foi enviada, aguardando resposta... 200 OK
-Tamanho: 42789488 (41M) [application/gzip]
-Salvando em: “./raw/Covid/Casos_Brasilio.csv.gz”
-[                    ]       0  --.-KB/s                        ./raw/Covi   0%[                    ]  99,52K   355KB/s                       ./raw/Covid   1%[                    ] 439,39K   751KB/s                      ./raw/Covid/   2%[                    ]   1,12M  1,42MB/s                     ./raw/Covid/C   4%[                    ]   1,91M  1,93MB/s                    ./raw/Covid/Ca   6%[>                   ]   2,77M  2,32MB/s                   ./raw/Covid/Cas   8%[>                   ]   3,46M  2,47MB/s                  ./raw/Covid/Caso  10%[=>                  ]   4,32M  2,69MB/s                 ./raw/Covid/Casos  12%[=>                  ]   4,99M  2,75MB/s                ./raw/Covid/Casos_  13%[=>                  ]   5,57M  2,76MB/s               ./raw/Covid/Casos_B  15%[==>                 ]   6,38M  2,88MB/s               /raw/Covid/Casos_Br  17%[==>                 ]   7,21M  2,98MB/s               raw/Covid/Casos_Bra  19%[==>                 ]   7,99M  3,05MB/s               aw/Covid/Casos_Bras  21%[===>                ]   8,73M  3,08MB/s               w/Covid/Casos_Brasi  22%[===>                ]   9,26M  3,05MB/s    TED 10s    /Covid/Casos_Brasil  24%[===>                ]  10,04M  3,10MB/s    TED 10s    Covid/Casos_Brasili  26%[====>               ]  10,85M  3,41MB/s    TED 10s    ovid/Casos_Brasilio  28%[====>               ]  11,69M  3,58MB/s    TED 10s    vid/Casos_Brasilio.  30%[=====>              ]  12,43M  3,67MB/s    TED 10s    id/Casos_Brasilio.c  32%[=====>              ]  13,16M  3,67MB/s    TED 9s     d/Casos_Brasilio.cs  32%[=====>              ]  13,39M  3,49MB/s    TED 9s     /Casos_Brasilio.csv  35%[======>             ]  14,57M  3,60MB/s    TED 9s     Casos_Brasilio.csv.  37%[======>             ]  15,19M  3,56MB/s    TED 9s     asos_Brasilio.csv.g  38%[======>             ]  15,85M  3,51MB/s    TED 9s     sos_Brasilio.csv.gz  40%[=======>            ]  16,60M  3,54MB/s    TED 7s     os_Brasilio.csv.gz   42%[=======>            ]  17,44M  3,62MB/s    TED 7s     s_Brasilio.csv.gz    44%[=======>            ]  18,18M  3,61MB/s    TED 7s     _Brasilio.csv.gz     46%[========>           ]  18,99M  3,57MB/s    TED 7s     Brasilio.csv.gz      48%[========>           ]  19,85M  3,60MB/s    TED 7s     rasilio.csv.gz       50%[=========>          ]  20,65M  3,61MB/s    TED 6s     asilio.csv.gz        52%[=========>          ]  21,48M  3,70MB/s    TED 6s     silio.csv.gz         54%[=========>          ]  22,27M  3,70MB/s    TED 6s     ilio.csv.gz          56%[==========>         ]  23,13M  3,72MB/s    TED 6s     lio.csv.gz           58%[==========>         ]  23,94M  3,70MB/s    TED 6s     io.csv.gz            60%[===========>        ]  24,60M  3,72MB/s    TED 5s     o.csv.gz             62%[===========>        ]  25,40M  3,73MB/s    TED 5s     .csv.gz              63%[===========>        ]  26,10M  3,77MB/s    TED 5s     csv.gz               65%[============>       ]  26,83M  3,74MB/s    TED 5s     sv.gz                67%[============>       ]  27,65M  3,84MB/s    TED 5s     v.gz                 69%[============>       ]  28,46M  3,86MB/s    TED 4s     .gz                  71%[=============>      ]  29,30M  3,89MB/s    TED 4s     gz                   73%[=============>      ]  30,15M  3,91MB/s    TED 4s     z                    75%[==============>     ]  30,93M  3,91MB/s    TED 4s                          77%[==============>     ]  31,74M  3,91MB/s    TED 4s                       .  79%[==============>     ]  32,49M  3,86MB/s    TED 2s                      ./  81%[===============>    ]  33,29M  3,87MB/s    TED 2s                     ./r  83%[===============>    ]  34,04M  3,87MB/s    TED 2s                    ./ra  85%[================>   ]  34,94M  3,89MB/s    TED 2s                   ./raw  87%[================>   ]  35,80M  3,89MB/s    TED 2s                  ./raw/  89%[================>   ]  36,63M  3,93MB/s    TED 1s                 ./raw/C  91%[=================>  ]  37,49M  3,97MB/s    TED 1s                ./raw/Co  93%[=================>  ]  38,24M  3,95MB/s    TED 1s               ./raw/Cov  95%[==================> ]  38,83M  3,91MB/s    TED 1s              ./raw/Covi  97%[==================> ]  39,66M  3,90MB/s    TED 1s             ./raw/Covid  98%[==================> ]  40,40M  3,90MB/s    TED 0s     ./raw/Covid/Casos_B 100%[===================>]  40,81M  3,91MB/s    em 11s
-
-2021-04-01 17:25:12 (3,61 MB/s) - “./raw/Covid/Casos_Brasilio.csv.gz” salvo [42789488/42789488]
+Erro: unexpected symbol in "wget -O ."
+Erro: unexpected symbol in "gunzip ."
 :end:
 
 * Indicadores de antecedente
@@ -2293,6 +2277,11 @@ write.csv(
 )
 #+end_src
 
+#+RESULTS:
+:results:
+All others arguments are desconsidered when 'api' is informed
+:end:
+
 #+BEGIN_SRC python  :results graphics file :file ./figs/Setoriais/PMS_vol_dessazonalizada.pdf
 df = pd.read_csv(
     "./clean/IBGE/PMS_volume_dessazonalizada.csv", index_col="Data", parse_dates=True
@@ -3433,7 +3422,7 @@ Compara-se com a mesma semana do ano anterior cujos dias da semana são os mais 
 Exemplo dado pelo autor (p. 43):
 
 #+begin_quote
-The log difference for, say, 03-01-2020, is obtained by taking the difference between the $svi_{03 −01 −2020}$ and the log of a weighted average of the closest known values before and after 03-01-2019, that is 31-12-2018 and 07-01-2019.
+The log difference for, say, 03-01-2020, is obtained by taking the difference between the $svi_{03-01-2020}$ and the log of a weighted average of the closest known values before and after 03-01-2019, that is 31-12-2018 and 07-01-2019.
 #+end_quote
 
 
@@ -3445,7 +3434,7 @@ The log difference for, say, 03-01-2020, is obtained by taking the difference be
 \nprounddigits{0}
 \begin{figure}[h]
     \resizebox{\textwidth}{!}{%
-    \input{./tabs/AE.tex}
+    \input{./tabs/AE.tex}} 
 \end{figure}
 #+end_export
 
@@ -3670,6 +3659,10 @@ df = df.rename(columns=rename_dict)
 df["Isolamento"] = df["Residential"].pct_change()
 df.to_csv("./clean/COVID/google_mobility.csv")
 #+END_SRC
+
+#+RESULTS:
+:results:
+:end:
 
 ** Merging :noexport:
 
@@ -4393,6 +4386,53 @@ write.csv(
 
 #+RESULTS:
 :results:
+`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
+[1] "./figs/COVID/Picos.pdf"
+[1] "./figs/COVID/Casos_Policy_Todos.pdf"
+[1] "./figs/COVID/Casos_Policy_10_Todos.pdf"
+[1] "./figs/COVID/Casos_Policy_50_Todos.pdf"
+[1] "./figs/COVID/Casos_Policy_100_Todos.pdf"
+[1] 100
+[1] 28
+[1] 14
+[1] 14
+
+[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+cols(
+  .default = col_double(),
+  date = [34mcol_date(format = "")[39m,
+  iso_code = [31mcol_character()[39m,
+  Restrict = [33mcol_logical()[39m,
+  Isolamento_14 = [31mcol_character()[39m,
+  Stay_at_home = [33mcol_logical()[39m,
+  Stay_at_home_federal = [33mcol_logical()[39m,
+  Policy = [31mcol_character()[39m,
+  Pico = [33mcol_logical()[39m,
+  Onda = [31mcol_character()[39m,
+  Strigency_type = [31mcol_character()[39m
+)
+[36mℹ[39m Use [30m[47m[30m[47m`spec()`[47m[30m[49m[39m for the full column specifications.
+
+`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
+[1] "./figs/COVID/Mobilidade_Policy_USA_C6.pdf"
+`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
+[1] "./figs/COVID/Mobilidade_Policy_SWE_C6.pdf"
+`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
+[1] "./figs/COVID/Mobilidade_Policy_ARG_C6.pdf"
+`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
+[1] "./figs/COVID/Mobilidade_Policy_BRA_C6.pdf"
+`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
+[1] "./figs/COVID/Mobilidade_Policy_PRY_C6.pdf"
+`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
+[1] "./figs/COVID/Mobilidade_Policy_URY_C6.pdf"
+`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
+[1] "./figs/COVID/Mobilidade_Policy_VEN_C6.pdf"
+`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
+[1] "./figs/COVID/Mobilidade_Policy_PRT_C6.pdf"
+`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
+[1] "./figs/COVID/Mobilidade_Policy_GBR_C6.pdf"
+[1] "./figs/COVID/Mobilidade_Policy_selected_C6.pdf"
+There were 46 warnings (use warnings() to see them)
 
 [36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
@@ -4458,6 +4498,10 @@ data.table::fwrite(
               )
     
 #+end_src
+
+#+RESULTS:
+:results:
+:end:
 
 
 
