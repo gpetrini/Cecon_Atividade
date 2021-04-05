@@ -215,6 +215,20 @@ ggthemr::ggthemr('pale')
 
 #+RESULTS:
 :results:
+── [1mAttaching packages[22m ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+[32m✔[39m [34mggplot2[39m 3.3.3     [32m✔[39m [34mpurrr  [39m 0.3.4
+[32m✔[39m [34mtibble [39m 3.1.0     [32m✔[39m [34mdplyr  [39m 1.0.5
+[32m✔[39m [34mtidyr  [39m 1.1.2     [32m✔[39m [34mstringr[39m 1.4.0
+[32m✔[39m [34mreadr  [39m 1.4.0     [32m✔[39m [34mforcats[39m 0.5.0
+── [1mConflicts[22m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+[31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
+[31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
+
+Attaching package: ‘patchwork’
+
+The following object is masked from ‘package:cowplot’:
+
+    align_plots
 :end:
 ** Downloads
 
@@ -4666,7 +4680,15 @@ df <- read_csv(
   guess_max = 3000
 ) %>%
   mutate(C6 = factor(C6),
-         C6 = fct_relevel(C6, "Dados indisponíveis", "Sem medida", "Recomendado ficar\nem casa", "Algumas exceções\npodem sair", "Sem exceções\npara sair"))
+         C6 = fct_relevel(C6, "Dados indisponíveis", "Sem medida", "Recomendado ficar\nem casa", "Algumas exceções\npodem sair", "Sem exceções\npara sair")) %>%
+  mutate(Estado = factor(Estado)) %>%
+  group_by(Sigla) %>%
+  mutate(Residential=zoo::rollapply(
+                              Residential,
+                              width,
+                              mean,
+                              align='right',fill=NA)) %>%
+  ungroup()
 
 estados <- df$Sigla %>% unique()
 
@@ -4699,13 +4721,7 @@ plots <- c()
 for(estado in estados){
 
   name <-paste0("./figs/COVID/Estados/Mobilidade_Policy_", estado, "_", policy, ".pdf")
-  tmp <- df %>%  filter(Sigla == estado) %>%
-    mutate(Residential=zoo::rollapply(
-                              Residential,
-                              width,
-                              mean,
-                              align='right',fill=NA)) %>%
-    filter(Residential >-2)
+  tmp <- df %>%  filter(Sigla == estado)
 
   df_inf <- tmp %>%
     group_by(Sigla) %>%
@@ -4725,13 +4741,14 @@ for(estado in estados){
       mapping = aes(xintercept = vline),
       color = "black"
     ) +
-    ylim(0, 27.5)
+    ylim(0, 27.5) +
+    scale_x_date(date_breaks = "2 months", date_minor_breaks = "2 weeks", date_labels = "%b/%y")
 
   if(estado %in% rights){  
     p1 <-p1 + labs(
                 ## y = "Tempo em casa",
                 x = "",
-                title = estado
+                title = tmp$Estado %>% unique()
               ) +
                                         # Custom the Y scales:
       scale_y_continuous(
@@ -4748,7 +4765,7 @@ for(estado in estados){
 
     p1 <-p1 + labs(
                 x = "",
-                title = estado
+                title = tmp$Estado %>% unique()
               ) +
                                         # Custom the Y scales:
       scale_y_continuous(
@@ -4765,7 +4782,7 @@ for(estado in estados){
 
     p1 <-p1 + labs(
                 x = "",
-                title = estado
+                title = tmp$Estado %>% unique()
               ) +
                                         # Custom the Y scales:
       scale_y_continuous(
@@ -4832,7 +4849,7 @@ for(estado in estados){
   p1 <- p1 + theme(legend.position="none")
   fig <- cowplot::plot_grid(
                     p1 + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)),
-                    p2 + theme(plot.margin = margin(t=-.9, b=1., unit="cm"), axis.text.x = element_blank()),
+                    p2 + theme(plot.margin = margin(t=-1.2, b=1., unit="cm"), axis.text.x = element_blank()) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()),
                     nrow = 2,
                     rel_heights = c(3,0.5),
                     align="v",
@@ -4843,7 +4860,7 @@ for(estado in estados){
   plots <- c(plots, estado)
 
   print(name)
-  ggsave(name, width = 20, height = 20, units = "cm")
+  ggsave(name, width = 32, height = 20, units = "cm")
 }
                                         # arrange the three plots in a single row
 prow <- plot_grid(
@@ -4884,7 +4901,7 @@ fig<- plot_grid(
 
 fig <- ggdraw(fig) +
   draw_image(logo_file, x = 0.999, y = .975, hjust = 1, vjust = 1, width = 0.125, height = 0.1)
-ggsave(name, width = 60, height = 40, units = "cm")
+ggsave(name, width = 64, height = 40, units = "cm")
 print(name)
 #+end_src
 
