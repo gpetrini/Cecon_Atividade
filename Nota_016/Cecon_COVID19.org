@@ -4214,11 +4214,11 @@ df <- read_csv(
 ) %>%
   select(date, iso_code, Residential, C1, C1_Flag, C2, C2_Flag, C6, C6_Flag, Pico, new_cases_per_million) %>%
   mutate(C6 = case_when(
-           C6 == 0 ~ "Sem medida",
+           C6 == 0 ~ "Sem restrição",
            C6 == 1 ~ "Recomendado ficar\nem casa",
-           C6 == 2 ~ "Algumas exceções\npodem sair",
-           C6 == 3 ~ "Sem exceções\npara sair"),
-    C6 = fct_relevel(C6, "Sem medida", "Recomendado ficar\nem casa", "Algumas exceções\npodem sair", "Sem exceções\npara sair"))
+           C6 == 2 ~ "Proibido sair\n(Salvo exceções)",
+           C6 == 3 ~ "Proibido sair"),
+    C6 = fct_relevel(C6, "Sem restrição", "Recomendado ficar\nem casa", "Proibido sair\n(Salvo exceções)", "Proibido sair"))
 
 names(myColors) <- levels(df$C6)
 
@@ -4362,14 +4362,14 @@ df <-read_csv(
   mutate(Date = lubridate::ymd(Date)) %>%
   mutate(
     C6 = case_when(
-           C6 == 0 ~ "Sem medida",
+           C6 == 0 ~ "Sem restrição",
            C6 == 1 ~ "Recomendado ficar\nem casa",
-           C6 == 2 ~ "Algumas exceções\npodem sair",
-           C6 == 3 ~ "Sem exceções\npara sair",
+           C6 == 2 ~ "Proibido sair\n(Salvo exceções)",
+           C6 == 3 ~ "Proibido sair",
            is.na(C6) ~ "Dados indisponíveis"
       )) %>%
   mutate(C6 = factor(C6)) %>%
-  mutate(C6 = fct_relevel(C6, "Dados indisponíveis", "Sem medida", "Recomendado ficar\nem casa", "Algumas exceções\npodem sair", "Sem exceções\npara sair")) %>%
+  mutate(C6 = fct_relevel(C6, "Dados indisponíveis", "Sem restrição", "Recomendado ficar\nem casa", "Proibido sair\n(Salvo exceções)", "Proibido sair")) %>%
   mutate(C6_Flag = factor(C6_Flag)) %>%
   arrange(RegionName, Date) %>%
   select(-c(Jurisdiction, C6_Notes)) %>%
@@ -4400,53 +4400,6 @@ write.csv(
 
 #+RESULTS:
 :results:
-`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
-[1] "./figs/COVID/Picos.pdf"
-[1] "./figs/COVID/Casos_Policy_Todos.pdf"
-[1] "./figs/COVID/Casos_Policy_10_Todos.pdf"
-[1] "./figs/COVID/Casos_Policy_50_Todos.pdf"
-[1] "./figs/COVID/Casos_Policy_100_Todos.pdf"
-[1] 100
-[1] 28
-[1] 14
-[1] 14
-
-[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
-cols(
-  .default = col_double(),
-  date = [34mcol_date(format = "")[39m,
-  iso_code = [31mcol_character()[39m,
-  Restrict = [33mcol_logical()[39m,
-  Isolamento_14 = [31mcol_character()[39m,
-  Stay_at_home = [33mcol_logical()[39m,
-  Stay_at_home_federal = [33mcol_logical()[39m,
-  Policy = [31mcol_character()[39m,
-  Pico = [33mcol_logical()[39m,
-  Onda = [31mcol_character()[39m,
-  Strigency_type = [31mcol_character()[39m
-)
-[36mℹ[39m Use [30m[47m[30m[47m`spec()`[47m[30m[49m[39m for the full column specifications.
-
-`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
-[1] "./figs/COVID/Mobilidade_Policy_USA_C6.pdf"
-`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
-[1] "./figs/COVID/Mobilidade_Policy_SWE_C6.pdf"
-`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
-[1] "./figs/COVID/Mobilidade_Policy_ARG_C6.pdf"
-`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
-[1] "./figs/COVID/Mobilidade_Policy_BRA_C6.pdf"
-`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
-[1] "./figs/COVID/Mobilidade_Policy_PRY_C6.pdf"
-`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
-[1] "./figs/COVID/Mobilidade_Policy_URY_C6.pdf"
-`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
-[1] "./figs/COVID/Mobilidade_Policy_VEN_C6.pdf"
-`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
-[1] "./figs/COVID/Mobilidade_Policy_PRT_C6.pdf"
-`summarise()` has grouped output by 'iso_code'. You can override using the `.groups` argument.
-[1] "./figs/COVID/Mobilidade_Policy_GBR_C6.pdf"
-[1] "./figs/COVID/Mobilidade_Policy_selected_C6.pdf"
-There were 46 warnings (use warnings() to see them)
 
 [36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
@@ -4585,9 +4538,9 @@ df <- df %>%
   mutate(stayhome_growth_14 = (Residential/lag(Residential,14) - 1) * 100) %>%
   mutate(stayhome_growth_after = (lead(Residential, after)/Residential - 1) * 100) %>%
   mutate(Isolamento = case_when(
-     stayhome_growth_after >= 0 & C6 == "Algumas exceções\npara sair" |  C6 == "Sem exceções\npara sair" ~ "Rígido", # Queda da mobilidade junto da imposição
-     stayhome_growth_after > 0 & Policy_change > 0  &  C6 == "Recomendado ficar\nem casa" | C6 == "Sem medida" ~ "Brando",
-     stayhome_growth_after > 0 & Policy_change <=0 & C6 != "Sem exceções\npara sair" ~ "Voluntário", # Queda da mobilidade sem restrição
+     stayhome_growth_after >= 0 & C6 == "Algumas exceções\npara sair" |  C6 == "Proibido sair" ~ "Rígido", # Queda da mobilidade junto da imposição
+     stayhome_growth_after > 0 & Policy_change > 0  &  C6 == "Recomendado ficar\nem casa" | C6 == "Sem restrição" ~ "Brando",
+     stayhome_growth_after > 0 & Policy_change <=0 & C6 != "Proibido sair" ~ "Voluntário", # Queda da mobilidade sem restrição
      stayhome_growth_after < 0 ~ "Queda",
      is.na(stayhome_growth_after) | is.na(Policy_change) ~ "Dados indisponíveis"
            )) %>%
@@ -4606,17 +4559,19 @@ df <- df %>%
   mutate(cum_cases_1M = zoo::rollapply(cum_cases_1M, width = 7, FUN = mean, fill = NA)) %>%
   ungroup()
 
-w <- 14 * 4
-th_new_cases <- 100
+w <- 14 * 3
+th_new_cases <- 100 * 3
 th_total_deaths <- 100
+th_cases_100 <- 12.5
 
 df <- df %>%
   group_by(Sigla) %>%
   mutate(total_deaths = cumsum(replace_na(new_deaths, 0))) %>%
   ungroup() %>%
-  mutate(y.max = zoo::rollapply(new_cases, 2 * w + 1, max, fill = NA, align = "center")) %>%
-  mutate(delta = y.max - new_cases) %>%
-  mutate(Pico = new_cases >= th_new_cases & delta <= 0) %>%
+  mutate(tmp = zoo::rollapply(new_cases, 7, mean, fill = NA, align = "center")) %>%
+  mutate(y.max = zoo::rollapply(tmp, 2 * w + 1, max, fill = NA, align = "center")) %>%
+  mutate(delta = y.max - tmp) %>%
+  mutate(Pico = new_cases_100K >= th_cases_100 & delta <= 0) %>%
   group_by(Sigla) %>%
   fill(Pico, .direction = "up") %>%
   mutate(nPico = cumsum(Pico)) %>%
@@ -4673,14 +4628,18 @@ Joining, by = c("date", "Sigla")
 ** Gráficos de mobilidade e política por estados
 
 #+begin_src R  :results value file :exports results
-
+policy <-"C6"
+policy_name <- "Ficar em casa"
+width <- 7
+library(RColorBrewer)
+myColors <- brewer.pal(5,"Set1")
 
 df <- read_csv(
   "./clean/COVID/Estados/Merged_wide.csv",
   guess_max = 3000
 ) %>%
   mutate(C6 = factor(C6),
-         C6 = fct_relevel(C6, "Dados indisponíveis", "Sem medida", "Recomendado ficar\nem casa", "Algumas exceções\npodem sair", "Sem exceções\npara sair")) %>%
+         C6 = fct_relevel(C6, "Dados indisponíveis", "Sem restrição", "Recomendado ficar\nem casa", "Proibido sair\n(Salvo exceções)", "Proibido sair")) %>%
   mutate(Estado = factor(Estado)) %>%
   group_by(Sigla) %>%
   mutate(Residential=zoo::rollapply(
@@ -4688,30 +4647,34 @@ df <- read_csv(
                               width,
                               mean,
                               align='right',fill=NA)) %>%
-  ungroup()
+  ungroup() %>%
+  filter(Residential > -2)
 
 estados <- df$Sigla %>% unique()
 
-policy <-"C6"
-policy_name <- "Ficar em casa"
-width <- 7
-library(RColorBrewer)
-myColors <- brewer.pal(5,"Set1")
 
 
 names(myColors) <- levels(df$C6)
 lefts <- c(
   "AC",
+  "AP", 
   "DF",
+  "MA",
   "MT",
+  "PE",
   "RJ",
-  "SP"
+  "RR",
+  "SE"
 )
 
 rights <- c(
+  "AM",
   "CE",
+  "GO",
   "MS",
+  "PB",
   "PR",
+  "RO",
   "SC",
   "TO"
 )   
@@ -4819,7 +4782,7 @@ for(estado in estados){
     scale_y_discrete(labels = abbreviate) +
     scale_color_manual(
       values=c("#575757", "#23AE00", "#FFCE14", "#FF7319", "#CA0014"),
-      breaks=c("Dados indisponíveis", "Sem medida", "Recomendado ficar\nem casa", "Algumas exceções\npodem sair", "Sem exceções\npara sair"),
+      breaks=c("Dados indisponíveis", "Sem restrição", "Recomendado ficar\nem casa", "Proibido sair\n(Salvo exceções)", "Proibido sair"),
       name=policy_name) +
     theme_minimal() +
     theme(
@@ -4849,7 +4812,7 @@ for(estado in estados){
   p1 <- p1 + theme(legend.position="none")
   fig <- cowplot::plot_grid(
                     p1 + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)),
-                    p2 + theme(plot.margin = margin(t=-1.2, b=1., unit="cm"), axis.text.x = element_blank()) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()),
+                    p2 + theme(plot.margin = margin(t=-1.1, b=1., unit="cm"), axis.text.x = element_blank()) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()),
                     nrow = 2,
                     rel_heights = c(3,0.5),
                     align="v",
@@ -4864,15 +4827,19 @@ for(estado in estados){
 }
                                         # arrange the three plots in a single row
 prow <- plot_grid(
-  AC, AL, AM, AP, BA, CE,
-  DF, ES, GO, MA, MG, MS,
-  MT, PA, PB, PE, PI, PR,
-  RJ, RN, RO, RR, RS, SC,
+  AC, AL, AM,
+  AP, BA, CE,
+  DF, ES, GO,
+  MA, MG, MS,
+  MT, PA, PB,
+  PE, PI, PR,
+  RJ, RN, RO,
+  RR, RS, SC,
   SE, SP, TO,
   align = 'hv',
   axis = 'lr',
   ## hjust = -1,
-  nrow = 5
+  nrow = 9
 )
 
                                         # add the legend to the row we made earlier. Give it one-third of
@@ -4899,9 +4866,8 @@ fig<- plot_grid(
 )
 
 
-fig <- ggdraw(fig) +
-  draw_image(logo_file, x = 0.999, y = .975, hjust = 1, vjust = 1, width = 0.125, height = 0.1)
-ggsave(name, width = 64, height = 40, units = "cm")
+fig <- ggdraw(fig) # + draw_image(logo_file, x = 0.999, y = .975, hjust = 1, vjust = 1, width = 0.125, height = 0.1)
+ggsave(name, width = 40, height = 64, units = "cm")
 print(name)
 #+end_src
 
