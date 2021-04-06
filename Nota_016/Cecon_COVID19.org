@@ -169,7 +169,7 @@ def add_value_labels(ax, spacing=5):
 #+RESULTS:
 :results:
 
-(python3:145670): Gtk-[1;33mWARNING[0m **: [34m13:46:22.130[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
+(python3:255754): Gtk-[1;33mWARNING[0m **: [34m14:10:03.538[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
 :end:
 ** R
 
@@ -343,31 +343,44 @@ fig.savefig(
 
 ** Google Reports: Brasil
 
+*** Baixando :noexport:
+
+#+begin_src shell :dir /HDD/Cecon_Atividade/Nota_016/raw/Granulares/ :exports none
+wget -N https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/google_reports/mobility_report_brazil.csv
+#+end_src
+
+#+RESULTS:
+:results:
+:end:
+
+*** Brasil
+
 #+BEGIN_SRC python :results graphics file :file ./figs/Granulares/GoogleReport_Brasil.pdf
 import matplotlib.dates as mdates
 
 
 df = pd.read_csv(
-    'https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/google_reports/mobility_report_brazil.csv',
-    index_col = 'date',
-    dayfirst=True
+    "https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/google_reports/mobility_report_brazil.csv",
+    index_col="date",
+    dayfirst=True,
 )
-df = df[df['sub region 1'] == 'Total'].copy(deep=True)
-df.drop(['country', 'sub region 1', 'sub region 2'], axis = 'columns', inplace=True)
-df.index.name=''
+df = df[df["sub region 1"] == "Total"].copy(deep=True)
+df.drop(["country", "sub region 1", "sub region 2"], axis="columns", inplace=True)
+df.index.name = ""
 df.index = pd.to_datetime(df.index)
 df.columns = [
-    'Varejo e recreação',
-    'Mercados e Farmácias',
-    'Parques',
-    'Estações de transporte público',
-    'Locais de trabalho',
-    'Residência',
+    "Varejo e recreação",
+    "Mercados e Farmácias",
+    "Parques",
+    "Estações de transporte público",
+    "Locais de trabalho",
+    "Residência",
 ]
+
 
 fig, ax = plt.subplots(figsize=(8, 5))
 df.rolling(7).mean().plot(
-    title='Relatório de mobilidade do google\nSemana Móvel',
+    title="Relatório de mobilidade do google\nSemana Móvel",
     ax=ax,
     lw=2,
 )
@@ -378,15 +391,15 @@ ax.axvline(
 ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
 
 # Formatando eixos
-days = mdates.DayLocator()   # every day
+days = mdates.DayLocator()  # every day
 months = mdates.MonthLocator()  # every month
-m_fmt = mdates.DateFormatter('%b')
+m_fmt = mdates.DateFormatter("%b")
 #
 # format the ticks
 ax.xaxis.set_major_locator(months)
 ax.xaxis.set_major_formatter(m_fmt)
 # ax.xaxis.set_minor_locator(days)
-ax.format_xdata = mdates.DateFormatter('%d/%m')
+ax.format_xdata = mdates.DateFormatter("%d/%m")
 
 ax2 = plt.axes([0.9, 0.675, 0.2, 0.2])
 
@@ -408,6 +421,138 @@ fig.savefig(
 
 #+RESULTS:
 [[file:./figs/Granulares/GoogleReport_Brasil.pdf]]
+
+*** Estado de São Paulo
+
+#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/GoogleReport_EstadoSP.pdf
+sp = pd.read_csv(
+    './raw/Granulares/mobility_report_brazil.csv',
+    index_col="date",
+    dayfirst=True,
+)
+sp = sp[sp["sub region 2"] == "Total"]
+sp = sp[sp["sub region 1"] == "State of São Paulo"]
+sp.drop(["country", "sub region 1", "sub region 2"], axis="columns", inplace=True)
+sp.index.name = ""
+sp.index = pd.to_datetime(sp.index)
+sp.columns = [
+    "Varejo e recreação",
+    "Mercados e Farmácias",
+    "Parques",
+    "Estações de transporte público",
+    "Locais de trabalho",
+    "Residência",
+]
+
+fig, ax = plt.subplots(figsize=(8, 5))
+sp.rolling(7).mean().plot(
+    title="Relatório de mobilidade do google - Estado de São Paulo\nSemana Móvel",
+    ax=ax,
+    lw=2,
+)
+ax.axvline(
+    x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento\nsocial em SP"
+)
+
+ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+
+# Formatando eixos
+days = mdates.DayLocator()  # every day
+months = mdates.MonthLocator()  # every month
+m_fmt = mdates.DateFormatter("%b")
+#
+# format the ticks
+ax.xaxis.set_major_locator(months)
+ax.xaxis.set_major_formatter(m_fmt)
+# ax.xaxis.set_minor_locator(days)
+ax.format_xdata = mdates.DateFormatter("%d/%m")
+
+ax2 = plt.axes([0.9, 0.675, 0.2, 0.2])
+
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+fig.autofmt_xdate()
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/Granulares/GoogleReport_EstadoSP" + ".pdf",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Granulares/GoogleReport_EstadoSP.pdf]]
+
+*** Cidade de São Paulo
+
+#+BEGIN_SRC python :results graphics file :file ./figs/Granulares/GoogleReport_CidadeSP.pdf
+cidade = pd.read_csv(
+    "./raw/Granulares/mobility_report_brazil.csv",
+    index_col="date",
+    dayfirst=True,
+)
+cidade = cidade[cidade["sub region 1"] == "State of São Paulo"]
+cidade = cidade[cidade["sub region 2"] == "São Paulo"]
+cidade.drop(["country", "sub region 1", "sub region 2"], axis="columns", inplace=True)
+cidade.index.name = ""
+cidade.index = pd.to_datetime(cidade.index)
+cidade.columns = [
+    "Varejo e recreação",
+    "Mercados e Farmácias",
+    "Parques",
+    "Estações de transporte público",
+    "Locais de trabalho",
+    "Residência",
+]
+
+fig, ax = plt.subplots(figsize=(8, 5))
+cidade.rolling(7).mean().plot(
+    title="Relatório de mobilidade do google - Cidade de São Paulo\nSemana Móvel",
+    ax=ax,
+    lw=2,
+)
+ax.axvline(
+    x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento\nsocial em SP"
+)
+
+ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+
+# Formatando eixos
+days = mdates.DayLocator()  # every day
+months = mdates.MonthLocator()  # every month
+m_fmt = mdates.DateFormatter("%b")
+#
+# format the ticks
+ax.xaxis.set_major_locator(months)
+ax.xaxis.set_major_formatter(m_fmt)
+# ax.xaxis.set_minor_locator(days)
+ax.format_xdata = mdates.DateFormatter("%d/%m")
+
+ax2 = plt.axes([0.9, 0.675, 0.2, 0.2])
+
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
+
+fig.autofmt_xdate()
+
+sns.despine()
+plt.close()
+
+fig.savefig(
+    "./figs/Granulares/GoogleReport_CidadeSP" + ".pdf",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+#+END_SRC
+
+#+RESULTS:
+[[file:./figs/Granulares/GoogleReport_CidadeSP.pdf]]
 
 ** Apple: Tendências de mobilidade
 
@@ -3392,20 +3537,23 @@ plt.close()
 
 * OECD Weekly tracker
 
-#+begin_src shell :dir ./raw/OECD/ :exports none :eval no
+#+begin_src shell :dir /HDD/Cecon_Atividade/Nota_016/raw/OECD/ :exports none :eval yes
 wget -q https://github.com/NicolasWoloszko/OECD-Weekly-Tracker/raw/main/Data/weekly_tracker.xlsx
 #+end_src
 
 #+begin_src python :results graphics file :file ./figs/Granulares/OCDE_Semanal.pdf
 df = pd.read_excel("./raw/OECD/weekly_tracker.xlsx", parse_dates=True, index_col="date")
-df = df[df["ISO3"] == "BRA"][["Tracker"]]["2019-01-01":]
+df = df[df["ISO3"] == "BRA"][["Tracker (yoy)", "Tracker (counterfactual)"]][
+    "2019-01-01":
+]
 df.index.name = ""
+df.columns = ["Tracker", "Contrafactual"]
 fig, ax = plt.subplots(figsize=(8, 5))
 df.plot(
     title=f"Indicador Semanal - OCDE",
     ax=ax,
     lw=2.5,
-    color="darkred",
+    color=("darkred", "black"),
 )
 ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP")
 ax.axhline(y=0, ls="-", lw=1.0, color="gray")
@@ -4596,7 +4744,7 @@ write.csv(
 #+RESULTS:
 :results:
 
-[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[36m──[39m [1m[1mColumn specification[1m[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   date = [34mcol_date(format = "")[39m,
   Estado = [31mcol_character()[39m,
@@ -4605,7 +4753,7 @@ cols(
   C6_Flag = [32mcol_double()[39m
 )
 
-[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[36m──[39m [1m[1mColumn specification[1m[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   date = [34mcol_date(format = "")[39m,
   Sigla = [31mcol_character()[39m,
@@ -4613,7 +4761,7 @@ cols(
 )
 Joining, by = c("date", "Sigla")
 
-[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[36m──[39m [1m[1mColumn specification[1m[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   date = [34mcol_date(format = "")[39m,
   Sigla = [31mcol_character()[39m,
@@ -4925,4 +5073,264 @@ print(name)
 #+RESULTS:
 :results:
 [[file:./figs/COVID/Estados/Boxplot_Isolamento.pdf]]
+:end:
+
+** Gráficos de mobilidade e política por estados para indicar quando houve medida adotada
+
+#+begin_src R  :results value file :exports results
+policy <-"C6"
+policy_name <- "Ficar em casa"
+width <- 7
+library(RColorBrewer)
+myColors <- brewer.pal(5,"Set1")
+
+df <- read_csv(
+  "./clean/COVID/Estados/Merged_wide.csv",
+  guess_max = 3000
+) %>%
+  mutate(C6_num = case_when(
+           ## C6 == "Dados indisponíveis" ~ NA_integer_,
+           C6 == "Sem restrição" ~ 0,
+           C6 == "Recomendado ficar\nem casa" ~ 1,
+           C6 == "Proibido sair\n(Salvo exceções)" ~ 2,
+           C6 == "Proibido sair" ~ 3
+         )) %>%
+  mutate(Restrict = diff(c(NA, C6_num))) %>%
+  mutate(Estado = factor(Estado)) %>%
+  group_by(Sigla) %>%
+  mutate(Residential=zoo::rollapply(
+                              Residential,
+                              width,
+                              mean,
+                              align='right',fill=NA)) %>%
+  ungroup() %>%
+  filter(Residential > -2)
+
+estados <- df$Sigla %>% unique()
+
+
+
+names(myColors) <- levels(df$C6)
+lefts <- c(
+  "AC",
+  "AP",
+  "DF",
+  "MA",
+  "MT",
+  "PE",
+  "RJ",
+  "RR",
+  "SE"
+)
+
+rights <- c(
+  "AM",
+  "CE",
+  "GO",
+  "MS",
+  "PB",
+  "PR",
+  "RO",
+  "SC",
+  "TO"
+)
+
+plots <- c()
+
+for(estado in estados){
+
+  tmp <- df %>%  filter(Sigla == estado)
+
+  df_inf <- tmp %>%
+    group_by(Sigla) %>%
+    summarise(vline = date[Restrict>0]) %>%
+    ungroup()
+
+  rescale <- ((replace_na(tmp$new_cases_100K,0) %>% max())/(replace_na(tmp$Residential, 0) %>% max()))  %>% round()
+                                        # color = new_cases não tem legenda adequada
+  p1 <- tmp %>% ggplot(aes(x = date, y = Residential, color = "blue")) +
+    geom_line( size = 1.25 ) +
+    geom_line( aes(x = date, y = new_cases_100K/rescale), color = "red", size = 1.25 ) +
+    ## guides(
+    ##   color = guide_colorbar(reverse = TRUE)) +
+    ## scale_color_continuous(name = "Novos casos", high = "#132B43", low = "#56B1F7") +
+    geom_vline(
+      data = df_inf,
+      mapping = aes(xintercept = vline),
+      color = "black"
+    ) +
+    geom_vline(
+      data = df,
+      mapping = aes(xintercept = "2020-03-24" %>% as.Date() %>% as.numeric()),
+      color = "red",
+      linetype="dashed"
+    ) +
+    ylim(0, 27.5) +
+    scale_x_date(date_breaks = "2 months", date_minor_breaks = "2 weeks", date_labels = "%b/%y")
+
+  if(estado %in% rights){
+    p1 <-p1 + labs(
+                ## y = "Tempo em casa",
+                x = "",
+                title = tmp$Estado %>% unique()
+              ) +
+                                        # Custom the Y scales:
+      scale_y_continuous(
+        name = "",
+        sec.axis = sec_axis( trans=~.*rescale, name="Novos casos / 100 mil hab")
+      ) +
+      theme(
+        axis.line.y.right = element_line(color = "red"),
+        axis.ticks.y.right = element_line(color = "red"),
+        axis.line.y.left = element_line(color = "blue"),
+        axis.ticks.y.left = element_line(color = "blue")
+      )
+  } else if(estado %in% lefts){
+
+    p1 <-p1 + labs(
+                x = "",
+                title = tmp$Estado %>% unique()
+              ) +
+                                        # Custom the Y scales:
+      scale_y_continuous(
+        name = "Tempo em casa",
+        sec.axis = sec_axis( trans=~.*rescale, name="")
+      ) +
+      theme(
+        axis.line.y.right = element_line(color = "red"),
+        axis.ticks.y.right = element_line(color = "red"),
+        axis.line.y.left = element_line(color = "blue"),
+        axis.ticks.y.left = element_line(color = "blue")
+      )
+  } else{
+
+    p1 <-p1 + labs(
+                x = "",
+                title = tmp$Estado %>% unique()
+              ) +
+                                        # Custom the Y scales:
+      scale_y_continuous(
+        name = "",
+        sec.axis = sec_axis( trans=~.*rescale, name="")
+      ) +
+      theme(
+        axis.line.y.right = element_line(color = "red"),
+        axis.ticks.y.right = element_line(color = "red"),
+        axis.line.y.left = element_line(color = "blue"),
+        axis.ticks.y.left = element_line(color = "blue")
+      )
+  }
+
+
+  tmp %>%
+    select(date, C6, C6_Flag) %>%
+    pivot_longer(C6, names_to = "Policy", values_to = "Measure") %>%
+    mutate(Policy = 1) %>%
+    pivot_wider(values_from = Policy, values_fill = NA, names_from = Measure) %>%
+    pivot_longer(!c(date, C6_Flag), values_to = "Measure") ->tmp_long
+
+  p2 <- tmp_long %>%
+    mutate(C6_Flag = case_when(
+             C6_Flag == 1 ~ "Estadual",
+             C6_Flag == 0 ~ "Local",
+             is.na(C6_Flag) ~ "Sem dados"
+           )) %>%
+    mutate(C6_Flag = C6_Flag %>% factor() %>% fct_rev()) %>%
+    rename(Cobertura = C6_Flag) %>%
+    ggplot(aes(x = date, y = Measure, color=name) ) +
+    ## geom_line(aes(size=1)) +
+    geom_line(aes(size = Cobertura)) +
+    scale_y_discrete(labels = abbreviate) +
+    scale_color_manual(
+      values=c("#575757", "#23AE00", "#FFCE14", "#FF7319", "#CA0014"),
+      breaks=c("Dados indisponíveis", "Sem restrição", "Recomendado ficar\nem casa", "Proibido sair\n(Salvo exceções)", "Proibido sair"),
+      name=policy_name) +
+    theme_minimal() +
+    theme(
+      legend.position = "right",
+      axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+      axis.ticks.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+      axis.title.x = element_blank(),
+      axis.text.y = element_blank()
+    ) +
+    labs(
+      y = "",
+      x = ""
+    )
+
+
+  ## legend_1 <- get_legend(
+  ##                                       # create some space to the left of the legend
+  ##   p1 + theme(legend.box.margin = margin(0, 0, 0, 12))
+  ## )
+  if(estado == "RO"){
+    legend_2 <- get_legend(
+                                        # create some space to the left of the legend
+      p2 + theme(legend.box.margin = margin(0, 0, 0, 12)) + guides(colour = guide_legend(override.aes = list(size=3)))
+    )
+  }
+  p2 <- p2 + theme(legend.position="none")
+  p1 <- p1 + theme(legend.position="none")
+  fig <- cowplot::plot_grid(
+                    p1 + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)),
+                    p2 + theme(plot.margin = margin(t=-1.1, b=1., unit="cm"), axis.text.x = element_blank()) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank()),
+                    nrow = 2,
+                    rel_heights = c(3,0.5),
+                    align="v",
+                    axis="lr"
+                  )
+  assign(estado, fig, envir=.GlobalEnv)
+
+  plots <- c(plots, estado)
+
+}
+                                        # arrange the three plots in a single row
+prow <- plot_grid(
+  AC, AL, AM,
+  AP, BA, CE,
+  DF, ES, GO,
+  MA, MG, MS,
+  MT, PA, PB,
+  PE, PI, PR,
+  RJ, RN, RO,
+  RR, RS, SC,
+  SE, SP, TO,
+  align = 'hv',
+  axis = 'lr',
+  ## hjust = -1,
+  nrow = 9
+)
+
+                                        # add the legend to the row we made earlier. Give it one-third of
+                                        # the width of one plot (via rel_widths).
+
+name <- paste0("./figs/COVID/Estados/Quando_Policy_", "selected", "_", policy, ".pdf")
+
+## legends <- plot_grid(
+##   legend_1,
+##   legend_2,
+##   nrow = 2,
+##   align = 'hv',
+##   hjust = -1
+## )
+
+legends <-legend_2
+
+fig<- plot_grid(
+  prow,
+  NULL,
+  legends,
+  rel_widths = c(3, 0.05, .4),
+  nrow = 1
+)
+
+
+fig <- ggdraw(fig) # + draw_image(logo_file, x = 0.999, y = .975, hjust = 1, vjust = 1, width = 0.125, height = 0.1)
+ggsave(name, width = 40, height = 64, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Estados/Quando_Policy_selected_C6.pdf]]
 :end:
