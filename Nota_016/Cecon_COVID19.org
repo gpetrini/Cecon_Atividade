@@ -169,7 +169,7 @@ def add_value_labels(ax, spacing=5):
 #+RESULTS:
 :results:
 
-(python3:255754): Gtk-[1;33mWARNING[0m **: [34m14:10:03.538[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
+(python3:291370): Gtk-[1;33mWARNING[0m **: [34m08:55:12.598[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
 :end:
 ** R
 
@@ -3536,11 +3536,24 @@ plt.close()
 [[file:./figs/IMF/Lock_measures.pdf]]
 
 * OECD Weekly tracker
+** Informações adicionais
 
+Conforme sugere o Anexo A (p. 40) de textcite:woloszko_2020_Tracking, a semana considerada se inicia aos domingos.
+Compara-se com a mesma semana do ano anterior cujos dias da semana são os mais próximos da data de referência do ano corrente.
+Exemplo dado pelo autor (p. 43):
+
+#+begin_quote
+The log difference for, say, 03-01-2020, is obtained by taking the difference between the $svi_{03-01-2020}$ and the log of a weighted average of the closest known values before and after 03-01-2019, that is 31-12-2018 and 07-01-2019.
+#+end_quote
+
+
+** Download :noexport:
 #+begin_src shell :dir /HDD/Cecon_Atividade/Nota_016/raw/OECD/ :exports none :eval yes
 wget -q https://github.com/NicolasWoloszko/OECD-Weekly-Tracker/raw/main/Data/weekly_tracker.xlsx
 #+end_src
 
+
+** Tracker e contrafactual
 #+begin_src python :results graphics file :file ./figs/Granulares/OCDE_Semanal.pdf
 df = pd.read_excel("./raw/OECD/weekly_tracker.xlsx", parse_dates=True, index_col="date")
 df = df[df["ISO3"] == "BRA"][["Tracker (yoy)", "Tracker (counterfactual)"]][
@@ -3553,7 +3566,7 @@ df.plot(
     title=f"Indicador Semanal - OCDE",
     ax=ax,
     lw=2.5,
-    color=("darkred", "black"),
+    color=("darkred", "blue"),
 )
 ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP")
 ax.axhline(y=0, ls="-", lw=1.0, color="gray")
@@ -3573,20 +3586,90 @@ fig.savefig(
 )
 plt.close()
 #+end_src
-
 #+RESULTS:
 [[file:./figs/Granulares/OCDE_Semanal.pdf]]
 
-** Informações adicionais
+** Tracker e contrafactual (subplots)
+#+begin_src python :results graphics file :file ./figs/Granulares/OCDE_Subplots.pdf
+df = pd.read_excel("./raw/OECD/weekly_tracker.xlsx", parse_dates=True, index_col="date")
+df = df[df["ISO3"] == "BRA"][["Tracker (yoy)", "Tracker (counterfactual)"]][
+    "2019-01-01":
+]
+df.index.name = ""
+df.columns = ["Tracker", "Contrafactual"]
+fig, ax = plt.subplots(2, 1, figsize=(10, 12))
+df.plot(
+    title=f"Indicador Semanal - OCDE",
+    ax=ax,
+    lw=2.5,
+    color=("darkred", "blue"),
+    subplots=True,
+)
+ax[0].axvline(
+    x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP"
+)
+ax[0].axhline(y=0, ls="-", lw=1.0, color="gray")
+ax[0].legend(
+    # loc="center left", bbox_to_anchor=(1, 0.5)
+)
+ax[1].axvline(
+    x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP"
+)
+ax[1].axhline(y=0, ls="-", lw=1.0, color="gray")
+ax[1].legend(
+    # loc="center left", bbox_to_anchor=(1, 0.5)
+)
+ax2 = plt.axes([0.695, 0.135, 0.1, 0.1])
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
 
-Conforme sugere o Anexo A (p. 40) de textcite:woloszko_2020_Tracking, a semana considerada se inicia aos domingos.
-Compara-se com a mesma semana do ano anterior cujos dias da semana são os mais próximos da data de referência do ano corrente.
-Exemplo dado pelo autor (p. 43):
+sns.despine()
+fig.savefig(
+    "./figs/Granulares/OCDE_Subplots" + ".pdf",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+plt.close()
+#+end_src
+#+RESULTS:
+[[file:./figs/Granulares/OCDE_Subplots.pdf]]
 
-#+begin_quote
-The log difference for, say, 03-01-2020, is obtained by taking the difference between the $svi_{03-01-2020}$ and the log of a weighted average of the closest known values before and after 03-01-2019, that is 31-12-2018 and 07-01-2019.
-#+end_quote
+** Contrafactual
+#+begin_src python :results graphics file :file ./figs/Granulares/OCDE_Contrafactual.pdf
+df = pd.read_excel("./raw/OECD/weekly_tracker.xlsx", parse_dates=True, index_col="date")
+df = df[df["ISO3"] == "BRA"][["Tracker (yoy)", "Tracker (counterfactual)"]][
+    "2019-01-01":
+]
+df.index.name = ""
+df.columns = ["Tracker", "Contrafactual"]
+fig, ax = plt.subplots(figsize=(8, 5))
+df["Contrafactual"].dropna().plot(
+    title=f"Indicador Semanal - OCDE (Contrafactual)",
+    ax=ax,
+    lw=2.5,
+    color=("darkred"),
+)
+ax.axvline(x=corona_sp, color="black", ls="--", lw=1, label="Início isolamento em SP")
+ax.axhline(y=0, ls="-", lw=1.0, color="gray")
+ax.legend(
+    # loc="center left", bbox_to_anchor=(1, 0.5)
+)
+ax2 = plt.axes([0.695, 0.235, 0.2, 0.2])
+ax2.imshow(logo, aspect="auto", zorder=0, alpha=0.5)
+ax2.axis("off")
 
+sns.despine()
+fig.savefig(
+    "./figs/Granulares/OCDE_Contrafactual" + ".pdf",
+    dpi=300,
+    bbox_inches="tight",
+    pad_inches=0,
+)
+plt.close()
+#+end_src
+#+RESULTS:
+[[file:./figs/Granulares/OCDE_Contrafactual.pdf]]
 
 * Auxílio emergencial
 
@@ -4864,7 +4947,7 @@ for(estado in estados){
                                         # Custom the Y scales:
       scale_y_continuous(
         name = "",
-        sec.axis = sec_axis( trans=~.*rescale, name="Novos casos / 100 mil hab")
+        sec.axis = sec_axis( trans=~.*rescale, name="Novos casos/\n100 mil hab")
       ) +
       theme(
         axis.line.y.right = element_line(color = "red"), 
@@ -4953,7 +5036,9 @@ for(estado in estados){
   if(estado == "RO"){
     legend_2 <- get_legend(
                                         # create some space to the left of the legend
-      p2 + theme(legend.box.margin = margin(0, 0, 0, 12)) + guides(colour = guide_legend(override.aes = list(size=3)))
+      p2 +
+      theme(legend.box.margin = margin(0, 0, 0, 12), legend.title=element_text(size=16), legend.text=element_text(size=14)) +
+    guides(colour = guide_legend(override.aes = list(size=3)))
     )
   }
   p2 <- p2 + theme(legend.position="none")
@@ -5009,13 +5094,13 @@ fig<- plot_grid(
   prow,
   NULL,
   legends,
-  rel_widths = c(3, 0.05, .4),
+  rel_widths = c(3, 0.01, .4),
   nrow = 1
 )
 
 
 fig <- ggdraw(fig) # + draw_image(logo_file, x = 0.999, y = .975, hjust = 1, vjust = 1, width = 0.125, height = 0.1)
-ggsave(name, width = 40, height = 64, units = "cm")
+ggsave(name, width = 50, height = 70, units = "cm")
 print(name)
 #+end_src
 
