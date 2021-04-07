@@ -215,20 +215,6 @@ ggthemr::ggthemr('pale')
 
 #+RESULTS:
 :results:
-── [1mAttaching packages[22m ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
-[32m✔[39m [34mggplot2[39m 3.3.3     [32m✔[39m [34mpurrr  [39m 0.3.4
-[32m✔[39m [34mtibble [39m 3.1.0     [32m✔[39m [34mdplyr  [39m 1.0.5
-[32m✔[39m [34mtidyr  [39m 1.1.2     [32m✔[39m [34mstringr[39m 1.4.0
-[32m✔[39m [34mreadr  [39m 1.4.0     [32m✔[39m [34mforcats[39m 0.5.0
-── [1mConflicts[22m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
-[31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
-
-Attaching package: ‘patchwork’
-
-The following object is masked from ‘package:cowplot’:
-
-    align_plots
 :end:
 ** Downloads
 
@@ -356,11 +342,8 @@ wget -N https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/mast
 *** Brasil
 
 #+BEGIN_SRC python :results graphics file :file ./figs/Granulares/GoogleReport_Brasil.pdf
-import matplotlib.dates as mdates
-
-
 df = pd.read_csv(
-    "https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/google_reports/mobility_report_brazil.csv",
+    "./raw/Granulares/mobility_report_brazil.csv",
     index_col="date",
     dayfirst=True,
 )
@@ -380,7 +363,7 @@ df.columns = [
 
 fig, ax = plt.subplots(figsize=(8, 5))
 df.rolling(7).mean().plot(
-    title="Relatório de mobilidade do google\nSemana Móvel",
+    title="Relatório de mobilidade do google - Brasil\nSemana Móvel",
     ax=ax,
     lw=2,
 )
@@ -4952,7 +4935,11 @@ for(estado in estados){
         axis.line.y.right = element_line(color = "red"), 
         axis.ticks.y.right = element_line(color = "red"),
         axis.line.y.left = element_line(color = "blue"), 
-        axis.ticks.y.left = element_line(color = "blue")
+        axis.ticks.y.left = element_line(color = "blue"),
+        axis.text.y.right = element_text(size = 14),
+        axis.text.y.left = element_text(size = 14),
+        axis.text.x = element_text(size = 14),
+        axis.title.y.right = element_text(size = 18)
       )
   } else if(estado %in% lefts){
 
@@ -4969,7 +4956,11 @@ for(estado in estados){
         axis.line.y.right = element_line(color = "red"), 
         axis.ticks.y.right = element_line(color = "red"),
         axis.line.y.left = element_line(color = "blue"), 
-        axis.ticks.y.left = element_line(color = "blue")
+        axis.ticks.y.left = element_line(color = "blue"),
+        axis.text.y.right = element_text(size = 14),
+        axis.text.y.left = element_text(size = 14),
+        axis.text.x = element_text(size = 14),
+        axis.title.y.left = element_text(size = 18)
       )
   } else{
 
@@ -4986,6 +4977,9 @@ for(estado in estados){
         axis.line.y.right = element_line(color = "red"), 
         axis.ticks.y.right = element_line(color = "red"),
         axis.line.y.left = element_line(color = "blue"), 
+        axis.text.y.right = element_text(size = 14),
+        axis.text.y.left = element_text(size = 14),
+        axis.text.x = element_text(size = 14),
         axis.ticks.y.left = element_line(color = "blue")
       )
   }
@@ -5036,7 +5030,7 @@ for(estado in estados){
     legend_2 <- get_legend(
                                         # create some space to the left of the legend
       p2 +
-      theme(legend.box.margin = margin(0, 0, 0, 12), legend.title=element_text(size=16), legend.text=element_text(size=14)) +
+      theme(legend.box.margin = margin(0, 0, 0, 12), legend.title=element_text(size=22), legend.text=element_text(size=20)) +
     guides(colour = guide_legend(override.aes = list(size=3)))
     )
   }
@@ -5099,7 +5093,7 @@ fig<- plot_grid(
 
 
 fig <- ggdraw(fig) # + draw_image(logo_file, x = 0.999, y = .975, hjust = 1, vjust = 1, width = 0.125, height = 0.1)
-ggsave(name, width = 55, height = 70, units = "cm")
+ggsave(name, width = 66, height = 77, units = "cm")
 print(name)
 #+end_src
 
