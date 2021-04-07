@@ -828,13 +828,22 @@ em casa","1"
 (Salvo exceções)","1"
 2021-03-29,"Acre","AC","Proibido sair
 (Salvo exceções)","1"
-2021-03-30,"Acre","AC","Dados indisponíveis",NA
-2021-03-31,"Acre","AC","Dados indisponíveis",NA
-2021-04-01,"Acre","AC","Dados indisponíveis",NA
-2021-04-02,"Acre","AC","Dados indisponíveis",NA
-2021-04-03,"Acre","AC","Dados indisponíveis",NA
-2021-04-04,"Acre","AC","Dados indisponíveis",NA
-2021-04-05,"Acre","AC","Dados indisponíveis",NA
+2021-03-30,"Acre","AC","Proibido sair
+(Salvo exceções)","1"
+2021-03-31,"Acre","AC","Recomendado ficar
+em casa","1"
+2021-04-01,"Acre","AC","Proibido sair
+(Salvo exceções)","1"
+2021-04-02,"Acre","AC","Proibido sair
+(Salvo exceções)","1"
+2021-04-03,"Acre","AC","Proibido sair
+(Salvo exceções)","1"
+2021-04-04,"Acre","AC","Proibido sair
+(Salvo exceções)","1"
+2021-04-05,"Acre","AC","Proibido sair
+(Salvo exceções)","1"
+2021-04-06,"Acre","AC","Dados indisponíveis",NA
+2021-04-07,"Acre","AC","Dados indisponíveis",NA
 2020-01-01,"Alagoas","AL","Sem restrição",NA
 2020-01-02,"Alagoas","AL","Sem restrição",NA
 2020-01-03,"Alagoas","AL","Sem restrição",NA
@@ -1655,19 +1664,28 @@ em casa","1"
 (Salvo exceções)","1"
 2021-03-23,"Alagoas","AL","Proibido sair
 (Salvo exceções)","1"
-2021-03-24,"Alagoas","AL","Dados indisponíveis",NA
-2021-03-25,"Alagoas","AL","Dados indisponíveis",NA
-2021-03-26,"Alagoas","AL","Dados indisponíveis",NA
-2021-03-27,"Alagoas","AL","Dados indisponíveis",NA
-2021-03-28,"Alagoas","AL","Dados indisponíveis",NA
-2021-03-29,"Alagoas","AL","Dados indisponíveis",NA
-2021-03-30,"Alagoas","AL","Dados indisponíveis",NA
+2021-03-24,"Alagoas","AL","Proibido sair
+(Salvo exceções)","1"
+2021-03-25,"Alagoas","AL","Proibido sair
+(Salvo exceções)","1"
+2021-03-26,"Alagoas","AL","Proibido sair
+(Salvo exceções)","1"
+2021-03-27,"Alagoas","AL","Proibido sair
+(Salvo exceções)","1"
+2021-03-28,"Alagoas","AL","Proibido sair
+(Salvo exceções)","1"
+2021-03-29,"Alagoas","AL","Proibido sair
+(Salvo exceções)","1"
+2021-03-30,"Alagoas","AL","Proibido sair
+(Salvo exceções)","1"
 2021-03-31,"Alagoas","AL","Dados indisponíveis",NA
 2021-04-01,"Alagoas","AL","Dados indisponíveis",NA
 2021-04-02,"Alagoas","AL","Dados indisponíveis",NA
 2021-04-03,"Alagoas","AL","Dados indisponíveis",NA
 2021-04-04,"Alagoas","AL","Dados indisponíveis",NA
 2021-04-05,"Alagoas","AL","Dados indisponíveis",NA
+2021-04-06,"Alagoas","AL","Dados indisponíveis",NA
+2021-04-07,"Alagoas","AL","Dados indisponíveis",NA
 2020-01-01,"Amapa","AP","Sem restrição",NA
 2020-01-02,"Amapa","AP","Sem restrição",NA
 2020-01-03,"Amapa","AP","Sem restrição",NA
@@ -2500,6 +2518,8 @@ em casa","1"
 2021-04-03,"Amapa","AP","Dados indisponíveis",NA
 2021-04-04,"Amapa","AP","Dados indisponíveis",NA
 2021-04-05,"Amapa","AP","Dados indisponíveis",NA
+2021-04-06,"Amapa","AP","Dados indisponíveis",NA
+2021-04-07,"Amapa","AP","Dados indisponíveis",NA
 2020-01-01,"Amazonas","AM","Sem restrição",NA
 2020-01-02,"Amazonas","AM","Sem restrição",NA
 2020-01-03,"Amazonas","AM","Sem restrição",NA
@@ -3294,6 +3314,8 @@ em casa","1"
 2021-04-03,"Amazonas","AM","Dados indisponíveis",NA
 2021-04-04,"Amazonas","AM","Dados indisponíveis",NA
 2021-04-05,"Amazonas","AM","Dados indisponíveis",NA
+2021-04-06,"Amazonas","AM","Dados indisponíveis",NA
+2021-04-07,"Amazonas","AM","Dados indisponíveis",NA
 2020-01-01,"Bahia","BA","Sem restrição",NA
 2020-01-02,"Bahia","BA","Sem restrição",NA
 2020-01-03,"Bahia","BA","Sem restrição",NA
@@ -4061,6 +4083,8 @@ em casa","1"
 2021-04-03,"Bahia","BA","Dados indisponíveis",NA
 2021-04-04,"Bahia","BA","Dados indisponíveis",NA
 2021-04-05,"Bahia","BA","Dados indisponíveis",NA
+2021-04-06,"Bahia","BA","Dados indisponíveis",NA
+2021-04-07,"Bahia","BA","Dados indisponíveis",NA
 2020-01-01,"Ceara","CE","Sem restrição",NA
 2020-01-02,"Ceara","CE","Sem restrição",NA
 2020-01-03,"Ceara","CE","Sem restrição",NA
@@ -4890,6 +4914,8 @@ em casa","1"
 2021-04-03,"Ceara","CE","Dados indisponíveis",NA
 2021-04-04,"Ceara","CE","Dados indisponíveis",NA
 2021-04-05,"Ceara","CE","Dados indisponíveis",NA
+2021-04-06,"Ceara","CE","Dados indisponíveis",NA
+2021-04-07,"Ceara","CE","Dados indisponíveis",NA
 2020-01-01,"Distrito Federal","DF","Dados indisponíveis",NA
 2020-01-02,"Distrito Federal","DF","Dados indisponíveis",NA
 2020-01-03,"Distrito Federal","DF","Dados indisponíveis",NA
@@ -5351,6 +5377,8 @@ em casa","1"
 2021-04-03,"Distrito Federal","DF","Dados indisponíveis",NA
 2021-04-04,"Distrito Federal","DF","Dados indisponíveis",NA
 2021-04-05,"Distrito Federal","DF","Dados indisponíveis",NA
+2021-04-06,"Distrito Federal","DF","Dados indisponíveis",NA
+2021-04-07,"Distrito Federal","DF","Dados indisponíveis",NA
 2020-01-01,"Espirito Santo","ES","Sem restrição",NA
 2020-01-02,"Espirito Santo","ES","Sem restrição",NA
 2020-01-03,"Espirito Santo","ES","Sem restrição",NA
@@ -6173,6 +6201,8 @@ em casa","1"
 2021-04-03,"Espirito Santo","ES","Dados indisponíveis",NA
 2021-04-04,"Espirito Santo","ES","Dados indisponíveis",NA
 2021-04-05,"Espirito Santo","ES","Dados indisponíveis",NA
+2021-04-06,"Espirito Santo","ES","Dados indisponíveis",NA
+2021-04-07,"Espirito Santo","ES","Dados indisponíveis",NA
 2020-01-01,"Goias","GO","Sem restrição",NA
 2020-01-02,"Goias","GO","Sem restrição",NA
 2020-01-03,"Goias","GO","Sem restrição",NA
@@ -6991,20 +7021,36 @@ em casa","1"
 (Salvo exceções)","1"
 2021-03-22,"Goias","GO","Proibido sair
 (Salvo exceções)","1"
-2021-03-23,"Goias","GO","Dados indisponíveis",NA
-2021-03-24,"Goias","GO","Dados indisponíveis",NA
-2021-03-25,"Goias","GO","Dados indisponíveis",NA
-2021-03-26,"Goias","GO","Dados indisponíveis",NA
-2021-03-27,"Goias","GO","Dados indisponíveis",NA
-2021-03-28,"Goias","GO","Dados indisponíveis",NA
-2021-03-29,"Goias","GO","Dados indisponíveis",NA
-2021-03-30,"Goias","GO","Dados indisponíveis",NA
-2021-03-31,"Goias","GO","Dados indisponíveis",NA
-2021-04-01,"Goias","GO","Dados indisponíveis",NA
-2021-04-02,"Goias","GO","Dados indisponíveis",NA
-2021-04-03,"Goias","GO","Dados indisponíveis",NA
-2021-04-04,"Goias","GO","Dados indisponíveis",NA
-2021-04-05,"Goias","GO","Dados indisponíveis",NA
+2021-03-23,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-03-24,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-03-25,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-03-26,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-03-27,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-03-28,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-03-29,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-03-30,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-03-31,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-04-01,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-04-02,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-04-03,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-04-04,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-04-05,"Goias","GO","Proibido sair
+(Salvo exceções)","1"
+2021-04-06,"Goias","GO","Dados indisponíveis",NA
+2021-04-07,"Goias","GO","Dados indisponíveis",NA
 2020-01-01,"Maranhao","MA","Sem restrição",NA
 2020-01-02,"Maranhao","MA","Sem restrição",NA
 2020-01-03,"Maranhao","MA","Sem restrição",NA
@@ -7801,31 +7847,58 @@ em casa","1"
 em casa","1"
 2021-03-11,"Maranhao","MA","Recomendado ficar
 em casa","1"
-2021-03-12,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-13,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-14,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-15,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-16,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-17,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-18,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-19,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-20,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-21,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-22,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-23,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-24,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-25,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-26,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-27,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-28,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-29,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-30,"Maranhao","MA","Dados indisponíveis",NA
-2021-03-31,"Maranhao","MA","Dados indisponíveis",NA
-2021-04-01,"Maranhao","MA","Dados indisponíveis",NA
-2021-04-02,"Maranhao","MA","Dados indisponíveis",NA
-2021-04-03,"Maranhao","MA","Dados indisponíveis",NA
-2021-04-04,"Maranhao","MA","Dados indisponíveis",NA
-2021-04-05,"Maranhao","MA","Dados indisponíveis",NA
+2021-03-12,"Maranhao","MA","Recomendado ficar
+em casa","1"
+2021-03-13,"Maranhao","MA","Recomendado ficar
+em casa","1"
+2021-03-14,"Maranhao","MA","Recomendado ficar
+em casa","1"
+2021-03-15,"Maranhao","MA","Recomendado ficar
+em casa","1"
+2021-03-16,"Maranhao","MA","Recomendado ficar
+em casa","1"
+2021-03-17,"Maranhao","MA","Recomendado ficar
+em casa","1"
+2021-03-18,"Maranhao","MA","Recomendado ficar
+em casa","1"
+2021-03-19,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-03-20,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-03-21,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-03-22,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-03-23,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-03-24,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-03-25,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-03-26,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-03-27,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-03-28,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-03-29,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-03-30,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-03-31,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-04-01,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-04-02,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-04-03,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-04-04,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-04-05,"Maranhao","MA","Proibido sair
+(Salvo exceções)","0"
+2021-04-06,"Maranhao","MA","Dados indisponíveis",NA
+2021-04-07,"Maranhao","MA","Dados indisponíveis",NA
 2020-01-01,"Mato Grosso","MT","Sem restrição",NA
 2020-01-02,"Mato Grosso","MT","Sem restrição",NA
 2020-01-03,"Mato Grosso","MT","Sem restrição",NA
@@ -8527,6 +8600,8 @@ em casa","1"
 2021-04-04,"Mato Grosso","MT","Proibido sair
 (Salvo exceções)","0"
 2021-04-05,"Mato Grosso","MT","Dados indisponíveis",NA
+2021-04-06,"Mato Grosso","MT","Dados indisponíveis",NA
+2021-04-07,"Mato Grosso","MT","Dados indisponíveis",NA
 2020-01-01,"Mato Grosso do Sul","MS","Sem restrição",NA
 2020-01-02,"Mato Grosso do Sul","MS","Sem restrição",NA
 2020-01-03,"Mato Grosso do Sul","MS","Sem restrição",NA
@@ -9339,6 +9414,8 @@ em casa","1"
 2021-04-03,"Mato Grosso do Sul","MS","Dados indisponíveis",NA
 2021-04-04,"Mato Grosso do Sul","MS","Dados indisponíveis",NA
 2021-04-05,"Mato Grosso do Sul","MS","Dados indisponíveis",NA
+2021-04-06,"Mato Grosso do Sul","MS","Dados indisponíveis",NA
+2021-04-07,"Mato Grosso do Sul","MS","Dados indisponíveis",NA
 2020-01-01,"Minas Gerais","MG","Sem restrição",NA
 2020-01-02,"Minas Gerais","MG","Sem restrição",NA
 2020-01-03,"Minas Gerais","MG","Sem restrição",NA
@@ -10167,14 +10244,24 @@ em casa","1"
 em casa","1"
 2021-03-28,"Minas Gerais","MG","Recomendado ficar
 em casa","1"
-2021-03-29,"Minas Gerais","MG","Dados indisponíveis",NA
-2021-03-30,"Minas Gerais","MG","Dados indisponíveis",NA
-2021-03-31,"Minas Gerais","MG","Dados indisponíveis",NA
-2021-04-01,"Minas Gerais","MG","Dados indisponíveis",NA
-2021-04-02,"Minas Gerais","MG","Dados indisponíveis",NA
-2021-04-03,"Minas Gerais","MG","Dados indisponíveis",NA
-2021-04-04,"Minas Gerais","MG","Dados indisponíveis",NA
-2021-04-05,"Minas Gerais","MG","Dados indisponíveis",NA
+2021-03-29,"Minas Gerais","MG","Recomendado ficar
+em casa","1"
+2021-03-30,"Minas Gerais","MG","Recomendado ficar
+em casa","1"
+2021-03-31,"Minas Gerais","MG","Recomendado ficar
+em casa","1"
+2021-04-01,"Minas Gerais","MG","Recomendado ficar
+em casa","1"
+2021-04-02,"Minas Gerais","MG","Recomendado ficar
+em casa","1"
+2021-04-03,"Minas Gerais","MG","Recomendado ficar
+em casa","1"
+2021-04-04,"Minas Gerais","MG","Recomendado ficar
+em casa","1"
+2021-04-05,"Minas Gerais","MG","Recomendado ficar
+em casa","1"
+2021-04-06,"Minas Gerais","MG","Dados indisponíveis",NA
+2021-04-07,"Minas Gerais","MG","Dados indisponíveis",NA
 2020-01-01,"Para","PA","Sem restrição",NA
 2020-01-02,"Para","PA","Sem restrição",NA
 2020-01-03,"Para","PA","Sem restrição",NA
@@ -10964,6 +11051,8 @@ em casa","1"
 2021-04-03,"Para","PA","Dados indisponíveis",NA
 2021-04-04,"Para","PA","Dados indisponíveis",NA
 2021-04-05,"Para","PA","Dados indisponíveis",NA
+2021-04-06,"Para","PA","Dados indisponíveis",NA
+2021-04-07,"Para","PA","Dados indisponíveis",NA
 2020-01-01,"Paraiba","PB","Sem restrição",NA
 2020-01-02,"Paraiba","PB","Sem restrição",NA
 2020-01-03,"Paraiba","PB","Sem restrição",NA
@@ -11748,24 +11837,33 @@ em casa","1"
 2021-03-13,"Paraiba","PB","Proibido sair
 (Salvo exceções)","1"
 2021-03-14,"Paraiba","PB","Proibido sair
-(Salvo exceções)","0"
+(Salvo exceções)","1"
 2021-03-15,"Paraiba","PB","Proibido sair
-(Salvo exceções)","0"
+(Salvo exceções)","1"
 2021-03-16,"Paraiba","PB","Proibido sair
-(Salvo exceções)","0"
+(Salvo exceções)","1"
 2021-03-17,"Paraiba","PB","Proibido sair
-(Salvo exceções)","0"
+(Salvo exceções)","1"
 2021-03-18,"Paraiba","PB","Proibido sair
-(Salvo exceções)","0"
-2021-03-19,"Paraiba","PB","Dados indisponíveis",NA
-2021-03-20,"Paraiba","PB","Dados indisponíveis",NA
-2021-03-21,"Paraiba","PB","Dados indisponíveis",NA
-2021-03-22,"Paraiba","PB","Dados indisponíveis",NA
-2021-03-23,"Paraiba","PB","Dados indisponíveis",NA
-2021-03-24,"Paraiba","PB","Dados indisponíveis",NA
-2021-03-25,"Paraiba","PB","Dados indisponíveis",NA
-2021-03-26,"Paraiba","PB","Dados indisponíveis",NA
-2021-03-27,"Paraiba","PB","Dados indisponíveis",NA
+(Salvo exceções)","1"
+2021-03-19,"Paraiba","PB","Proibido sair
+(Salvo exceções)","1"
+2021-03-20,"Paraiba","PB","Proibido sair
+(Salvo exceções)","1"
+2021-03-21,"Paraiba","PB","Proibido sair
+(Salvo exceções)","1"
+2021-03-22,"Paraiba","PB","Proibido sair
+(Salvo exceções)","1"
+2021-03-23,"Paraiba","PB","Proibido sair
+(Salvo exceções)","1"
+2021-03-24,"Paraiba","PB","Proibido sair
+(Salvo exceções)","1"
+2021-03-25,"Paraiba","PB","Proibido sair
+(Salvo exceções)","1"
+2021-03-26,"Paraiba","PB","Proibido sair
+(Salvo exceções)","1"
+2021-03-27,"Paraiba","PB","Proibido sair
+(Salvo exceções)","1"
 2021-03-28,"Paraiba","PB","Dados indisponíveis",NA
 2021-03-29,"Paraiba","PB","Dados indisponíveis",NA
 2021-03-30,"Paraiba","PB","Dados indisponíveis",NA
@@ -11775,6 +11873,8 @@ em casa","1"
 2021-04-03,"Paraiba","PB","Dados indisponíveis",NA
 2021-04-04,"Paraiba","PB","Dados indisponíveis",NA
 2021-04-05,"Paraiba","PB","Dados indisponíveis",NA
+2021-04-06,"Paraiba","PB","Dados indisponíveis",NA
+2021-04-07,"Paraiba","PB","Dados indisponíveis",NA
 2020-01-01,"Parana","PR","Sem restrição",NA
 2020-01-02,"Parana","PR","Sem restrição",NA
 2020-01-03,"Parana","PR","Sem restrição",NA
@@ -12581,6 +12681,8 @@ em casa","1"
 2021-04-03,"Parana","PR","Dados indisponíveis",NA
 2021-04-04,"Parana","PR","Dados indisponíveis",NA
 2021-04-05,"Parana","PR","Dados indisponíveis",NA
+2021-04-06,"Parana","PR","Dados indisponíveis",NA
+2021-04-07,"Parana","PR","Dados indisponíveis",NA
 2020-01-01,"Pernambuco","PE","Sem restrição",NA
 2020-01-02,"Pernambuco","PE","Sem restrição",NA
 2020-01-03,"Pernambuco","PE","Sem restrição",NA
@@ -13357,27 +13459,48 @@ em casa","1"
 em casa","1"
 2021-03-01,"Pernambuco","PE","Recomendado ficar
 em casa","1"
-2021-03-02,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-03,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-04,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-05,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-06,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-07,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-08,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-09,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-10,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-11,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-12,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-13,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-14,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-15,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-16,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-17,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-18,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-19,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-20,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-21,"Pernambuco","PE","Dados indisponíveis",NA
-2021-03-22,"Pernambuco","PE","Dados indisponíveis",NA
+2021-03-02,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-03,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-04,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-05,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-06,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-07,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-08,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-09,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-10,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-11,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-12,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-13,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-14,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-15,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-16,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-17,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-18,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-19,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-20,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-21,"Pernambuco","PE","Recomendado ficar
+em casa","1"
+2021-03-22,"Pernambuco","PE","Recomendado ficar
+em casa","1"
 2021-03-23,"Pernambuco","PE","Dados indisponíveis",NA
 2021-03-24,"Pernambuco","PE","Dados indisponíveis",NA
 2021-03-25,"Pernambuco","PE","Dados indisponíveis",NA
@@ -13392,6 +13515,8 @@ em casa","1"
 2021-04-03,"Pernambuco","PE","Dados indisponíveis",NA
 2021-04-04,"Pernambuco","PE","Dados indisponíveis",NA
 2021-04-05,"Pernambuco","PE","Dados indisponíveis",NA
+2021-04-06,"Pernambuco","PE","Dados indisponíveis",NA
+2021-04-07,"Pernambuco","PE","Dados indisponíveis",NA
 2020-01-01,"Piaui","PI","Sem restrição",NA
 2020-01-02,"Piaui","PI","Sem restrição",NA
 2020-01-03,"Piaui","PI","Sem restrição",NA
@@ -14142,51 +14267,94 @@ em casa","1"
 em casa","1"
 2021-02-19,"Piaui","PI","Recomendado ficar
 em casa","1"
-2021-02-20,"Piaui","PI","Dados indisponíveis",NA
-2021-02-21,"Piaui","PI","Dados indisponíveis",NA
-2021-02-22,"Piaui","PI","Dados indisponíveis",NA
-2021-02-23,"Piaui","PI","Dados indisponíveis",NA
-2021-02-24,"Piaui","PI","Dados indisponíveis",NA
-2021-02-25,"Piaui","PI","Dados indisponíveis",NA
-2021-02-26,"Piaui","PI","Dados indisponíveis",NA
-2021-02-27,"Piaui","PI","Dados indisponíveis",NA
-2021-02-28,"Piaui","PI","Dados indisponíveis",NA
-2021-03-01,"Piaui","PI","Dados indisponíveis",NA
-2021-03-02,"Piaui","PI","Dados indisponíveis",NA
-2021-03-03,"Piaui","PI","Dados indisponíveis",NA
-2021-03-04,"Piaui","PI","Dados indisponíveis",NA
-2021-03-05,"Piaui","PI","Dados indisponíveis",NA
-2021-03-06,"Piaui","PI","Dados indisponíveis",NA
-2021-03-07,"Piaui","PI","Dados indisponíveis",NA
-2021-03-08,"Piaui","PI","Dados indisponíveis",NA
-2021-03-09,"Piaui","PI","Dados indisponíveis",NA
-2021-03-10,"Piaui","PI","Dados indisponíveis",NA
-2021-03-11,"Piaui","PI","Dados indisponíveis",NA
-2021-03-12,"Piaui","PI","Dados indisponíveis",NA
-2021-03-13,"Piaui","PI","Dados indisponíveis",NA
-2021-03-14,"Piaui","PI","Dados indisponíveis",NA
-2021-03-15,"Piaui","PI","Dados indisponíveis",NA
-2021-03-16,"Piaui","PI","Dados indisponíveis",NA
-2021-03-17,"Piaui","PI","Dados indisponíveis",NA
-2021-03-18,"Piaui","PI","Dados indisponíveis",NA
-2021-03-19,"Piaui","PI","Dados indisponíveis",NA
-2021-03-20,"Piaui","PI","Dados indisponíveis",NA
-2021-03-21,"Piaui","PI","Dados indisponíveis",NA
-2021-03-22,"Piaui","PI","Dados indisponíveis",NA
-2021-03-23,"Piaui","PI","Dados indisponíveis",NA
-2021-03-24,"Piaui","PI","Dados indisponíveis",NA
-2021-03-25,"Piaui","PI","Dados indisponíveis",NA
-2021-03-26,"Piaui","PI","Dados indisponíveis",NA
-2021-03-27,"Piaui","PI","Dados indisponíveis",NA
-2021-03-28,"Piaui","PI","Dados indisponíveis",NA
-2021-03-29,"Piaui","PI","Dados indisponíveis",NA
-2021-03-30,"Piaui","PI","Dados indisponíveis",NA
-2021-03-31,"Piaui","PI","Dados indisponíveis",NA
-2021-04-01,"Piaui","PI","Dados indisponíveis",NA
-2021-04-02,"Piaui","PI","Dados indisponíveis",NA
-2021-04-03,"Piaui","PI","Dados indisponíveis",NA
-2021-04-04,"Piaui","PI","Dados indisponíveis",NA
+2021-02-20,"Piaui","PI","Recomendado ficar
+em casa","1"
+2021-02-21,"Piaui","PI","Recomendado ficar
+em casa","1"
+2021-02-22,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-02-23,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-02-24,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-02-25,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-02-26,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-02-27,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-02-28,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-01,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-02,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-03,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-04,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-05,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-06,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-07,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-08,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-09,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-10,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-11,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-12,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-13,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-14,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-15,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-16,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-17,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-18,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-19,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-20,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-21,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-22,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-23,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-24,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-25,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-26,"Piaui","PI","Proibido sair","0"
+2021-03-27,"Piaui","PI","Proibido sair","0"
+2021-03-28,"Piaui","PI","Proibido sair","0"
+2021-03-29,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-30,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-03-31,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-04-01,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-04-02,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-04-03,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
+2021-04-04,"Piaui","PI","Proibido sair
+(Salvo exceções)","1"
 2021-04-05,"Piaui","PI","Dados indisponíveis",NA
+2021-04-06,"Piaui","PI","Dados indisponíveis",NA
+2021-04-07,"Piaui","PI","Dados indisponíveis",NA
 2020-01-01,"Rio de Janeiro","RJ","Sem restrição",NA
 2020-01-02,"Rio de Janeiro","RJ","Sem restrição",NA
 2020-01-03,"Rio de Janeiro","RJ","Sem restrição",NA
@@ -14758,39 +14926,72 @@ em casa","0"
 2021-03-01,"Rio de Janeiro","RJ","Sem restrição",NA
 2021-03-02,"Rio de Janeiro","RJ","Sem restrição",NA
 2021-03-03,"Rio de Janeiro","RJ","Sem restrição",NA
-2021-03-04,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-05,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-06,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-07,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-08,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-09,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-10,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-11,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-12,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-13,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-14,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-15,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-16,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-17,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-18,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-19,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-20,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-21,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-22,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-23,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-24,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-25,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-26,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-27,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-28,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-29,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-30,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-03-31,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-04-01,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-04-02,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-04-03,"Rio de Janeiro","RJ","Dados indisponíveis",NA
-2021-04-04,"Rio de Janeiro","RJ","Dados indisponíveis",NA
+2021-03-04,"Rio de Janeiro","RJ","Sem restrição",NA
+2021-03-05,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-03-06,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-03-07,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-03-08,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-03-09,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-03-10,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-03-11,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-03-12,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-13,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-14,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-15,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-16,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-17,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-18,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-19,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-20,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-21,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-22,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-23,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-24,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-25,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","1"
+2021-03-26,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-03-27,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-03-28,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-03-29,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-03-30,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-03-31,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-04-01,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-04-02,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-04-03,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
+2021-04-04,"Rio de Janeiro","RJ","Proibido sair
+(Salvo exceções)","0"
 2021-04-05,"Rio de Janeiro","RJ","Dados indisponíveis",NA
+2021-04-06,"Rio de Janeiro","RJ","Dados indisponíveis",NA
+2021-04-07,"Rio de Janeiro","RJ","Dados indisponíveis",NA
 2020-01-01,"Rio Grande do Norte","RN","Sem restrição",NA
 2020-01-02,"Rio Grande do Norte","RN","Sem restrição",NA
 2020-01-03,"Rio Grande do Norte","RN","Sem restrição",NA
@@ -15622,6 +15823,8 @@ em casa","1"
 2021-04-03,"Rio Grande do Norte","RN","Dados indisponíveis",NA
 2021-04-04,"Rio Grande do Norte","RN","Dados indisponíveis",NA
 2021-04-05,"Rio Grande do Norte","RN","Dados indisponíveis",NA
+2021-04-06,"Rio Grande do Norte","RN","Dados indisponíveis",NA
+2021-04-07,"Rio Grande do Norte","RN","Dados indisponíveis",NA
 2020-01-01,"Rio Grande do Sul","RS","Sem restrição",NA
 2020-01-02,"Rio Grande do Sul","RS","Sem restrição",NA
 2020-01-03,"Rio Grande do Sul","RS","Sem restrição",NA
@@ -16452,13 +16655,21 @@ em casa","1"
 em casa","1"
 2021-03-29,"Rio Grande do Sul","RS","Recomendado ficar
 em casa","1"
-2021-03-30,"Rio Grande do Sul","RS","Dados indisponíveis",NA
-2021-03-31,"Rio Grande do Sul","RS","Dados indisponíveis",NA
-2021-04-01,"Rio Grande do Sul","RS","Dados indisponíveis",NA
-2021-04-02,"Rio Grande do Sul","RS","Dados indisponíveis",NA
-2021-04-03,"Rio Grande do Sul","RS","Dados indisponíveis",NA
-2021-04-04,"Rio Grande do Sul","RS","Dados indisponíveis",NA
+2021-03-30,"Rio Grande do Sul","RS","Recomendado ficar
+em casa","1"
+2021-03-31,"Rio Grande do Sul","RS","Recomendado ficar
+em casa","1"
+2021-04-01,"Rio Grande do Sul","RS","Recomendado ficar
+em casa","1"
+2021-04-02,"Rio Grande do Sul","RS","Recomendado ficar
+em casa","1"
+2021-04-03,"Rio Grande do Sul","RS","Recomendado ficar
+em casa","1"
+2021-04-04,"Rio Grande do Sul","RS","Recomendado ficar
+em casa","1"
 2021-04-05,"Rio Grande do Sul","RS","Dados indisponíveis",NA
+2021-04-06,"Rio Grande do Sul","RS","Dados indisponíveis",NA
+2021-04-07,"Rio Grande do Sul","RS","Dados indisponíveis",NA
 2020-01-01,"Rondonia","RO","Sem restrição",NA
 2020-01-02,"Rondonia","RO","Sem restrição",NA
 2020-01-03,"Rondonia","RO","Sem restrição",NA
@@ -17146,24 +17357,24 @@ em casa","1"
 2021-01-26,"Rondonia","RO","Proibido sair","0"
 2021-01-27,"Rondonia","RO","Proibido sair","1"
 2021-01-28,"Rondonia","RO","Proibido sair","1"
-2021-01-29,"Rondonia","RO","Dados indisponíveis",NA
-2021-01-30,"Rondonia","RO","Dados indisponíveis",NA
-2021-01-31,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-01,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-02,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-03,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-04,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-05,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-06,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-07,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-08,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-09,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-10,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-11,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-12,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-13,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-14,"Rondonia","RO","Dados indisponíveis",NA
-2021-02-15,"Rondonia","RO","Dados indisponíveis",NA
+2021-01-29,"Rondonia","RO","Proibido sair","0"
+2021-01-30,"Rondonia","RO","Proibido sair","0"
+2021-01-31,"Rondonia","RO","Proibido sair","0"
+2021-02-01,"Rondonia","RO","Proibido sair","0"
+2021-02-02,"Rondonia","RO","Proibido sair","0"
+2021-02-03,"Rondonia","RO","Proibido sair","0"
+2021-02-04,"Rondonia","RO","Proibido sair","0"
+2021-02-05,"Rondonia","RO","Proibido sair","0"
+2021-02-06,"Rondonia","RO","Proibido sair","0"
+2021-02-07,"Rondonia","RO","Proibido sair","0"
+2021-02-08,"Rondonia","RO","Proibido sair","0"
+2021-02-09,"Rondonia","RO","Proibido sair","0"
+2021-02-10,"Rondonia","RO","Proibido sair","0"
+2021-02-11,"Rondonia","RO","Proibido sair","0"
+2021-02-12,"Rondonia","RO","Proibido sair","0"
+2021-02-13,"Rondonia","RO","Proibido sair","0"
+2021-02-14,"Rondonia","RO","Proibido sair","0"
+2021-02-15,"Rondonia","RO","Proibido sair","0"
 2021-02-16,"Rondonia","RO","Proibido sair","1"
 2021-02-17,"Rondonia","RO","Proibido sair","1"
 2021-02-18,"Rondonia","RO","Proibido sair","1"
@@ -17177,17 +17388,27 @@ em casa","1"
 2021-02-26,"Rondonia","RO","Proibido sair","1"
 2021-02-27,"Rondonia","RO","Proibido sair","1"
 2021-02-28,"Rondonia","RO","Proibido sair","1"
-2021-03-01,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-02,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-03,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-04,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-05,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-06,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-07,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-08,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-09,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-10,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-11,"Rondonia","RO","Dados indisponíveis",NA
+2021-03-01,"Rondonia","RO","Proibido sair","0"
+2021-03-02,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-03,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-04,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-05,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-06,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-07,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-08,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-09,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-10,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-11,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
 2021-03-12,"Rondonia","RO","Proibido sair
 (Salvo exceções)","1"
 2021-03-13,"Rondonia","RO","Proibido sair
@@ -17204,15 +17425,24 @@ em casa","1"
 (Salvo exceções)","1"
 2021-03-19,"Rondonia","RO","Proibido sair
 (Salvo exceções)","1"
-2021-03-20,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-21,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-22,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-23,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-24,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-25,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-26,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-27,"Rondonia","RO","Dados indisponíveis",NA
-2021-03-28,"Rondonia","RO","Dados indisponíveis",NA
+2021-03-20,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-21,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-22,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-23,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-24,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-25,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-26,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-27,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
+2021-03-28,"Rondonia","RO","Proibido sair
+(Salvo exceções)","1"
 2021-03-29,"Rondonia","RO","Dados indisponíveis",NA
 2021-03-30,"Rondonia","RO","Dados indisponíveis",NA
 2021-03-31,"Rondonia","RO","Dados indisponíveis",NA
@@ -17221,6 +17451,8 @@ em casa","1"
 2021-04-03,"Rondonia","RO","Dados indisponíveis",NA
 2021-04-04,"Rondonia","RO","Dados indisponíveis",NA
 2021-04-05,"Rondonia","RO","Dados indisponíveis",NA
+2021-04-06,"Rondonia","RO","Dados indisponíveis",NA
+2021-04-07,"Rondonia","RO","Dados indisponíveis",NA
 2020-01-01,"Roraima","RR","Sem restrição",NA
 2020-01-02,"Roraima","RR","Sem restrição",NA
 2020-01-03,"Roraima","RR","Sem restrição",NA
@@ -18059,6 +18291,8 @@ em casa","1"
 2021-04-04,"Roraima","RR","Proibido sair
 (Salvo exceções)","0"
 2021-04-05,"Roraima","RR","Dados indisponíveis",NA
+2021-04-06,"Roraima","RR","Dados indisponíveis",NA
+2021-04-07,"Roraima","RR","Dados indisponíveis",NA
 2020-01-01,"Santa Catarina","SC","Sem restrição",NA
 2020-01-02,"Santa Catarina","SC","Sem restrição",NA
 2020-01-03,"Santa Catarina","SC","Sem restrição",NA
@@ -18792,6 +19026,8 @@ em casa","1"
 2021-04-03,"Santa Catarina","SC","Dados indisponíveis",NA
 2021-04-04,"Santa Catarina","SC","Dados indisponíveis",NA
 2021-04-05,"Santa Catarina","SC","Dados indisponíveis",NA
+2021-04-06,"Santa Catarina","SC","Dados indisponíveis",NA
+2021-04-07,"Santa Catarina","SC","Dados indisponíveis",NA
 2020-01-01,"Sao Paulo","SP","Sem restrição",NA
 2020-01-02,"Sao Paulo","SP","Sem restrição",NA
 2020-01-03,"Sao Paulo","SP","Sem restrição",NA
@@ -19629,6 +19865,8 @@ em casa","0"
 2021-04-03,"Sao Paulo","SP","Dados indisponíveis",NA
 2021-04-04,"Sao Paulo","SP","Dados indisponíveis",NA
 2021-04-05,"Sao Paulo","SP","Dados indisponíveis",NA
+2021-04-06,"Sao Paulo","SP","Dados indisponíveis",NA
+2021-04-07,"Sao Paulo","SP","Dados indisponíveis",NA
 2020-01-01,"Sergipe","SE","Sem restrição",NA
 2020-01-02,"Sergipe","SE","Sem restrição",NA
 2020-01-03,"Sergipe","SE","Sem restrição",NA
@@ -20428,23 +20666,40 @@ em casa","1"
 em casa","1"
 2021-03-12,"Sergipe","SE","Recomendado ficar
 em casa","1"
-2021-03-13,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-14,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-15,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-16,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-17,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-18,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-19,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-20,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-21,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-22,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-23,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-24,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-25,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-26,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-27,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-28,"Sergipe","SE","Dados indisponíveis",NA
-2021-03-29,"Sergipe","SE","Dados indisponíveis",NA
+2021-03-13,"Sergipe","SE","Recomendado ficar
+em casa","1"
+2021-03-14,"Sergipe","SE","Recomendado ficar
+em casa","1"
+2021-03-15,"Sergipe","SE","Recomendado ficar
+em casa","1"
+2021-03-16,"Sergipe","SE","Recomendado ficar
+em casa","1"
+2021-03-17,"Sergipe","SE","Proibido sair
+(Salvo exceções)","0"
+2021-03-18,"Sergipe","SE","Proibido sair
+(Salvo exceções)","0"
+2021-03-19,"Sergipe","SE","Proibido sair
+(Salvo exceções)","0"
+2021-03-20,"Sergipe","SE","Proibido sair
+(Salvo exceções)","0"
+2021-03-21,"Sergipe","SE","Proibido sair
+(Salvo exceções)","0"
+2021-03-22,"Sergipe","SE","Proibido sair
+(Salvo exceções)","0"
+2021-03-23,"Sergipe","SE","Recomendado ficar
+em casa","1"
+2021-03-24,"Sergipe","SE","Recomendado ficar
+em casa","1"
+2021-03-25,"Sergipe","SE","Recomendado ficar
+em casa","1"
+2021-03-26,"Sergipe","SE","Recomendado ficar
+em casa","1"
+2021-03-27,"Sergipe","SE","Recomendado ficar
+em casa","1"
+2021-03-28,"Sergipe","SE","Recomendado ficar
+em casa","1"
+2021-03-29,"Sergipe","SE","Recomendado ficar
+em casa","1"
 2021-03-30,"Sergipe","SE","Dados indisponíveis",NA
 2021-03-31,"Sergipe","SE","Dados indisponíveis",NA
 2021-04-01,"Sergipe","SE","Dados indisponíveis",NA
@@ -20452,6 +20707,8 @@ em casa","1"
 2021-04-03,"Sergipe","SE","Dados indisponíveis",NA
 2021-04-04,"Sergipe","SE","Dados indisponíveis",NA
 2021-04-05,"Sergipe","SE","Dados indisponíveis",NA
+2021-04-06,"Sergipe","SE","Dados indisponíveis",NA
+2021-04-07,"Sergipe","SE","Dados indisponíveis",NA
 2020-01-01,"Tocantins","TO","Sem restrição",NA
 2020-01-02,"Tocantins","TO","Sem restrição",NA
 2020-01-03,"Tocantins","TO","Sem restrição",NA
@@ -21254,23 +21511,45 @@ em casa","1"
 (Salvo exceções)","0"
 2021-03-16,"Tocantins","TO","Proibido sair
 (Salvo exceções)","0"
-2021-03-17,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-18,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-19,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-20,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-21,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-22,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-23,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-24,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-25,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-26,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-27,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-28,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-29,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-30,"Tocantins","TO","Dados indisponíveis",NA
-2021-03-31,"Tocantins","TO","Dados indisponíveis",NA
-2021-04-01,"Tocantins","TO","Dados indisponíveis",NA
-2021-04-02,"Tocantins","TO","Dados indisponíveis",NA
-2021-04-03,"Tocantins","TO","Dados indisponíveis",NA
-2021-04-04,"Tocantins","TO","Dados indisponíveis",NA
-2021-04-05,"Tocantins","TO","Dados indisponíveis",NA
+2021-03-17,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-18,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-19,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-20,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-21,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-22,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-23,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-24,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-25,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-26,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-27,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-28,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-29,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-30,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-03-31,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-04-01,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-04-02,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-04-03,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-04-04,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-04-05,"Tocantins","TO","Proibido sair
+(Salvo exceções)","0"
+2021-04-06,"Tocantins","TO","Dados indisponíveis",NA
+2021-04-07,"Tocantins","TO","Dados indisponíveis",NA

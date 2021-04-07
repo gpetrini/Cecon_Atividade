@@ -31,6 +31,8 @@ import pandas_datareader.data as web
 import requests
 import json
 
+import matplotlib.dates as mdates
+
 import country_converter as coco
 
 cc = coco.CountryConverter()
@@ -168,8 +170,6 @@ def add_value_labels(ax, spacing=5):
 
 #+RESULTS:
 :results:
-
-(python3:291370): Gtk-[1;33mWARNING[0m **: [34m08:55:12.598[0m: Theme parsing error: gtk.css:1:117: Failed to import: Erro ao abrir arquivo /home/gpetrini/.local/share/gnome-shell/extensions/unite@hardpixel.eu/styles/buttons-right-always.css: Arquivo ou diretório inexistente
 :end:
 ** R
 
@@ -292,7 +292,7 @@ fig.savefig(
     "./figs/Antecedente/" + "IBCBr" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 plt.close()
 #+END_SRC
@@ -329,7 +329,7 @@ fig.savefig(
     "./figs/Setoriais/TrafegoPedagio" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -415,7 +415,7 @@ fig.savefig(
     "./figs/Granulares/GoogleReport_Brasil" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -426,7 +426,7 @@ fig.savefig(
 
 #+BEGIN_SRC python :results graphics file :file ./figs/Granulares/GoogleReport_EstadoSP.pdf
 sp = pd.read_csv(
-    './raw/Granulares/mobility_report_brazil.csv',
+    "./raw/Granulares/mobility_report_brazil.csv",
     index_col="date",
     dayfirst=True,
 )
@@ -476,12 +476,11 @@ fig.autofmt_xdate()
 
 sns.despine()
 plt.close()
-
 fig.savefig(
     "./figs/Granulares/GoogleReport_EstadoSP" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -547,7 +546,7 @@ fig.savefig(
     "./figs/Granulares/GoogleReport_CidadeSP" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -618,7 +617,7 @@ fig.savefig(
     "./figs/Granulares/AppleReport_Brasil" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -674,7 +673,7 @@ fig.savefig(
     "./figs/Granulares/Waze_Brasil" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -745,7 +744,7 @@ fig.savefig(
     "./figs/Granulares/TomTom_Brasil" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -977,7 +976,7 @@ fig.savefig(
     './figs/PIB/Agropecuaria.pdf',
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
     )
 plt.close()
 #+END_SRC
@@ -1025,7 +1024,7 @@ fig.savefig(
     './figs/PIB/Industria.pdf',
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
     )
 plt.close()
 #+END_SRC
@@ -1078,7 +1077,7 @@ fig.savefig(
     './figs/PIB/Servicos.pdf',
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
     )
 plt.close()
 #+END_SRC
@@ -1128,7 +1127,7 @@ fig.savefig(
     './figs/PIB/Demanda.pdf',
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
     )
 plt.close()
 #+END_SRC
@@ -1180,7 +1179,7 @@ fig.savefig(
     './figs/PIB/Oferta.pdf',
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
     )
 #+END_SRC
 
@@ -1241,7 +1240,7 @@ fig.savefig(
     './figs/PIB/Contrib_Demanda.pdf',
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
     )
 plt.close()
 #+END_SRC
@@ -1304,7 +1303,7 @@ fig.savefig(
     './figs/PIB/Contrib_Oferta.pdf',
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
     )
 plt.close()
 #+END_SRC
@@ -1386,7 +1385,7 @@ fig.savefig(
     "./figs/PIB/Contrib_Servicos.pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 plt.close()
 #+END_SRC
@@ -1507,7 +1506,7 @@ fig.savefig(
     "./figs/PIB/Servicos_Acum" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -1552,7 +1551,7 @@ fig.savefig(
     "./figs/PIB/Servicos_Acum_Comparativo" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -1592,7 +1591,7 @@ fig.savefig(
     "./figs/PIB/Demanda_Acum" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -1641,7 +1640,7 @@ fig.savefig(
     "./figs/PIB/Demanda_Acum_Comparativo" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -1789,7 +1788,7 @@ fig.savefig(
     "./figs/PIB/PIB_Acum" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -1852,7 +1851,7 @@ fig.savefig(
     "./figs/Credito/EndividamentoFamilias" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -1959,7 +1958,7 @@ fig.savefig(
     "./figs/Credito/SaldoPJ_PIB" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -2065,7 +2064,7 @@ fig.savefig(
     "./figs/Credito/SaldoPF_PIB" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -2473,7 +2472,7 @@ fig.savefig(
     "./figs/Setoriais/PMS_vol_dessazonalizada" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -2547,7 +2546,7 @@ fig.savefig(
     "./figs/Setoriais/PMS_vol_dessazonalizada_diff" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -2594,7 +2593,7 @@ fig.savefig(
     "./figs/Emprego/RMHPO" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -2634,7 +2633,7 @@ fig.savefig(
     "./figs/Emprego/MRR_Efetiva_Habitual" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -2670,7 +2669,7 @@ fig.savefig(
     "./figs/Emprego/MSAD" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -2747,7 +2746,7 @@ fig.savefig(
     "./figs/Emprego/Horas_Transformacao" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -2847,7 +2846,7 @@ fig.savefig(
     "./figs/Emprego/TaxaDesocupacao" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -3134,7 +3133,7 @@ fig.savefig(
     "./figs/IMF/FiscalMonitor_Covid" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -3211,7 +3210,7 @@ fig.savefig(
     "./figs/IMF/FiscalMonitor_Covid_ratio" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -3288,7 +3287,7 @@ fig.savefig(
     "./figs/IMF/FiscalMonitor_Covid_total" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 #+END_SRC
 
@@ -3392,7 +3391,7 @@ fig.savefig(
     "./figs/IMF/" + "GDP_Lockdown" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 plt.close()
 #+END_SRC
@@ -3450,7 +3449,7 @@ fig.savefig(
     "./figs/IMF/" + "Vol_String" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 plt.close()
 #+END_SRC
@@ -3527,7 +3526,7 @@ fig.savefig(
     "./figs/IMF/" + "Lock_measures" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 plt.close()
 #+END_SRC
@@ -3582,7 +3581,7 @@ fig.savefig(
     "./figs/Granulares/OCDE_Semanal" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 plt.close()
 #+end_src
@@ -3628,7 +3627,7 @@ fig.savefig(
     "./figs/Granulares/OCDE_Subplots" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 plt.close()
 #+end_src
@@ -3664,7 +3663,7 @@ fig.savefig(
     "./figs/Granulares/OCDE_Contrafactual" + ".pdf",
     dpi=300,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.2,
 )
 plt.close()
 #+end_src
@@ -3683,7 +3682,7 @@ plt.close()
 \end{figure}
 #+end_export
 
-* Novos casos x Restrição de mobilidade por tipo de isolamento
+* Novos casos x Restrição de mobilidade por tipo de isolamento :noexport:
 ** TODOs :noexport:
 *** TODO Remover outlier dos boxplots
 ** Loading data :ignore:noexport:
@@ -4233,7 +4232,7 @@ print(name)
 |---------+------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 ** Novos casos por milhão x Fase pandemia (sem aparar dados)
-#+begin_src R :results value file :var figname="Casos_Policy_Todos"
+#+begin_src R :results value file :var figname="Casos_Policy_Todos" :eval no
 
 name = paste0('./figs/COVID/', figname, ".pdf")
 
@@ -4270,7 +4269,7 @@ print(name)
 
 ** Novos casos por milhão x Fase pandemia (mais de 10 casos por milhão de habitante)
 
-#+begin_src R :results value file :var figname="Casos_Policy_10_Todos"
+#+begin_src R :results value file :var figname="Casos_Policy_10_Todos" :eval no
 
 name = paste0('./figs/COVID/', figname, ".pdf")
     
@@ -4309,7 +4308,7 @@ print(name)
 [[file:./figs/COVID/Casos_Policy_10_Todos.pdf]]
 ** Novos casos por milhão x Fase pandemia (mais de 50 casos por milhão de habitante)
 
-#+begin_src R :results value file :var figname="Casos_Policy_50_Todos"
+#+begin_src R :results value file :var figname="Casos_Policy_50_Todos" :eval no
 
 name = paste0('./figs/COVID/', figname, ".pdf")
     
@@ -4346,7 +4345,7 @@ print(name)
 
 ** Novos casos por milhão x Fase pandemia (mais de 100 casos por milhão de habitante)
 
-#+begin_src R :results value file :var figname="Casos_Policy_100_Todos"
+#+begin_src R :results value file :var figname="Casos_Policy_100_Todos" :eval no
 
 name = paste0('./figs/COVID/', figname, ".pdf")
 
@@ -5100,7 +5099,7 @@ fig<- plot_grid(
 
 
 fig <- ggdraw(fig) # + draw_image(logo_file, x = 0.999, y = .975, hjust = 1, vjust = 1, width = 0.125, height = 0.1)
-ggsave(name, width = 50, height = 70, units = "cm")
+ggsave(name, width = 55, height = 70, units = "cm")
 print(name)
 #+end_src
 
