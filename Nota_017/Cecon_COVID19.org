@@ -215,6 +215,20 @@ ggthemr::ggthemr('pale')
 
 #+RESULTS:
 :results:
+── [1mAttaching packages[22m ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+[32m✔[39m [34mggplot2[39m 3.3.3     [32m✔[39m [34mpurrr  [39m 0.3.4
+[32m✔[39m [34mtibble [39m 3.1.0     [32m✔[39m [34mdplyr  [39m 1.0.5
+[32m✔[39m [34mtidyr  [39m 1.1.2     [32m✔[39m [34mstringr[39m 1.4.0
+[32m✔[39m [34mreadr  [39m 1.4.0     [32m✔[39m [34mforcats[39m 0.5.0
+── [1mConflicts[22m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+[31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
+[31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
+
+Attaching package: ‘patchwork’
+
+The following object is masked from ‘package:cowplot’:
+
+    align_plots
 :end:
 ** Downloads
 
@@ -4007,6 +4021,7 @@ df <- read_csv(
     iso_code,
     new_cases_per_million,
     new_cases_smoothed_per_million,
+    new_deaths_smoothed_per_million,
     cases_growth,
     deaths_growth,
     vaccine_growth,
@@ -4166,13 +4181,20 @@ cols(
 #+begin_src R :results value file :var figname="Picos"
 
 name = paste0('./figs/COVID/', figname, ".pdf")
+
+
+df <- read_csv(
+  "./clean/COVID/casos_TipoIsolamento_Onda.csv",
+  guess_max = 3000
+)
     
 # https://stackoverflow.com/questions/10942360/how-to-get-geom-vline-to-honor-facet-wrap
 df_inf <- df %>% 
   group_by(iso_code) %>% 
   summarise(vline = date[Pico==1])
 
-df %>% ggplot(aes(x=date)) + geom_line(aes(y=new_cases_smoothed_per_million), color="black", linetype="dashed") + 
+df %>% ggplot(aes(x=date)) +
+  ## geom_line(aes(y=new_cases_smoothed_per_million), color="black", linetype="dashed") + 
   geom_line(aes(y=new_cases_per_million), color="red") +
   geom_vline(
     data = df_inf, 
@@ -4180,10 +4202,16 @@ df %>% ggplot(aes(x=date)) + geom_line(aes(y=new_cases_smoothed_per_million), co
   ) +
   labs(
     y = "Novos casos por milão de habitantes",
-    x = "Data"
+    x = ""
   ) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
  guides(fill=guide_legend(title="Países")) +
+      theme(
+        axis.text.y.left = element_text(size = 14),
+        axis.text.x = element_text(size = 12),
+        axis.title.y.left = element_text(size = 14),
+        strip.text = element_text( size = 12, face = "bold" )
+      ) +
   facet_wrap(~iso_code) ->fig
 
  fig <- ggdraw(fig) +
@@ -4191,11 +4219,6 @@ df %>% ggplot(aes(x=date)) + geom_line(aes(y=new_cases_smoothed_per_million), co
 ggsave(name, width = 30, height = 20, units = "cm")
 print(name)
 #+end_src
-
-#+RESULTS:
-:results:
-[[file:./figs/COVID/Picos.pdf]]
-:end:
 
 
 ** Descrição dos dados
@@ -4761,6 +4784,7 @@ df <- df %>%
   mutate(cases_growth = ((new_cases/lag(new_cases)) - 1) * 100) %>%
   mutate(deaths_growth = (new_deaths/lag(new_deaths) - 1) * 100) %>%
   mutate(new_cases_100K = (replace_na(new_cases, 0)/Populacao)*10^5) %>%
+  mutate(new_deaths_100K = (replace_na(new_cases, 0)/Populacao)*10^5) %>%
   mutate(new_cases_100K = zoo::rollapply(new_cases_100K, width = 7, FUN = mean, fill = NA)) %>%
   mutate(new_cases_1M = (replace_na(new_cases, 0)/Populacao)*10^6) %>%
   mutate(new_cases_100K = zoo::rollapply(new_cases_100K, width = 7, FUN = mean, fill = NA)) %>%
@@ -4770,6 +4794,8 @@ df <- df %>%
   mutate(cum_cases_100K = zoo::rollapply(cum_cases_100K, width = 7, FUN = mean, fill = NA)) %>%
   mutate(cum_cases_1M = (cumsum(replace_na(new_cases, 0))/Populacao)*10^6) %>%
   mutate(cum_cases_1M = zoo::rollapply(cum_cases_1M, width = 7, FUN = mean, fill = NA)) %>%
+  mutate(cum_deaths_100K = (cumsum(replace_na(new_deaths, 0))/Populacao)*10^5) %>%
+  mutate(cum_deaths_100K = zoo::rollapply(cum_deaths_100K, width = 7, FUN = mean, fill = NA)) %>%
   ungroup()
 
 w <- 14 * 3
@@ -4809,7 +4835,7 @@ write.csv(
 #+RESULTS:
 :results:
 
-[36m──[39m [1m[1mColumn specification[1m[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   date = [34mcol_date(format = "")[39m,
   Estado = [31mcol_character()[39m,
@@ -4818,7 +4844,7 @@ cols(
   C6_Flag = [32mcol_double()[39m
 )
 
-[36m──[39m [1m[1mColumn specification[1m[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   date = [34mcol_date(format = "")[39m,
   Sigla = [31mcol_character()[39m,
@@ -4826,7 +4852,7 @@ cols(
 )
 Joining, by = c("date", "Sigla")
 
-[36m──[39m [1m[1mColumn specification[1m[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[36m──[39m [1m[1mColumn specification[1m[22m [36m───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 cols(
   date = [34mcol_date(format = "")[39m,
   Sigla = [31mcol_character()[39m,
@@ -4836,6 +4862,279 @@ cols(
   total_cases_per_million = [32mcol_double()[39m
 )
 Joining, by = c("date", "Sigla")
+:end:
+
+** Número de casos por estados
+
+#+begin_src R :results value file :exports file :var figname="Casos"
+
+df <- read_csv(
+  "./clean/COVID/Estados/Merged_wide.csv",
+  guess_max = 3000
+) %>%
+  mutate(C6 = factor(C6),
+         C6 = fct_relevel(C6, "Dados indisponíveis", "Sem restrição", "Recomendado ficar\nem casa", "Proibido sair\n(Salvo exceções)", "Proibido sair")) %>%
+  mutate(Estado = factor(Estado)) %>%
+  group_by(Sigla)
+
+name = paste0('./figs/COVID/Estados/', figname, ".pdf")
+
+df_inf <- df %>%
+  group_by(Estado) %>%
+  summarise(vline = date[Pico==1])
+
+df %>% ggplot(aes(x=date)) +
+  geom_line(aes(y=new_cases_100K), color="red") +
+  geom_vline(
+    data = df_inf,
+    mapping = aes(xintercept = vline),
+    color = "black"
+  ) +
+  labs(
+    y = "Novos casos por\n100 mil habitantes",
+    x = ""
+  ) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  scale_x_date(date_breaks = "2 months", date_minor_breaks = "2 weeks", date_labels = "%b/%y") +
+  guides(fill=guide_legend(title="Estados Brasileiros")) +
+      theme(
+        axis.text.y.left = element_text(size = 14),
+        axis.text.x = element_text(size = 12),
+        axis.title.y.left = element_text(size = 14),
+        strip.text = element_text( size = 12, face = "bold" )
+      ) +
+  facet_wrap(~Estado) ->fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.95, y = 0.15, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 40, height = 30, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Estados/Casos.pdf]]
+:end:
+
+** Número de mortes por estados
+
+#+begin_src R :results value file :exports file :var figname="Mortes"
+
+df <- read_csv(
+  "./clean/COVID/Estados/Merged_wide.csv",
+  guess_max = 3000
+) %>%
+  mutate(C6 = factor(C6),
+         C6 = fct_relevel(C6, "Dados indisponíveis", "Sem restrição", "Recomendado ficar\nem casa", "Proibido sair\n(Salvo exceções)", "Proibido sair")) %>%
+  mutate(Estado = factor(Estado)) %>%
+  group_by(Sigla)
+
+name = paste0('./figs/COVID/Estados/', figname, ".pdf")
+
+df_inf <- df %>%
+  group_by(Estado) %>%
+  summarise(vline = date[Pico==1])
+
+df %>% ggplot(aes(x=date)) +
+  geom_line(aes(
+    y=zoo::rollapply(new_deaths_100K, 14, mean, align='right',fill=NA)
+    ), color="red") +
+  ## geom_vline(
+  ##   data = df_inf,
+  ##   mapping = aes(xintercept = vline),
+  ##   color = "black"
+  ## ) +
+  labs(
+    y = "Novas mortes por 100 mil habitantes",
+    x = ""
+  ) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  scale_x_date(date_breaks = "2 months", date_minor_breaks = "2 weeks", date_labels = "%b/%y") +
+  guides(fill=guide_legend(title="Estados Brasileiros")) +
+      theme(
+        axis.text.y.left = element_text(size = 14),
+        axis.text.x = element_text(size = 12),
+        axis.title.y.left = element_text(size = 14),
+        strip.text = element_text( size = 12, face = "bold" )
+      ) +
+  facet_wrap(~Estado) ->fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.95, y = 0.15, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 40, height = 30, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Estados/Mortes.pdf]]
+:end:
+
+** Número de casos acumulados por estados
+
+#+begin_src R :results value file :exports file :var figname="Casos_Cum"
+
+df <- read_csv(
+  "./clean/COVID/Estados/Merged_wide.csv",
+  guess_max = 3000
+) %>%
+  mutate(C6 = factor(C6),
+         C6 = fct_relevel(C6, "Dados indisponíveis", "Sem restrição", "Recomendado ficar\nem casa", "Proibido sair\n(Salvo exceções)", "Proibido sair")) %>%
+  mutate(Estado = factor(Estado)) %>%
+  group_by(Sigla)
+
+name = paste0('./figs/COVID/Estados/', figname, ".pdf")
+
+df_inf <- df %>%
+  group_by(Estado) %>%
+  summarise(vline = date[Pico==1])
+
+df %>% ggplot(aes(x=date)) +
+  geom_line(aes(y=cum_cases_100K), color="red") +
+  ## geom_vline(
+  ##   data = df_inf,
+  ##   mapping = aes(xintercept = vline),
+  ##   color = "black"
+  ## ) +
+  labs(
+    y = "Casos acumulados por\n100 mil habitantes",
+    x = ""
+  ) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  scale_x_date(date_breaks = "2 months", date_minor_breaks = "2 weeks", date_labels = "%b/%y") +
+  guides(fill=guide_legend(title="Estados Brasileiros")) +
+      theme(
+        axis.text.y.left = element_text(size = 14),
+        axis.text.x = element_text(size = 12),
+        axis.title.y.left = element_text(size = 14),
+        strip.text = element_text( size = 12, face = "bold" )
+      ) +
+  facet_wrap(~Estado) ->fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.95, y = 0.15, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 40, height = 30, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Estados/Casos_Cum.pdf]]
+:end:
+
+** Número de mortes acumuadas por estados
+
+#+begin_src R :results value file :exports file :var figname="Mortes_Cum"
+
+df <- read_csv(
+  "./clean/COVID/Estados/Merged_wide.csv",
+  guess_max = 3000
+) %>%
+  mutate(C6 = factor(C6),
+         C6 = fct_relevel(C6, "Dados indisponíveis", "Sem restrição", "Recomendado ficar\nem casa", "Proibido sair\n(Salvo exceções)", "Proibido sair")) %>%
+  mutate(Estado = factor(Estado)) %>%
+  group_by(Sigla)
+
+name = paste0('./figs/COVID/Estados/', figname, ".pdf")
+
+df_inf <- df %>%
+  group_by(Estado) %>%
+  summarise(vline = date[Pico==1])
+
+df %>% ggplot(aes(x=date)) +
+  geom_line(aes(y=cum_cases_100K), color="red") +
+  ## geom_vline(
+  ##   data = df_inf,
+  ##   mapping = aes(xintercept = vline),
+  ##   color = "black"
+  ## ) +
+  labs(
+    y = "Mortes acumulados por 100 mil habitantes",
+    x = ""
+  ) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  scale_x_date(date_breaks = "2 months", date_minor_breaks = "2 weeks", date_labels = "%b/%y") +
+  guides(fill=guide_legend(title="Estados Brasileiros")) +
+      theme(
+        axis.text.y.left = element_text(size = 14),
+        axis.text.x = element_text(size = 12),
+        axis.title.y.left = element_text(size = 14),
+        strip.text = element_text( size = 12, face = "bold" )
+      ) +
+  facet_wrap(~Estado) ->fig
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.95, y = 0.15, hjust = 1, vjust = 1, width = 0.15, height = 0.1)
+ggsave(name, width = 40, height = 30, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Estados/Mortes_Cum.pdf]]
+:end:
+
+** Novos casos e mortes - Brasil
+
+
+#+begin_src R :results value file :var figname="Brasil"
+
+name = paste0('./figs/COVID/Estados/', figname, ".pdf")
+
+
+df <- read_csv(
+  "./clean/COVID/casos_TipoIsolamento_Onda.csv",
+  guess_max = 3000
+) %>% filter(iso_code == "BRA")
+
+
+rescale = max(df$new_deaths_smoothed_per_million)/max(df$new_cases_smoothed_per_million)
+    
+# https://stackoverflow.com/questions/10942360/how-to-get-geom-vline-to-honor-facet-wrap
+df_inf <- df %>% 
+  summarise(vline = date[Pico==1])
+
+
+df %>% ggplot(aes(x=date)) +
+  ## geom_line(aes(y=new_cases_smoothed_per_million), color="black", linetype="dashed") + 
+  geom_line(aes(y=new_cases_smoothed_per_million), color="blue") +
+  geom_line(aes(y=new_deaths_smoothed_per_million/rescale), color="red") +
+  geom_vline(
+    data = df_inf, 
+    mapping = aes(xintercept = vline),
+    color = "black"
+  ) +
+  labs(
+    x = ""
+  ) +
+      scale_y_continuous(
+        name = "Novos casos por milhão de habitantes",
+        sec.axis = sec_axis( trans=~.*rescale, name="Novos mortes por milhão de habitantes")
+      ) +
+      theme(
+        axis.line.y.right = element_line(color = "red"), 
+        axis.ticks.y.right = element_line(color = "red"),
+        axis.line.y.left = element_line(color = "blue"), 
+        axis.ticks.y.left = element_line(color = "blue"),
+        axis.text.y.right = element_text(size = 18),
+        axis.text.y.left = element_text(size = 18),
+        axis.text.x = element_text(size = 18),
+        axis.title.y.left = element_text(size = 18),
+        axis.title.y.right = element_text(size = 18)
+      ) +
+  scale_x_date(date_breaks = "1 month", date_minor_breaks = "2 weeks", date_labels = "%b/%y") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) ->fig
+
+
+ fig <- ggdraw(fig) +
+   draw_image(logo_file, x = 0.35, y = 0.95, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
+ggsave(name, width = 40, height = 30, units = "cm")
+print(name)
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:./figs/COVID/Estados/Brasil.pdf]]
 :end:
 
 ** Gráficos de mobilidade e política por estados
@@ -5096,11 +5395,6 @@ fig <- ggdraw(fig) # + draw_image(logo_file, x = 0.999, y = .975, hjust = 1, vju
 ggsave(name, width = 66, height = 77, units = "cm")
 print(name)
 #+end_src
-
-#+RESULTS:
-:results:
-[[file:./figs/COVID/Estados/Mobilidade_Policy_selected_C6.pdf]]
-:end:
 
 ** Boxplots de taxa de crescimento e tipo de isolamento
 

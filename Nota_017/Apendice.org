@@ -1,0 +1,27 @@
+#+OPTIONS: toc:nil num:nil
+#+TITLE: Apêndice estatístico (gráficos)
+#+LANGUAGE: pt_br
+
+#+begin_src elisp :exports none
+(setq org-latex-caption-above t)
+#+end_src
+
+#+RESULTS:
+
+* Gráficos adicionais
+
+#+CAPTION: Novos casos e mortes a cada 1 milhão de habitantes (Brasil, semana móvel)
+[[file:./figs/COVID/Estados/Brasil.pdf]]
+
+#+CAPTION: Novos casos a cada 1 milhão de habitantes (Mercosul + países selecionados, semana móvel)
+[[file:./figs/COVID/Picos.pdf]]
+
+#+CAPTION: Novos casos a cada 100 mil habitantes nos estados brasileiros (semana móvel)
+[[file:./figs/COVID/Estados/Casos.pdf]]
+
+#+CAPTION: Novas mortes a cada 100 mil habitantes nos estados brasileiros (quinzena móvel)
+[[file:./figs/COVID/Estados/Mortes.pdf]]
+
+
+#+CAPTION: Pessoas em /home office/
+[[file:./figs/PNAD_COVID/home_sexo_cor.pdf]]

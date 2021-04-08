@@ -112,7 +112,7 @@ fig <- ggplot(df, aes(fill = Cor, y = trab_home_office, x = Sexo)) +
     labs(x = "Sexo", fill = "Cor/Raça: ", caption = "Fonte: Microdados da Pnad Covid19 - IBGE. Novembro 2020.",
          title = "Pessoas em home office, por cor/raça e sexo") +
     scale_fill_manual(values = c("#00b894","#ff7675","#0984e3","#6c5ce7")) +
-    scale_y_discrete(limits=factor(0:100), breaks = c(0,10,20,30,40,50,60,70,80,90,100), name = "Percentual (%)")
+    scale_y_discrete(limits=factor(0:30), breaks = c(0,5,10,15,20,25,30), name = "Percentual (%)")
 
 fig<- ggdraw(fig) + 
     draw_image(logo_file, x = .975, y = .975, hjust = 1, vjust = 1, width = 0.25, height = 0.2)
