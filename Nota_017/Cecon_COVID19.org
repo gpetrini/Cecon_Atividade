@@ -234,7 +234,7 @@ The following object is masked from ‘package:cowplot’:
 
 *** Google mobility
 
-#+begin_src sh :dir /HDD/Cecon_Atividade/Nota_016/ :exports none
+#+begin_src sh :dir /HDD/Cecon_Atividade/Nota_016/ :exports none :eval no
 
 wget -O ./raw/Covid/Google_Mobility.csv https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv
 #+end_src
@@ -246,7 +246,7 @@ Erro: unexpected symbol in "wget -O ."
 
 *** Brasil.io
 
-#+begin_src sh :dir /HDD/Cecon_Atividade/Nota_016/ :exports none
+#+begin_src sh :dir /HDD/Cecon_Atividade/Nota_016/ :exports none :eval no
 wget -O ./raw/Covid/Casos_Brasilio.csv.gz https://data.brasil.io/dataset/covid19/caso_full.csv.gz
 gunzip ./raw/Covid/Casos_Brasilio.csv.gz
 #+end_src
@@ -345,7 +345,7 @@ fig.savefig(
 
 *** Baixando :noexport:
 
-#+begin_src shell :dir /HDD/Cecon_Atividade/Nota_016/raw/Granulares/ :exports none
+#+begin_src shell :dir /HDD/Cecon_Atividade/Nota_016/raw/Granulares/ :exports none :eval no
 wget -N https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/google_reports/mobility_report_brazil.csv
 #+end_src
 
@@ -3298,62 +3298,62 @@ fig.savefig(
 *** Tabela :ignore:
 #+NAME: IMF_fig_1
 #+CAPTION: GDP Forecast Errors in 2020:H1 and Lockdown Stringency
-|---------+--------------------------------------+-------------------------------------------------|
-| Country | 2020:H1 Erro da previsão do PIB (%) | Rigidez do Lockdown (índice, média de 2020:H1) |
-|---------+--------------------------------------+-------------------------------------------------|
-| AUS     | -4,54                                | 37,21                                           |
-| AUT     | -9,11                                | 37,13                                           |
-| BEL     | -9,65                                | 41,34                                           |
-| BRA     | -8,71                                | 44,01                                           |
-| CAN     | -8,81                                | 40,92                                           |
-| CHL     | -5,71                                | 41,76                                           |
-| CHN     | -7,82                                | 62,36                                           |
-| COL     | -10,70                               | 49,59                                           |
-| HRV     | -9,36                                | 40,25                                           |
-| CZE     | -8,87                                | 34,38                                           |
-| DNK     | -6,03                                | 39,22                                           |
-| EST     | -6,54                                | 31,58                                           |
-| FIN     | -5,24                                | 28,49                                           |
-| FRA     | -13,44                               | 48,72                                           |
-| DEU     | -7,04                                | 35,39                                           |
-| GRC     | -10,79                               | 39,91                                           |
-| HKG     | -4,45                                | 43,62                                           |
-| HUN     | -8,91                                | 38,69                                           |
-| IND     | -15,70                               | 51,69                                           |
-| IDN     | -6,09                                | 42,06                                           |
-| IRL     | -3,48                                | 45,59                                           |
-| ISR     | -6,44                                | 49,81                                           |
-| ITA     | -11,99                               | 51,65                                           |
-| JPN     | -6,27                                | 24,21                                           |
-| KOR     | -3,02                                | 39,64                                           |
-| LVA     | -7,49                                | 33,94                                           |
-| LTU     | -3,51                                | 40,30                                           |
-| MYS     | -12,54                               | 40,67                                           |
-| MEX     | -11,10                               | 41,61                                           |
-| NLD     | -6,49                                | 40,82                                           |
-| NOR     | -6,10                                | 32,55                                           |
-| PER     | -20,54                               | 55,43                                           |
-| PHL     | -15,14                               | 58,33                                           |
-| POL     | -6,56                                | 40,53                                           |
-| PRT     | -10,87                               | 43,79                                           |
-| ROU     | -7,04                                | 44,54                                           |
-| RUS     | -4,29                                | 48,61                                           |
-| SRB     | -4,59                                | 40,73                                           |
-| SGP     | -7,63                                | 43,65                                           |
-| SVK     | -10,39                               | 40,44                                           |
-| SVN     | -11,35                               | 34,24                                           |
-| ZAF     | -9,66                                | 47,21                                           |
-| ESP     | -14,65                               | 42,21                                           |
-| SWE     | -4,28                                | 21,08                                           |
-| CHE     | -6,16                                | 37,10                                           |
-| TWN     | -1,37                                | 13,73                                           |
-| THA     | -9,13                                | 39,43                                           |
-| TUR     | -5,42                                | 42,28                                           |
-| UKR     | -8,08                                | 47,94                                           |
-| GBR     | -12,91                               | 38,99                                           |
-| USA     | -6,44                                | 43,14                                           |
-| VNM     | -4,35                                | 47,91                                           |
-|---------+--------------------------------------+-------------------------------------------------|
+|---------------+-------------------------------------+------------------------------------------------|
+| Países (ISO3) | 2020:H1 Erro da previsão do PIB (%) | Rigidez do Lockdown (índice, média de 2020:H1) |
+|---------------+-------------------------------------+------------------------------------------------|
+| AUS           | -4,54                               | 37,21                                          |
+| AUT           | -9,11                               | 37,13                                          |
+| BEL           | -9,65                               | 41,34                                          |
+| BRA           | -8,71                               | 44,01                                          |
+| CAN           | -8,81                               | 40,92                                          |
+| CHL           | -5,71                               | 41,76                                          |
+| CHN           | -7,82                               | 62,36                                          |
+| COL           | -10,70                              | 49,59                                          |
+| HRV           | -9,36                               | 40,25                                          |
+| CZE           | -8,87                               | 34,38                                          |
+| DNK           | -6,03                               | 39,22                                          |
+| EST           | -6,54                               | 31,58                                          |
+| FIN           | -5,24                               | 28,49                                          |
+| FRA           | -13,44                              | 48,72                                          |
+| DEU           | -7,04                               | 35,39                                          |
+| GRC           | -10,79                              | 39,91                                          |
+| HKG           | -4,45                               | 43,62                                          |
+| HUN           | -8,91                               | 38,69                                          |
+| IND           | -15,70                              | 51,69                                          |
+| IDN           | -6,09                               | 42,06                                          |
+| IRL           | -3,48                               | 45,59                                          |
+| ISR           | -6,44                               | 49,81                                          |
+| ITA           | -11,99                              | 51,65                                          |
+| JPN           | -6,27                               | 24,21                                          |
+| KOR           | -3,02                               | 39,64                                          |
+| LVA           | -7,49                               | 33,94                                          |
+| LTU           | -3,51                               | 40,30                                          |
+| MYS           | -12,54                              | 40,67                                          |
+| MEX           | -11,10                              | 41,61                                          |
+| NLD           | -6,49                               | 40,82                                          |
+| NOR           | -6,10                               | 32,55                                          |
+| PER           | -20,54                              | 55,43                                          |
+| PHL           | -15,14                              | 58,33                                          |
+| POL           | -6,56                               | 40,53                                          |
+| PRT           | -10,87                              | 43,79                                          |
+| ROU           | -7,04                               | 44,54                                          |
+| RUS           | -4,29                               | 48,61                                          |
+| SRB           | -4,59                               | 40,73                                          |
+| SGP           | -7,63                               | 43,65                                          |
+| SVK           | -10,39                              | 40,44                                          |
+| SVN           | -11,35                              | 34,24                                          |
+| ZAF           | -9,66                               | 47,21                                          |
+| ESP           | -14,65                              | 42,21                                          |
+| SWE           | -4,28                               | 21,08                                          |
+| CHE           | -6,16                               | 37,10                                          |
+| TWN           | -1,37                               | 13,73                                          |
+| THA           | -9,13                               | 39,43                                          |
+| TUR           | -5,42                               | 42,28                                          |
+| UKR           | -8,08                               | 47,94                                          |
+| GBR           | -12,91                              | 38,99                                          |
+| USA           | -6,44                               | 43,14                                          |
+| VNM           | -4,35                               | 47,91                                          |
+|---------------+-------------------------------------+------------------------------------------------|
 
 *** Gráfico :ignore:
 #+BEGIN_SRC python :var df=IMF_fig_1() :results graphics file :file ./figs/IMF/GDP_Lockdown.pdf
@@ -3415,7 +3415,7 @@ plt.close()
 #+CAPTION: Impact of Lockdowns and Voluntary Social Distancing on Mobility during the First 90 Days of Each Country’s Epidemic
 | Economias   | Rigidez do Lockdown | Distanciamento Social Voluntário (DSV) |
 |-------------+---------------------+----------------------------------------|
-| Todos       | -7,85               | -6,53                                  |
+| Todas       | -7,85               | -6,53                                  |
 | Avançadas   | -8,07               | -10,62                                 |
 | Emergentes  | -8,78               | -6,26                                  |
 | Renda baixa | -5,8                | -2,83                                  |
@@ -3555,7 +3555,7 @@ The log difference for, say, 03-01-2020, is obtained by taking the difference be
 
 
 ** Download :noexport:
-#+begin_src shell :dir /HDD/Cecon_Atividade/Nota_016/raw/OECD/ :exports none :eval yes
+#+begin_src shell :dir /HDD/Cecon_Atividade/Nota_016/raw/OECD/ :exports none :eval no
 wget -q https://github.com/NicolasWoloszko/OECD-Weekly-Tracker/raw/main/Data/weekly_tracker.xlsx
 #+end_src
 
